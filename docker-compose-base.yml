@@ -93,7 +93,7 @@ services:
 
   ui-base:
     image: ehealthafrica/aether-ui:0.7.1
-    environment:
+    environment: &ui-environment
       CSRF_COOKIE_DOMAIN: .aether.local
       DEBUG: "true"
       DJANGO_SECRET_KEY: "secret"
@@ -118,3 +118,7 @@ services:
       - "8004:8004"
     command: start_dev
 
+  ui-webpack-base:
+    image: ehealthafrica/aether-ui:0.7.1
+    environment: *ui-environment
+    command: eval npm run webpack

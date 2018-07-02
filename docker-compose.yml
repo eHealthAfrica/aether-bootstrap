@@ -64,34 +64,10 @@ services:
         aliases:
           - ui.aether.local
 
-  # # ---------------------------------
-  # # Gather container
-  # # ---------------------------------
-
-  # gather:
-  #   extends:
-  #     file: docker-compose-base.yml
-  #     service: gather-base
-  #   depends_on:
-  #     - db
-  #     - gather-webpack
-  #     - kernel
-  #     - odk
-  #   networks:
-  #     internal:
-  #       aliases:
-  #         - gather.local
-
-  # # ---------------------------------
-  # # Gather Webpack container
-  # # ---------------------------------
-
-  # gather-webpack:
-  #   extends:
-  #     file: docker-compose-base.yml
-  #     service: gather-webpack-base
-  #   networks:
-  #     - internal
+  ui-webpack:
+    extends:
+      file: docker-compose-base.yml
+      service: ui-webpack-base
 
   # ---------------------------------
   # NGINX container
