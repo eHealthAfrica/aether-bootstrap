@@ -159,9 +159,6 @@ services:
     image: ehealthafrica/aether-producer:0.7.3-rc
     restart: on-failure
     stdin_open: true
-    volumes:
-     - ./aether-producer:/code
-     - ./aether-client:/code/aether-client
     environment:
      - PYTHONUNBUFFERED=1
     command: start_dev

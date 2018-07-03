@@ -21,5 +21,3 @@
 set -Eeuo pipefail
 
 docker network create aether_internal
-docker-compose -f ../docker-compose.yml ../docker-compose-connect.yml build
-
