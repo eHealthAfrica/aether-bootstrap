@@ -1,8 +1,9 @@
-version: "2"
+version: "2.1"
 
 networks:
-    internal:
-        driver: bridge
+  aether:
+    external:
+      name: aether_internal
 
 services:
 
@@ -15,7 +16,7 @@ services:
       file: docker-compose-base.yml
       service: postgres-base
     networks:
-      - internal
+      - aether
 
   # ---------------------------------
   # Aether kernel container
@@ -28,7 +29,7 @@ services:
     depends_on:
       - db
     networks:
-      internal:
+      aether:
         aliases:
           - kernel.aether.local
 
@@ -44,7 +45,7 @@ services:
       - db
       - kernel
     networks:
-      internal:
+      aether:
         aliases:
           - odk.aether.local
 
@@ -60,7 +61,7 @@ services:
       - db
       - kernel
     networks:
-      internal:
+      aether:
         aliases:
           - ui.aether.local
 
@@ -83,4 +84,4 @@ services:
       - odk
       - ui
     networks:
-      - internal
+      - aether
