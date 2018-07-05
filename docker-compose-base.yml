@@ -109,20 +109,12 @@ services:
       RDS_PORT: 5432
       RDS_USERNAME: postgres
 
-      STATIC_ROOT: /code/aether/ui/assets/bundles
+      STATIC_ROOT: /code/aether/ui/static
       WEB_SERVER_PORT: 8004
-    volumes:
-      - ./tmp/ui/bundles:/code/aether/ui/assets/bundles
-      - ./tmp/ui/static:/var/www/static
+
     ports:
       - "8004:8004"
     command: start_dev
-
-  ui-webpack-base:
-    image: ehealthafrica/aether-ui:0.8.0-rc
-    environment: *ui-environment
-    command: eval npm run webpack
-
 
   # ---------------------------------
   # Kafka & Zookeeper
