@@ -34,7 +34,7 @@ services:
   # ---------------------------------
 
   kernel-base:
-    image: ehealthafrica/aether-kernel:0.7.3-rc
+    image: ehealthafrica/aether-kernel:0.8.0-rc
     environment:
       CSRF_COOKIE_DOMAIN: .aether.local
       DEBUG: "true"
@@ -61,7 +61,7 @@ services:
   # ---------------------------------
 
   odk-base:
-    image: ehealthafrica/aether-odk:0.7.3-rc
+    image: ehealthafrica/aether-odk:0.8.0-rc
     environment:
       CSRF_COOKIE_DOMAIN: .aether.local
       DEBUG: "true"
@@ -92,7 +92,7 @@ services:
   # ---------------------------------
 
   ui-base:
-    image: ehealthafrica/aether-ui:0.7.3-rc
+    image: ehealthafrica/aether-ui:0.8.0-rc
     environment: &ui-environment
       CSRF_COOKIE_DOMAIN: .aether.local
       DEBUG: "true"
@@ -119,7 +119,7 @@ services:
     command: start_dev
 
   ui-webpack-base:
-    image: ehealthafrica/aether-ui:0.7.3-rc
+    image: ehealthafrica/aether-ui:0.8.0-rc
     environment: *ui-environment
     command: eval npm run webpack
 
@@ -156,7 +156,7 @@ services:
   # ---------------------------------
 
   aether-producer-base:
-    image: ehealthafrica/aether-producer:0.7.3-rc
+    image: ehealthafrica/aether-producer:0.8.0-rc
     restart: on-failure
     stdin_open: true
     environment:
