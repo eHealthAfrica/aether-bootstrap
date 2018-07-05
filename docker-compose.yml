@@ -65,11 +65,6 @@ services:
         aliases:
           - ui.aether.local
 
-  ui-webpack:
-    extends:
-      file: docker-compose-base.yml
-      service: ui-webpack-base
-
   # ---------------------------------
   # NGINX container
   # ---------------------------------
