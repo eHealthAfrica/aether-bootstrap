@@ -1,0 +1,58 @@
+{
+	"doc": "A Building",
+	"name": "Building",
+	"type": "record",
+	"fields": [{
+			"doc": "ID of the Survey this data comes from",
+			"jsonldPredicate": {
+			  "_id": "org.aether.clusterdemo.Survey",
+			  "_type": "@id"
+			},
+			"name": "survey_id",
+			"type": "string"
+		},{
+			"doc": "latitude",
+			"name": "latitude",
+			"type": "float"
+		},
+		{
+			"doc": "longitude",
+			"name": "longitude",
+			"type": "float"
+		},
+		{
+			"doc": "altitude",
+			"name": "altitude",
+			"type": [
+				"null",
+				"float"
+			]
+		},
+		{
+			"doc": "accuracy",
+			"name": "accuracy",
+			"type": [
+				"null",
+				"float"
+			]
+		},
+		{
+			"doc": "What kind of building is this?",
+			"name": "building_type",
+			"type": [
+				"null",
+				"string"
+			]
+		}, {
+			"doc": "ID",
+			"name": "id",
+			"type": "string",
+			"jsonldPredicate": "@id"
+		}, {
+			"doc": "REV",
+			"name": "rev",
+			"type": "string"
+		}
+	],
+	"namespace": "eha.aether.clusterdemo"
+}
