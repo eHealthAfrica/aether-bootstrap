@@ -19,7 +19,7 @@
         "name": "household_id",
         "type": "string",
         "jsonldPredicate": {
-          "_id": "org.aether.clusterdemo.Household",
+          "_id": "eha.aether.clusterdemo.Household",
           "_type": "@id"
         }
       },

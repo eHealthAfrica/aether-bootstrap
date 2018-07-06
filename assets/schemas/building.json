@@ -5,7 +5,7 @@
 	"fields": [{
 			"doc": "ID of the Survey this data comes from",
 			"jsonldPredicate": {
-			  "_id": "org.aether.clusterdemo.Survey",
+			  "_id": "eha.aether.clusterdemo.Survey",
 			  "_type": "@id"
 			},
 			"name": "survey_id",

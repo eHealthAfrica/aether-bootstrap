@@ -67,7 +67,7 @@
       {
         "doc": "ID of the Survey this data comes from",
         "jsonldPredicate": {
-          "_id": "org.aether.clusterdemo.Survey",
+          "_id": "eha.aether.clusterdemo.Survey",
           "_type": "@id"
         },
         "name": "survey_id",
@@ -143,11 +143,11 @@
         "type": "string"
       },
       {
-        "doc": "ID of Parent Location",
-        "name": "location_id",
+        "doc": "ID of Parent Building",
+        "name": "building_id",
         "type": "string",
         "jsonldPredicate": {
-          "_id": "org.aether.clusterdemo.Location",
+          "_id": "eha.aether.clusterdemo.Building",
           "_type": "@id"
         }
       }
@@ -175,7 +175,7 @@
         "name": "household_id",
         "type": "string",
         "jsonldPredicate": {
-          "_id": "org.aether.clusterdemo.Household",
+          "_id": "eha.aether.clusterdemo.Household",
           "_type": "@id"
         }
       },

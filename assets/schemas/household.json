@@ -16,7 +16,7 @@
 			"name": "location_id",
 			"type": "string",
 			"jsonldPredicate": {
-			  "_id": "org.aether.clusterdemo.Location",
+			  "_id": "eha.aether.clusterdemo.Location",
 			  "_type": "@id"
 			}
 		}
