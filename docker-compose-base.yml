@@ -92,7 +92,7 @@ services:
   # ---------------------------------
 
   ui-base:
-    image: ehealthafrica/aether-ui:testing-local
+    image: ehealthafrica/aether-ui:0.8.0-rc
     environment: &ui-environment
       CSRF_COOKIE_DOMAIN: .aether.local
       DEBUG: "true"
