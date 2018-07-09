@@ -66,12 +66,12 @@
     "fields": [
       {
         "doc": "ID of the Survey this data comes from",
+        "name": "survey_id",
+        "type": "string",
         "jsonldPredicate": {
           "_id": "eha.aether.clusterdemo.Survey",
           "_type": "@id"
-        },
-        "name": "survey_id",
-        "type": "string"
+        }
       },
       {
         "doc": "latitude",
@@ -144,7 +144,7 @@
       },
       {
         "doc": "ID of Parent Building",
-        "name": "building_id",
+        "name": "location_id",
         "type": "string",
         "jsonldPredicate": {
           "_id": "eha.aether.clusterdemo.Building",
@@ -180,6 +180,7 @@
         }
       },
       {
+        "aetherMaskingLevel": "false",
         "doc": "What is the age of this occupant?",
         "name": "occupant_age",
         "type": [
@@ -188,6 +189,7 @@
         ]
       },
       {
+        "aetherMaskingLevel": "false",
         "doc": "What is the gender of this occupant?",
         "name": "occupant_gender",
         "type": [
@@ -196,6 +198,7 @@
         ]
       },
       {
+        "aetherMaskingLevel": "true",
         "doc": "What is the name of this occupant?",
         "name": "occupant_name",
         "type": [
