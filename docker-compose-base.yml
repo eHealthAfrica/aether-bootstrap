@@ -44,7 +44,7 @@ services:
   # ---------------------------------
 
   kernel-base:
-    image: ehealthafrica/aether-kernel:0.8.0-rc
+    image: ehealthafrica/aether-kernel:0.8.0
     environment:
       CSRF_COOKIE_DOMAIN: .aether.local
       HOSTNAME: kernel.aether.local
@@ -81,7 +81,7 @@ services:
   # ---------------------------------
 
   odk-base:
-    image: ehealthafrica/aether-odk:0.8.0-rc
+    image: ehealthafrica/aether-odk:0.8.0
     environment:
       CSRF_COOKIE_DOMAIN: .aether.local
       HOSTNAME: odk.aether.local
@@ -121,7 +121,7 @@ services:
   # ---------------------------------
 
   ui-base:
-    image: ehealthafrica/aether-ui:0.8.0-rc
+    image: ehealthafrica/aether-ui:0.8.0
     environment: &ui-environment
       CSRF_COOKIE_DOMAIN: .aether.local
       HOSTNAME: ui.aether.local
@@ -186,7 +186,7 @@ services:
   # ---------------------------------
 
   aether-producer-base:
-    image: ehealthafrica/aether-producer:0.8.0-rc
+    image: ehealthafrica/aether-producer:0.8.0
     restart: on-failure
     stdin_open: true
     environment:
