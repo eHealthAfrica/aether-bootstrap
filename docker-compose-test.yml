@@ -1,5 +1,10 @@
 version: "2.1"
 
+networks:
+  test:
+    external:
+      name: aether_test
+
 services:
 
   # ---------------------------------
@@ -10,6 +15,8 @@ services:
     extends:
       file: docker-compose-base.yml
       service: postgres-base
+    networks:
+      - test
 
   # ---------------------------------
   # Aether kernel container
@@ -31,6 +38,8 @@ services:
       - db-test
     volumes:
       - ./conf/test/kernel-uwsgi.ini:/code/conf/uwsgi.ini
+    networks:
+      - test
 
   # ---------------------------------
   # ODK Adapter container
@@ -53,6 +62,8 @@ services:
     depends_on:
       - db-test
       - kernel-test
+    networks:
+      - test
 
   # ---------------------------------
   # Aether Kafka Containers
@@ -75,6 +86,8 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-test:32189
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-test:29099
       ADVERTISED_HOST_NAME: kafka-test
+    networks:
+      - test
 
   zookeeper-test:
     extends:
@@ -82,6 +95,8 @@ services:
       service: zookeeper-base
     environment:
       ZOOKEEPER_CLIENT_PORT: 32189
+    networks:
+      - test
 
   # ---------------------------------
   # Aether Kafka Producer
@@ -102,6 +117,8 @@ services:
     ports:
       - "9005:9005"
     command: start_test
+    networks:
+      - test
 
 
   # ---------------------------------
