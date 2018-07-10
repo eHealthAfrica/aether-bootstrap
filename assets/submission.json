@@ -1,0 +1,108 @@
+{
+  "mapping": "f309da1b-2d64-4e7e-aafd-d918e5ab5afb",
+  "payload": {
+    "_id": "fKPopgxGLyzTUIPelIYLLJhGOYVEa",
+    "_version": "YUPRCpknNpjXoRIeFIbTaqcVYBd",
+    "start": "2018-07-01 15:32:05",
+    "end": "2018-07-01 18:04:47",
+    "surveyor": "Francis",
+    "building_gps": {
+      "latitude": 52.5521241,
+      "longitude": 13.4112197,
+      "altitude": 273.0,
+      "accuracy": 30.00
+    },
+    "building_type": "duplex",
+    "household_group": [
+      {
+        "household_person_present": "yes",
+        "occupant": [
+          {
+            "occupant_age": 68,
+            "occupant_gender": "female",
+            "occupant_name": "Julia"
+          },
+          {
+            "occupant_age": 64,
+            "occupant_gender": "female",
+            "occupant_name": "Stefanie"
+          },
+          {
+            "occupant_age": 70,
+            "occupant_gender": "male",
+            "occupant_name": "Sebastian"
+          },
+          {
+            "occupant_age": 30,
+            "occupant_gender": "female",
+            "occupant_name": "Katrin"
+          },
+          {
+            "occupant_age": 34,
+            "occupant_gender": "male",
+            "occupant_name": "Michael"
+          },
+          {
+            "occupant_age": 6,
+            "occupant_gender": "female",
+            "occupant_name": "Kio"
+          },
+          {
+            "occupant_age": 2,
+            "occupant_gender": "male",
+            "occupant_name": "Jan"
+          }
+        ]
+      },
+      {
+        "household_person_present": "yes",
+        "occupant": [
+          {
+            "occupant_age": 90,
+            "occupant_gender": "female",
+            "occupant_name": "Nadine"
+          },
+          {
+            "occupant_age": 87,
+            "occupant_gender": "female",
+            "occupant_name": "Sara"
+          },
+          {
+            "occupant_age": 88,
+            "occupant_gender": "male",
+            "occupant_name": "Martin"
+          },
+          {
+            "occupant_age": 47,
+            "occupant_gender": "female",
+            "occupant_name": "Melanie"
+          },
+          {
+            "occupant_age": 22,
+            "occupant_gender": "female",
+            "occupant_name": "Carolin"
+          },
+          {
+            "occupant_age": 19,
+            "occupant_gender": "male",
+            "occupant_name": "Florian"
+          },
+          {
+            "occupant_age": 3,
+            "occupant_gender": "male",
+            "occupant_name": "Nils"
+          },
+          {
+            "occupant_age": 1,
+            "occupant_gender": "female",
+            "occupant_name": "Janina"
+          }
+        ]
+      }
+    ],
+    "__version__": "aVfd",
+    "meta": {
+      "instanceID": "DgyOdWHfWpOgRHiZhMOdsBPWaqSf"
+    }
+  }
+}
