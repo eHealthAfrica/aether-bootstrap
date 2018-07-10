@@ -38,6 +38,8 @@ services:
     restart: on-failure
     environment:
       PRODUCER_SETTINGS_FILE: /code/producer/settings.json
+    volumes:
+      - ./conf/default/producer.json:/code/producer/settings.json
     links:
       - kafka
       - zookeeper
