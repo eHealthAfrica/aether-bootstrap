@@ -57,6 +57,8 @@ services:
     extends:
       file: docker-compose-base.yml
       service: zookeeper-base
+     environment:
+      ZOOKEEPER_CLIENT_PORT: 32189
 
   kafka-test:
     extends:
@@ -66,10 +68,12 @@ services:
       - zookeeper-test
     links:
       - zookeeper-test
+    ports:
+      - "29099:29099"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper-test:32181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-test:29092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-test:32189
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-test:29099
       ADVERTISED_HOST_NAME: kafka-test
 
   # ---------------------------------
