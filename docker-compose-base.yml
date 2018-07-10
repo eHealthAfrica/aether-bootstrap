@@ -8,6 +8,10 @@ services:
 
   postgres-base:
     image: postgres:9.6
+    volumes:
+      # data volume
+      - ./tmp/db:/var/lib/postgresql/data
+
 
   # ---------------------------------
   # NGINX
