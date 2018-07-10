@@ -7,7 +7,7 @@
     "postgres_pull_limit" : 250,
     "postgres_connection_info": {
         "user" : "postgres",
-        "dbname" : "kernel-test",
+        "dbname" : "aether-kernel-test",
         "port" : 5432,
         "host" : "db-test"
     },
