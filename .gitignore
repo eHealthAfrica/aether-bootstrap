@@ -128,3 +128,7 @@ terraform.tfstate.backup
 
 # Webpack build files
 **/assets/bundles/
+
+
+# Persistent volumes
+.persistent_data
