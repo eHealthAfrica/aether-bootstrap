@@ -7,10 +7,10 @@ services:
   # ---------------------------------
 
   postgres-base:
-    image: postgres:9.6
+    image: postgres:9.6-alpine
     volumes:
       # data volume
-      - ./tmp/db:/var/lib/postgresql/data
+      - ./.persistent_data/db/data:/var/lib/postgresql/data
 
 
   # ---------------------------------
@@ -25,19 +25,19 @@ services:
       - ./scripts/conf/nginx/sites-enabled:/etc/nginx/sites-enabled
 
       # nginx log files
-      - ./tmp/nginx:/var/log/nginx/
+      - ./.persistent_data/nginx:/var/log/nginx/
 
       # aether favicon
       - ./assets/aether.ico:/media/eather.ico
 
       # media folders per container
-      - ./tmp/kernel/media:/media/kernel
-      - ./tmp/odk/media:/media/odk
+      - ./.persistent_data/kernel/media:/media/kernel
+      - ./.persistent_data/odk/media:/media/odk
 
       # static folders per container
-      - ./tmp/kernel/static:/static/kernel
-      - ./tmp/odk/static:/static/odk
-      - ./tmp/ui/static:/static/ui
+      - ./.persistent_data/kernel/static:/static/kernel
+      - ./.persistent_data/odk/static:/static/odk
+      - ./.persistent_data/ui/static:/static/ui
     ports:
       # "HOST:CONTAINER"
       - "80:80"
@@ -69,9 +69,9 @@ services:
       WEB_SERVER_PORT: 8000
     volumes:
       # media folder used by nginx
-      - ./tmp/kernel/media:/media
+      - ./.persistent_data/kernel/media:/media
       # static folder used by nginx
-      - ./tmp/kernel/static:/var/www/static
+      - ./.persistent_data/kernel/static:/var/www/static
       # uwsgi.ini using port 8000
       - ./scripts/conf/uwsgi/kernel.ini:/code/conf/uwsgi.ini
     ports:
@@ -110,9 +110,9 @@ services:
       WEB_SERVER_PORT: 8443
     volumes:
       # media folder used by nginx
-      - ./tmp/odk/media:/media
+      - ./.persistent_data/odk/media:/media
       # static folder used by nginx
-      - ./tmp/odk/static:/var/www/static
+      - ./.persistent_data/odk/static:/var/www/static
       # uwsgi.ini using port 8443
       - ./scripts/conf/uwsgi/odk.ini:/code/conf/uwsgi.ini
     ports:
@@ -149,7 +149,7 @@ services:
       WEB_SERVER_PORT: 8004
     volumes:
       # static folder used by nginx
-      - ./tmp/ui/static:/var/www/static
+      - ./.persistent_data/ui/static:/var/www/static
       # uwsgi.ini using port 8004
       - ./scripts/conf/uwsgi/ui.ini:/code/conf/uwsgi.ini
     ports:
