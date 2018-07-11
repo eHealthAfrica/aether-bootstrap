@@ -25,4 +25,4 @@ set -Eeuo pipefail
     echo "aether_internal is ready."
 }
 
-docker-compose -f ./docker-compose.yml up
+docker-compose -f ./docker-compose.yml up -d

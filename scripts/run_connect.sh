@@ -19,4 +19,4 @@
 # under the License.
 #
 set -Eeuo pipefail
-docker-compose -f ./docker-compose-connect.yml up
+docker-compose -f ./docker-compose-connect.yml up -d

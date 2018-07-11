@@ -8,8 +8,11 @@ def main():
     building = "eha.aether.clusterdemo.Building"
     household = "eha.aether.clusterdemo.HouseHold"
     person = "eha.aether.clusterdemo.Person"
-
-    manager = MockingManager(kernel_url='http://localhost:8000')
+    kernel_credentials ={
+        "username": "admin",
+        "password": "adminadmin",
+    }
+    manager = MockingManager(kernel_url='http://localhost:8000', kernel_credentials=kernel_credentials)
     for i in manager.types.keys():
         print(i)
     for k,v in manager.names.items():

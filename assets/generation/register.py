@@ -8,7 +8,7 @@ SUBMISSION_ENDPOINT = "cluster_mapping"
 kernel_url = "http://localhost:8000"
 
 kernel_credentials ={
-    "username": "admin-kernel",
+    "username": "admin",
     "password": "adminadmin",
 }
 
