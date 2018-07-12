@@ -12,7 +12,7 @@
       },
       {
         "doc": "xForm version",
-        "name": "_version",
+        "name": "xform_version",
         "type": "string",
         "default": "vpkhiFfVvdndDQeusEcAF9"
       },
@@ -39,7 +39,7 @@
         ]
       },
       {
-        "name": "__version__",
+        "name": "version",
         "type": [
           "null",
           "string"

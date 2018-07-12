@@ -13,7 +13,7 @@
   ],
   [
     "_version",
-    "Survey._version"
+    "Survey.xform_version"
   ],
   [
     "start",
@@ -29,7 +29,7 @@
   ],
   [
     "__version__",
-    "Survey.__version__"
+    "Survey.version"
   ],
   [
     "#!uuid",
