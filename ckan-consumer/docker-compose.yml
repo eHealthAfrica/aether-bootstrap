@@ -1,0 +1,24 @@
+version: "3"
+
+networks:
+  aether:
+    external:
+      name: aether_internal
+  ckan-net:
+    external:
+      name: ckan_ckan_net
+
+services:
+  app:
+    image: ehealthafrica/aether-ckan-consumer:0.8.0-rc
+    environment:
+      - CONSUMER_CONF_DIR=./example/ckan-consumer
+    env_file:
+      - .env
+    networks:
+      - aether
+      - ckan-net
+    volumes:
+      - ./config:/srv/app/example/ckan-consumer/config
+      - ./db:/srv/app/db
+

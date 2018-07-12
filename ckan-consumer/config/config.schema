@@ -1,0 +1,182 @@
+{
+	"type": "object",
+	"properties": {
+		"database": {
+			"type": "object",
+			"properties": {
+				"url": {
+					"type": "string"
+				}
+			},
+			"required": ["url"]
+		},
+		"kafka": {
+			"type": "object",
+			"properties": {
+				"bootstrap_servers": {
+					"type": "string"
+				},
+				"aether_emit_flag_required": {
+					"type": "boolean"
+				},
+				"aether_emit_flag_field_path": {
+					"type": "string"
+				},
+				"aether_emit_flag_values": {
+					"anyOf": [{
+							"type": "string"
+						}, {
+							"type": "boolean"
+						},
+						{
+							"type": "array",
+							"anyOf": [{
+									"items": {
+										"type": "boolean"
+									}
+								},
+								{
+									"items": {
+										"type": "string"
+									}
+								}, {
+									"items": {
+										"type": "integer"
+									}
+								}
+							]
+						}
+					]
+				},
+				"aether_masking_schema_levels": {
+					"anyOf": [{
+							"type": "string"
+						}, {
+							"type": "boolean"
+						},
+						{
+							"type": "array",
+							"anyOf": [{
+									"items": {
+										"type": "boolean"
+									}
+								},
+								{
+									"items": {
+										"type": "string"
+									}
+								}, {
+									"items": {
+										"type": "integer"
+									}
+								}
+							]
+						}
+					]
+				},
+				"aether_masking_schema_emit_level": {
+					"anyOf": [{
+						"type": "string"
+					}, {
+						"type": "boolean"
+					}, {
+						"type": "integer"
+					}]
+				}
+
+			},
+			"required": ["bootstrap_servers", "aether_emit_flag_required"]
+		},
+		"ckan_servers": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"title": {
+						"type": "string"
+					},
+					"url": {
+						"type": "string"
+					},
+					"api_key": {
+						"type": "string"
+					},
+                    "autoconfig_datasets": {
+                    	"type": "boolean"
+                    },
+                    "autoconfig_owner_org": {
+                    	"type": "string"
+                    },
+					"datasets": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"metadata": {
+									"type": "object",
+									"properties": {
+										"title": {
+											"type": "string"
+										},
+										"name": {
+											"type": "string"
+										},
+										"notes": {
+											"type": "string"
+										},
+										"owner_org": {
+											"type": "string"
+										}
+									},
+									"required": ["title", "name", "notes", "owner_org"]
+								},
+								"resources": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"metadata": {
+												"type": "object",
+												"properties": {
+													"title": {
+														"type": "string"
+													},
+													"description": {
+														"type": "string"
+													},
+													"name": {
+														"type": "string"
+													}
+												},
+												"required": ["title", "description", "name"]
+											},
+											"topics": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"name": {
+															"type": "string"
+														},
+														"number_of_consumers": {
+															"type": "number"
+														}
+													},
+													"required": ["name", "number_of_consumers"]
+												}
+											}
+										}
+									},
+									"required": ["metadata", "topics"]
+								}
+							},
+							"required": ["metadata", "resources"]
+						}
+					}
+				},
+				"required": ["title", "url", "api_key", "autoconfig_datasets"]
+			}
+		}
+	},
+	"required": ["kafka"]
+}

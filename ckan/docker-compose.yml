@@ -1,0 +1,85 @@
+# docker-compose build && docker-compose up -d
+# If "docker-compose logs ckan" shows DB not ready, run "docker-compose restart ckan" a few times.
+version: "3"
+
+
+services:
+  ckan:
+    container_name: ckan
+    image: ckan/ckan:latest
+    # build:
+    #  context: .
+    # args:
+    #  - CKAN_SITE_URL=${CKAN_SITE_URL}
+    links:
+      - ckanpg
+      - solr
+      - redis
+    ports:
+      - "0.0.0.0:5000:5000"
+    environment:
+      # Defaults work with linked containers, change to use own Postgres, SolR, Redis or Datapusher
+      - DATASTORE_READONLY_PASSWORD=datastore
+      - DS_RO_PASS=datastore
+      - POSTGRES_PASSWORD=ckan
+      - CKAN_SITE_URL=http://localhost:5000
+      - CKAN_PORT=5000
+      - CKAN_MAX_UPLOAD_SIZE_MB=20000
+      - CKAN_SQLALCHEMY_URL=postgresql://ckan:ckan@ckanpg/ckan
+      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:ckan@ckanpg/datastore
+      - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:datastore@ckanpg/datastore
+      - CKAN_SOLR_URL=http://solr:8983/solr/ckan
+      - CKAN_REDIS_URL=redis://redis:6379/1
+      - CKAN_DATAPUSHER_URL=http://datapusher:8800
+      #- CKAN_MAX_UPLOAD_SIZE_MB=${CKAN_MAX_UPLOAD_SIZE_MB}
+      #- POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      #- DS_RO_PASS=${DATASTORE_READONLY_PASSWORD}
+    volumes:
+     - ./ckan:/etc/ckan
+    networks:
+      - aether
+      - ckan_net
+    restart: on-failure
+
+  datapusher:
+    container_name: datapusher
+    image: clementmouchet/datapusher
+    ports:
+      - "8800:8800"
+    networks:
+      - ckan_net
+
+  ckanpg:
+    container_name: ckanpg
+    build:
+      context: .
+      dockerfile: postgresql/Dockerfile
+      args:
+        - DS_RO_PASS=datastore
+        - POSTGRES_PASSWORD=ckan
+    environment:
+      - DS_RO_PASS=datastore
+      - POSTGRES_PASSWORD=ckan
+    networks:
+      - ckan_net
+
+  solr:
+    container_name: solr
+    build:
+      context: .
+      dockerfile: solr/Dockerfile
+    networks:
+      - ckan_net
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    networks:
+      - ckan_net
+
+networks:
+  aether:
+    external:
+      name: aether_internal
+  ckan_net:
+      driver: bridge
