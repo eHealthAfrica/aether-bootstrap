@@ -20,6 +20,7 @@
 
 import logging
 import os
+import requests
 import sys
 
 from aether.mocker import MockingManager, MockFn, Generic
@@ -41,17 +42,31 @@ def main(seed_size=1000):
         "username": env('KERNEL_USER'),
         "password": env('KERNEL_PASSWORD'),
     }
-    manager = MockingManager(kernel_url=env('KERNEL_URL'), kernel_credentials=kernel_credentials)
+    try:
+        manager = MockingManager(kernel_url=env('KERNEL_URL'), kernel_credentials=kernel_credentials)
+    except requests.exceptions.RequestException:
+        log.error("Kernel is not ready or not available. Check settings or try again.")
+        sys.exit(1)
     for i in manager.types.keys():
         print(i)
     for k,v in manager.names.items():
         print(k,v)
-    manager.types[building].override_property(
-        "latitude", MockFn(Generic.geo_lat))
+    try:
+        manager.types[building].override_property(
+            "latitude", MockFn(Generic.geo_lat))
+    except KeyError:
+        log.error('%s is not a valid registered type. Have you run scripts/register_assets.sh?' %
+                 building)
+        sys.exit(1)
     manager.types[building].override_property(
         "longitude", MockFn(Generic.geo_lng))
     for x in range(SEED_ENTITIES):
         entity = manager.register(person)
+        for name, mocker in manager.types.items():
+            if mocker.killed:
+                manager.kill()
+                return
+            break
     manager.kill()
 
 if __name__ == "__main__":

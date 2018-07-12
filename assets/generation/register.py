@@ -21,6 +21,7 @@
 from aether.client import KernelClient
 import json
 import os
+import requests
 import sys
 
 def env(key):
@@ -77,7 +78,11 @@ mapping_obj = {
     "revision": "1"
 }
 
-client = KernelClient(kernel_url, **kernel_credentials)
+try:
+    client = KernelClient(kernel_url, **kernel_credentials)
+except requests.exceptions.RequestException:
+    print("Kernel is ready. Please check it's status or wait a moment and try again.")
+    sys.exit(1)
 
 def register_project():
     return client.Resource.Project.add(project_obj)
