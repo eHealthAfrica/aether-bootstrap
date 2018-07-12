@@ -9,7 +9,7 @@
   ],
   [
     "id",
-    "Survey._id"
+    "Survey.xform_id"
   ],
   [
     "_version",
