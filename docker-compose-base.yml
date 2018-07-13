@@ -41,6 +41,7 @@ services:
     ports:
       # "HOST:CONTAINER"
       - "80:80"
+      - "8443:8443"
 
 
   # ---------------------------------
@@ -107,7 +108,7 @@ services:
       RDS_PORT: 5432
       RDS_USERNAME: postgres
 
-      WEB_SERVER_PORT: 8443
+      WEB_SERVER_PORT: 8002
     volumes:
       # media folder used by nginx
       - ./.persistent_data/odk/media:/media
@@ -116,7 +117,7 @@ services:
       # uwsgi.ini using port 8443
       - ./scripts/conf/uwsgi/odk.ini:/code/conf/uwsgi.ini
     ports:
-      - "8443:8443"
+      - "8002:8002"
     command: start
 
 
