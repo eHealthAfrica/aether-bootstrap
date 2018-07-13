@@ -10,7 +10,7 @@ networks:
 
 services:
   app:
-    image: ehealthafrica/aether-ckan-consumer:0.8.0-rc
+    image: ehealthafrica/aether-ckan-consumer:0.8.0
     environment:
       - CONSUMER_CONF_DIR=./example/ckan-consumer
     env_file:
