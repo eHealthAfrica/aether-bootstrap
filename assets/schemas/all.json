@@ -6,13 +6,13 @@
     "fields": [
       {
         "doc": "xForm ID",
-        "name": "_id",
+        "name": "xform_id",
         "type": "string",
         "default": "aether-walkthrough-microcensus"
       },
       {
         "doc": "xForm version",
-        "name": "_version",
+        "name": "xform_version",
         "type": "string",
         "default": "vpkhiFfVvdndDQeusEcAF9"
       },
@@ -39,7 +39,7 @@
         ]
       },
       {
-        "name": "__version__",
+        "name": "version",
         "type": [
           "null",
           "string"

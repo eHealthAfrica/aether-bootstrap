@@ -1,0 +1,13 @@
+#########################################################################################
+#                                                                                       #
+#                             Primary requirements                                      #
+#                                                                                       #
+#                                 CHANGE ME !!!                                         #
+#                                                                                       #
+# Update me and then run 'docker-compose -f dcp-generation.yml run assets pip_freeze'	#
+#                                                                                       #
+#########################################################################################
+
+requests
+aether.client
+aether.mocker
