@@ -38,7 +38,7 @@ services:
       - ./.persistent_data/kernel/static:/static/kernel
       - ./.persistent_data/odk/static:/static/odk
       - ./.persistent_data/ui/static:/static/ui
-      - ../tmp/gather/static:/static/gather
+
     ports:
       # "HOST:CONTAINER"
       - "80:80"
