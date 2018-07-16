@@ -6,7 +6,7 @@ version: "3"
 services:
   ckan:
     container_name: ckan
-    image: ckan/ckan:latest
+    image: keitaro/ckan:2.8.0
     # build:
     #  context: .
     # args:
