@@ -1,0 +1,24 @@
+version: "2.1"
+services:
+
+  kafka-viewer:
+    image: ehealthafrica/aether-kafka-viewer
+    stdin_open: true
+    tty: true
+    environment:
+     - PYTHONUNBUFFERED=1
+     - KAFKA_CONFIG=/code/conf/consumer/kafka.json
+     - CONSUMER_CONFIG=/code/conf/consumer/consumer.json
+    volumes:
+     - ./conf:/code/conf/consumer
+    command: start
+    networks:
+      - aether
+
+networks:
+  aether:
+    external:
+      name: aether_internal
+
+
+
