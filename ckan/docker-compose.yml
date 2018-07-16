@@ -6,9 +6,9 @@ version: "3"
 services:
   ckan:
     container_name: ckan
-    image: keitaro/ckan:2.8.0
+    image: ehealthafrica/ckan:2.8.0-rc
     # build:
-    #  context: .
+    #   context: .
     # args:
     #  - CKAN_SITE_URL=${CKAN_SITE_URL}
     links:
