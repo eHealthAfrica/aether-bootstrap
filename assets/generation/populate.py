@@ -72,8 +72,9 @@ class Location(SimpleResource):
         self.center = random.choice([i for i in POP_CENTERS.values()])
         self.lat = random.gauss(self.center[0], Location.std_dev)
         self.lng = random.gauss(self.center[1], Location.std_dev)
-        self.alt = self.center[2]
-        self.acc = 10
+        self.alt = 1.0 * self.center[2]
+        self.acc = 10.0
+        self.btype = random.choice(['house', 'duplex', 'apartment'])
 
 
 class Person(SimpleResource):
@@ -125,6 +126,8 @@ def main(seed_size=1000):
         "altitude", MockFn(LOCATION.get_alt))
     manager.types[building].override_property(
         "accuracy", MockFn(LOCATION.get_acc))
+    manager.types[building].override_property(
+        "building_type", MockFn(LOCATION.get_btype))
 
     manager.types[person].override_property(
         'occupant_age', MockFn(PERSON.get_age))
