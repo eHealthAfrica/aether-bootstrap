@@ -18,6 +18,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import json
 import logging
 import os
 import random
@@ -32,84 +33,57 @@ def env(key):
     return os.environ.get(key, False)
 
 
-HERE = os.path.abspath(__file__)
-with open('%s/assets/sample-names.json' % HERE) as f:
+HERE = os.path.dirname(os.path.abspath(__file__))
+with open('%s/assets/generation/assets/sample-names.json' % HERE) as f:
     NAMES = json.load(f)
 
-with open('%s/assets/sample-locations.json' % HERE) as f:
+with open('%s/assets/generation/assets/sample-locations.json' % HERE) as f:
     POP_CENTERS = json.load(f)
 
 
-class Location(object):
+class SimpleResource(object):
+
+    def _get(self, arg):
+        try:
+            res = getattr(self, arg)
+        except Exception:
+            res = None
+        if not res:
+            self._gen()
+            return self._get(arg)
+        setattr(self, arg, None)
+        return res
+
+    def __getattribute__(self, name):
+        if not name.startswith('get_'):
+            return object.__getattribute__(self, name)
+        else:
+            def fn():
+                return self._get(name.split('get_')[1])
+            return fn
+
+class Location(SimpleResource):
 
     std_dev = .5  # std_dev of dist in lat/lng degrees    
 
-    def __init__(self):
-        self.center = random.choice(POP_CENTERS.values())
-        self.lat = random.gauss(self.center[0], std_dev)
-        self.lng = random.gauss(self.center[1], std_dev)
-        self.alt = center[2]
-        
-
-class LinkedWrapper(object):
-
-    def __init__(self, **functions):
-        self.functions = functions
-        self.uses = len(self.functions)
-
-    def __getattribute__(self, name):
-        if name in self.functions:
-            fn = self.functions.get(name)
-            res = fn()
-            del self.functions[name]
-            return res
-        else:
-            return object.__getattribute__(self, name)
-
-class LinkedObjManager(object):
-
-    def __init__(self,_type, names):
-        self._type = _type
-        self.names = names
-        self.objs = []
-
     def _gen(self):
-        inst = self._type()
-        fns = {}
-        for name in self.names:
-            def fn():
-                return getattr(inst, name)
-            fns[name] = fn
+        self.center = random.choice([i for i in POP_CENTERS.values()])
+        self.lat = random.gauss(self.center[0], Location.std_dev)
+        self.lng = random.gauss(self.center[1], Location.std_dev)
+        self.alt = self.center[2]
+        self.acc = 10
+        log.error([self.lat, self.lng, self.alt])
 
-        wrapper = LinkedWrapper(fns)
-        objs.append(wrapper)
+class Person(SimpleResource):
+    
+    def _gen(self):
+        self.sex = random.choice(['male', 'female'])    
+        name_gender = 'boys'if self.sex is 'male' else 'girls'
+        self.name = random.choice(NAMES.get(name_gender))
+        self.age = random.randint(0,99)
 
-    def __getattribute__(self, name):
-        dead = []
-        for x in range(len(self.objs))
-            try:
-                res = getattr(self.objs[x], name)
-                break
-            except AttributeError:  
-                pass
-            finally:
-                if objs[x].uses < 1:
-                    dead.append(obj[x])
-        for obj in dead:
-            self.objs.remove(obj)
-
-        if not res:
-            objs.append(self._gen())
-            res = getattr(objs[-1], name)
-        
-        if res:
-            return res
-        
-        else:
-            return object.__getattribute__(self, name)
-
-
-Locations = LinkedObjManager(Location, ["lat", "lng"])
+LOCATION = Location()
+PERSON = Person()
 
 
 
@@ -131,18 +105,28 @@ def main(seed_size=1000):
         log.error("Kernel is not ready or not available. Check settings or try again.")
         sys.exit(1)
     for i in manager.types.keys():
-        print(i)
+        log.error(i)
     for k,v in manager.names.items():
-        print(k,v)
+        log.error([k,v])
     try:
         manager.types[building].override_property(
-            "latitude", MockFn(Locations.lat))
+            "latitude", MockFn(LOCATION.get_lat))
     except KeyError:
         log.error('%s is not a valid registered type. Have you run scripts/register_assets.sh?' %
                  building)
         sys.exit(1)
     manager.types[building].override_property(
-        "longitude", MockFn(Locations.lng))
+        "longitude", MockFn(LOCATION.get_lng))
+    manager.types[building].override_property(
+        "altitude", MockFn(LOCATION.get_alt))
+    manager.types[building].override_property(
+        "accuracy", MockFn(LOCATION.get_acc))
+
+
+    manager.types[person].override_property('occupant_age' , MockFn(PERSON.get_age))
+    manager.types[person].override_property('occupant_gender' , MockFn(PERSON.get_sex))
+    manager.types[person].override_property('occupant_name' , MockFn(PERSON.get_name))
+
     for x in range(SEED_ENTITIES):
         entity = manager.register(person)
         for name, mocker in manager.types.items():
