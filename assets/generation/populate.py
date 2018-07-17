@@ -18,8 +18,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import json
 import logging
 import os
+import random
 import requests
 import sys
 
@@ -27,8 +29,66 @@ from aether.mocker import MockingManager, MockFn, Generic
 
 log = logging.getLogger("AssetGeneration:")
 
+
 def env(key):
     return os.environ.get(key, False)
+
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+with open('%s/assets/generation/assets/sample-names.json' % HERE) as f:
+    NAMES = json.load(f)
+
+with open('%s/assets/generation/assets/sample-locations.json' % HERE) as f:
+    POP_CENTERS = json.load(f)
+
+
+class SimpleResource(object):
+
+    def _get(self, arg):
+        try:
+            res = getattr(self, arg)
+        except Exception:
+            res = None
+        if not res:
+            self._gen()
+            return self._get(arg)
+        setattr(self, arg, None)
+        return res
+
+    def __getattribute__(self, name):
+        if not name.startswith('get_'):
+            return object.__getattribute__(self, name)
+        else:
+            def fn():
+                return self._get(name.split('get_')[1])
+            return fn
+
+
+class Location(SimpleResource):
+
+    std_dev = .5  # std_dev of dist in lat/lng degrees
+
+    def _gen(self):
+        self.center = random.choice([i for i in POP_CENTERS.values()])
+        self.lat = random.gauss(self.center[0], Location.std_dev)
+        self.lng = random.gauss(self.center[1], Location.std_dev)
+        self.alt = 1.0 * self.center[2]
+        self.acc = 10.0
+        self.btype = random.choice(['house', 'duplex', 'apartment'])
+
+
+class Person(SimpleResource):
+
+    def _gen(self):
+        self.sex = random.choice(['male', 'female'])
+        name_gender = 'boys'if self.sex is 'male' else 'girls'
+        self.name = random.choice(NAMES.get(name_gender))
+        self.age = random.randint(0, 99)
+
+
+LOCATION = Location()
+PERSON = Person()
+
 
 def main(seed_size=1000):
     SEED_ENTITIES = seed_size
@@ -38,28 +98,44 @@ def main(seed_size=1000):
     building = "eha.aether.clusterdemo.Building"
     household = "eha.aether.clusterdemo.HouseHold"
     person = "eha.aether.clusterdemo.Person"
-    kernel_credentials ={
+    kernel_credentials = {
         "username": env('KERNEL_USER'),
         "password": env('KERNEL_PASSWORD'),
     }
     try:
-        manager = MockingManager(kernel_url=env('KERNEL_URL'), kernel_credentials=kernel_credentials)
+        manager = MockingManager(kernel_url=env(
+            'KERNEL_URL'), kernel_credentials=kernel_credentials)
     except requests.exceptions.RequestException:
-        log.error("Kernel is not ready or not available. Check settings or try again.")
+        log.error(
+            "Kernel is not ready or not available. Check settings or try again.")
         sys.exit(1)
     for i in manager.types.keys():
-        print(i)
-    for k,v in manager.names.items():
-        print(k,v)
+        log.error(i)
+    for k, v in manager.names.items():
+        log.error([k, v])
     try:
         manager.types[building].override_property(
-            "latitude", MockFn(Generic.geo_lat))
+            "latitude", MockFn(LOCATION.get_lat))
     except KeyError:
         log.error('%s is not a valid registered type. Have you run scripts/register_assets.sh?' %
-                 building)
+                  building)
         sys.exit(1)
     manager.types[building].override_property(
-        "longitude", MockFn(Generic.geo_lng))
+        "longitude", MockFn(LOCATION.get_lng))
+    manager.types[building].override_property(
+        "altitude", MockFn(LOCATION.get_alt))
+    manager.types[building].override_property(
+        "accuracy", MockFn(LOCATION.get_acc))
+    manager.types[building].override_property(
+        "building_type", MockFn(LOCATION.get_btype))
+
+    manager.types[person].override_property(
+        'occupant_age', MockFn(PERSON.get_age))
+    manager.types[person].override_property(
+        'occupant_gender', MockFn(PERSON.get_sex))
+    manager.types[person].override_property(
+        'occupant_name', MockFn(PERSON.get_name))
+
     for x in range(SEED_ENTITIES):
         entity = manager.register(person)
         for name, mocker in manager.types.items():
@@ -69,8 +145,9 @@ def main(seed_size=1000):
             break
     manager.kill()
 
+
 if __name__ == "__main__":
-    reqs = ['KERNEL_URL' , 'KERNEL_USER', 'KERNEL_PASSWORD']
+    reqs = ['KERNEL_URL', 'KERNEL_USER', 'KERNEL_PASSWORD']
     if False in [env(r) for r in reqs]:
         log.error('Required Environment Variable is missing.')
         log.error('Required: %s' % (reqs,))
