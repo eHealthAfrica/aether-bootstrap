@@ -20,6 +20,7 @@
 
 import logging
 import os
+import random
 import requests
 import sys
 
@@ -29,6 +30,88 @@ log = logging.getLogger("AssetGeneration:")
 
 def env(key):
     return os.environ.get(key, False)
+
+
+HERE = os.path.abspath(__file__)
+with open('%s/assets/sample-names.json' % HERE) as f:
+    NAMES = json.load(f)
+
+with open('%s/assets/sample-locations.json' % HERE) as f:
+    POP_CENTERS = json.load(f)
+
+
+class Location(object):
+
+    std_dev = .5  # std_dev of dist in lat/lng degrees    
+
+    def __init__(self):
+        self.center = random.choice(POP_CENTERS.values())
+        self.lat = random.gauss(self.center[0], std_dev)
+        self.lng = random.gauss(self.center[1], std_dev)
+        self.alt = center[2]
+        
+
+class LinkedWrapper(object):
+
+    def __init__(self, **functions):
+        self.functions = functions
+        self.uses = len(self.functions)
+
+    def __getattribute__(self, name):
+        if name in self.functions:
+            fn = self.functions.get(name)
+            res = fn()
+            del self.functions[name]
+            return res
+        else:
+            return object.__getattribute__(self, name)
+
+class LinkedObjManager(object):
+
+    def __init__(self,_type, names):
+        self._type = _type
+        self.names = names
+        self.objs = []
+
+    def _gen(self):
+        inst = self._type()
+        fns = {}
+        for name in self.names:
+            def fn():
+                return getattr(inst, name)
+            fns[name] = fn
+
+        wrapper = LinkedWrapper(fns)
+        objs.append(wrapper)
+
+    def __getattribute__(self, name):
+        dead = []
+        for x in range(len(self.objs))
+            try:
+                res = getattr(self.objs[x], name)
+                break
+            except AttributeError:  
+                pass
+            finally:
+                if objs[x].uses < 1:
+                    dead.append(obj[x])
+        for obj in dead:
+            self.objs.remove(obj)
+
+        if not res:
+            objs.append(self._gen())
+            res = getattr(objs[-1], name)
+        
+        if res:
+            return res
+        
+        else:
+            return object.__getattribute__(self, name)
+
+
+Locations = LinkedObjManager(Location, ["lat", "lng"])
+
+
 
 def main(seed_size=1000):
     SEED_ENTITIES = seed_size
@@ -53,13 +136,13 @@ def main(seed_size=1000):
         print(k,v)
     try:
         manager.types[building].override_property(
-            "latitude", MockFn(Generic.geo_lat))
+            "latitude", MockFn(Locations.lat))
     except KeyError:
         log.error('%s is not a valid registered type. Have you run scripts/register_assets.sh?' %
                  building)
         sys.exit(1)
     manager.types[building].override_property(
-        "longitude", MockFn(Generic.geo_lng))
+        "longitude", MockFn(Locations.lng))
     for x in range(SEED_ENTITIES):
         entity = manager.register(person)
         for name, mocker in manager.types.items():
