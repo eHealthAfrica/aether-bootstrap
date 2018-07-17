@@ -132,3 +132,6 @@ terraform.tfstate.backup
 
 # Persistent volumes
 .persistent_data
+
+# Environment variables
+.env
