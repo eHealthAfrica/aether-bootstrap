@@ -29,6 +29,7 @@ from aether.mocker import MockingManager, MockFn, Generic
 
 log = logging.getLogger("AssetGeneration:")
 
+
 def env(key):
     return os.environ.get(key, False)
 
@@ -62,9 +63,10 @@ class SimpleResource(object):
                 return self._get(name.split('get_')[1])
             return fn
 
+
 class Location(SimpleResource):
 
-    std_dev = .5  # std_dev of dist in lat/lng degrees    
+    std_dev = .5  # std_dev of dist in lat/lng degrees
 
     def _gen(self):
         self.center = random.choice([i for i in POP_CENTERS.values()])
@@ -72,19 +74,19 @@ class Location(SimpleResource):
         self.lng = random.gauss(self.center[1], Location.std_dev)
         self.alt = self.center[2]
         self.acc = 10
-        log.error([self.lat, self.lng, self.alt])
+
 
 class Person(SimpleResource):
-    
+
     def _gen(self):
-        self.sex = random.choice(['male', 'female'])    
+        self.sex = random.choice(['male', 'female'])
         name_gender = 'boys'if self.sex is 'male' else 'girls'
         self.name = random.choice(NAMES.get(name_gender))
-        self.age = random.randint(0,99)
+        self.age = random.randint(0, 99)
+
 
 LOCATION = Location()
 PERSON = Person()
-
 
 
 def main(seed_size=1000):
@@ -95,25 +97,27 @@ def main(seed_size=1000):
     building = "eha.aether.clusterdemo.Building"
     household = "eha.aether.clusterdemo.HouseHold"
     person = "eha.aether.clusterdemo.Person"
-    kernel_credentials ={
+    kernel_credentials = {
         "username": env('KERNEL_USER'),
         "password": env('KERNEL_PASSWORD'),
     }
     try:
-        manager = MockingManager(kernel_url=env('KERNEL_URL'), kernel_credentials=kernel_credentials)
+        manager = MockingManager(kernel_url=env(
+            'KERNEL_URL'), kernel_credentials=kernel_credentials)
     except requests.exceptions.RequestException:
-        log.error("Kernel is not ready or not available. Check settings or try again.")
+        log.error(
+            "Kernel is not ready or not available. Check settings or try again.")
         sys.exit(1)
     for i in manager.types.keys():
         log.error(i)
-    for k,v in manager.names.items():
-        log.error([k,v])
+    for k, v in manager.names.items():
+        log.error([k, v])
     try:
         manager.types[building].override_property(
             "latitude", MockFn(LOCATION.get_lat))
     except KeyError:
         log.error('%s is not a valid registered type. Have you run scripts/register_assets.sh?' %
-                 building)
+                  building)
         sys.exit(1)
     manager.types[building].override_property(
         "longitude", MockFn(LOCATION.get_lng))
@@ -122,10 +126,12 @@ def main(seed_size=1000):
     manager.types[building].override_property(
         "accuracy", MockFn(LOCATION.get_acc))
 
-
-    manager.types[person].override_property('occupant_age' , MockFn(PERSON.get_age))
-    manager.types[person].override_property('occupant_gender' , MockFn(PERSON.get_sex))
-    manager.types[person].override_property('occupant_name' , MockFn(PERSON.get_name))
+    manager.types[person].override_property(
+        'occupant_age', MockFn(PERSON.get_age))
+    manager.types[person].override_property(
+        'occupant_gender', MockFn(PERSON.get_sex))
+    manager.types[person].override_property(
+        'occupant_name', MockFn(PERSON.get_name))
 
     for x in range(SEED_ENTITIES):
         entity = manager.register(person)
@@ -136,8 +142,9 @@ def main(seed_size=1000):
             break
     manager.kill()
 
+
 if __name__ == "__main__":
-    reqs = ['KERNEL_URL' , 'KERNEL_USER', 'KERNEL_PASSWORD']
+    reqs = ['KERNEL_URL', 'KERNEL_USER', 'KERNEL_PASSWORD']
     if False in [env(r) for r in reqs]:
         log.error('Required Environment Variable is missing.')
         log.error('Required: %s' % (reqs,))
