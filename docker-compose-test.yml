@@ -114,7 +114,7 @@ services:
       - zookeeper-test
     ports:
       - "9005:9005"
-    command: start_test
+    command: start
     networks:
       - test
 
