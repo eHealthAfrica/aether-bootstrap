@@ -12,9 +12,7 @@ services:
   # ---------------------------------
 
   db-test:
-    extends:
-      file: docker-compose-base.yml
-      service: postgres-base
+    image: postgres:9.6-alpine
     networks:
       - test
 
