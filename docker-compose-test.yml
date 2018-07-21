@@ -107,6 +107,8 @@ services:
     restart: on-failure
     environment:
       PRODUCER_SETTINGS_FILE: /code/producer/test/test.json
+      KERNEL_ADMIN_USERNAME: admin
+      KERNEL_ADMIN_PASSWORD: adminadmin
     volumes:
       - ./conf/test/producer.json:/code/producer/test/test.json
     links:
