@@ -8,9 +8,16 @@ services:
 
   postgres-base:
     image: postgres:9.6-alpine
+    environment:
+      PGUSER: postgres
     volumes:
       # data volume
       - ./.persistent_data/db/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
 
 
   # ---------------------------------
