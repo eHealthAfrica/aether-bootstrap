@@ -134,4 +134,4 @@ terraform.tfstate.backup
 .persistent_data
 
 # Environment variables
-.env
+!.env

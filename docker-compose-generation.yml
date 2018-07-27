@@ -1,30 +1,28 @@
 # Registration and Generation of Entities
 version: "2.1"
 
-  # ---------------------------------
-  # Mock Data Container
-  # ---------------------------------
-
-services:
-
-  assets:
-    build:
-      context: assets/generation
-      dockerfile: Dockerfile
-    volumes:
-      - ./assets:/code/assets
-    environment:
-      KERNEL_URL: "http://kernel:8000"
-      KERNEL_USER: "admin"
-      KERNEL_PASSWORD: "adminadmin"
-      PROJECT_NAME: "DefaultDemo"
-      SUBMISSION_ENDPOINT: "default_mapping"
-    networks:
-      - aether
-
-
 networks:
   aether:
     external:
       name: aether_internal
 
+
+services:
+
+  # ---------------------------------
+  # Mock Data Container
+  # ---------------------------------
+  assets:
+    build:
+      context: ./assets/generation
+      dockerfile: Dockerfile
+    volumes:
+      - ./assets:/code/assets
+    environment:
+      KERNEL_URL: "http://kernel:8000"
+      KERNEL_USER: ${KERNEL_ADMIN_USERNAME}
+      KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
+      PROJECT_NAME: "DefaultDemo"
+      SUBMISSION_ENDPOINT: "default_mapping"
+    networks:
+      - aether

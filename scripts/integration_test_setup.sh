@@ -30,6 +30,6 @@ set -Eeuo pipefail
 DC_TEST="docker-compose -f docker-compose-test.yml"
 
 $DC_TEST up -d db-test
-$DC_TEST run kernel-test setuplocaldb
+$DC_TEST run kernel-test setup
 $DC_TEST up -d kernel-test
 $DC_TEST up -d zookeeper-test kafka-test producer-test
