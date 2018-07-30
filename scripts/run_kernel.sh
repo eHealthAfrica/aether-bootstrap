@@ -25,4 +25,5 @@ set -Eeuo pipefail
     echo "aether_internal is ready."
 }
 
+scripts/generate_env_vars.sh
 docker-compose -f ./docker-compose.yml up -d
