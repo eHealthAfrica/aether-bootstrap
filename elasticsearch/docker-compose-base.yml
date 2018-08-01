@@ -22,6 +22,7 @@ services:
     stdin_open: true
     volumes:
      - ./conf:/code/conf/consumer
+     - ./es_index:/code/es_index
     environment:
      - PYTHONUNBUFFERED=0
     command: start
