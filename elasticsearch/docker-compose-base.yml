@@ -18,7 +18,7 @@ services:
       kibana.index: "aether-demo-2"
 
   es-consumer-base:
-    image: ehealthafrica/aether-elasticsearch-consumer:0.9.0-rc
+    image: ehealthafrica/aether-elasticsearch-consumer:0.9.0
     stdin_open: true
     volumes:
      - ./conf:/code/conf/consumer
