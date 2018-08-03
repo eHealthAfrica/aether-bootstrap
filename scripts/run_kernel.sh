@@ -19,10 +19,17 @@
 # under the License.
 #
 set -Eeuo pipefail
+
 {
     docker network create aether_internal
 } || { # catch
-    echo "aether_internal is ready."
+    echo "aether_internal network is ready."
+}
+
+{
+    docker volume create aether_database_data
+} || { # catch
+    echo "aether_database_data volume is ready."
 }
 
 scripts/generate_env_vars.sh

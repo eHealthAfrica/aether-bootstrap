@@ -1,9 +1,16 @@
 version: "2.1"
 
 networks:
+  # docker network create aether_internal
   aether:
     external:
       name: aether_internal
+
+volumes:
+  # docker volume create aether_database_data
+  database_data:
+    external:
+      name: aether_database_data
 
 services:
 
@@ -15,6 +22,8 @@ services:
     extends:
       file: ./docker-compose-base.yml
       service: postgres-base
+    volumes:
+      - database_data:/var/lib/postgresql/data
     networks:
       - aether
 

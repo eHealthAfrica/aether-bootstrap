@@ -24,7 +24,7 @@ set -Eeuo pipefail
 {
     docker network create aether_test
 } || { # catch
-    echo "aether_test is ready."
+    echo "aether_test network is ready."
 }
 
 DC_TEST="docker-compose -f docker-compose-test.yml"

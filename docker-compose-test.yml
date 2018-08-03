@@ -1,6 +1,7 @@
 version: "2.1"
 
 networks:
+  # docker network create aether_test
   test:
     external:
       name: aether_test
@@ -41,8 +42,8 @@ services:
 
       WEB_SERVER_PORT: 9000
     volumes:
-      - ./.persistent_data/kernel/test/media:/media
-      - ./.persistent_data/kernel/test/static:/var/www/static
+      - ./.persistent_data/test/media/kernel:/media
+      - ./.persistent_data/test/static/kernel:/var/www/static
     ports:
       - "9000:9000"
     depends_on:
@@ -75,8 +76,8 @@ services:
 
       WEB_SERVER_PORT: 9002
     volumes:
-      - ./.persistent_data/odk/test/media:/media
-      - ./.persistent_data/odk/test/static:/var/www/static
+      - ./.persistent_data/test/media/odk:/media
+      - ./.persistent_data/test/static/odk:/var/www/static
     ports:
       - "9002:9002"
     depends_on:
