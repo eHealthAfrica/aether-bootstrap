@@ -10,9 +10,9 @@ services:
     image: postgres:9.6-alpine
     environment:
       PGUSER: postgres
-    volumes:
-      # data volume
-      - ./.persistent_data/db/data:/var/lib/postgresql/data
+    # volumes:
+    #   # data volume
+    #   - ./.persistent_data/db/data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready"]
       interval: 1s
@@ -41,7 +41,7 @@ services:
       - ./.persistent_data/media:/media
 
       # static folders per container
-      - ./.persistent_data/static:/static/kernel
+      - ./.persistent_data/static:/static
     ports:
       # "HOST:CONTAINER"
       - "80:80"
