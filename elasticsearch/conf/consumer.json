@@ -9,7 +9,7 @@
     "ingest_routes": {
         "(aet_auto_)(\\w*)(_1)": "route1"
     },
-    "elasticsearch_instance_urls": ["elasticsearch"],
+    "elasticsearch_url": ["elasticsearch"],
     "elasticsearch_http_auth" : null,
     "elasticsearch_port": 9200,
     "connect_retry_wait": 5,

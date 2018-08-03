@@ -1,36 +1,30 @@
 {
-    "mappings": {
-        "Person": {
-            "_meta": {
-                "aet_parent_field": "household_id"
-            },
-            "_parent": {
-                "type": "Household"
-            }
-        },
-        "Building": {
-            "_meta": {
-                "aet_geopoint": "location",
-                "aet_parent_field": "survey_id"
-            },
-            "properties": {
-                "location": {
-                    "type": "geo_point"
-                }
-            },
-            "_parent": {
-                "type": "Survey"
-            }
-        },
-        "Household": {
-            "_meta": {
-                "aet_parent_field": "location_id"
-            },
-            "_parent": {
-                "type": "Building"
+	"mappings": {
+		"_doc": {
+			"_meta": {
+				"aet_geopoint": "geo_point",
+				"aet_join_field": "aet_relationship",
+				"aet_subscribed_topics": ["Person", "Building", "Household", "Survey"],
+				"aet_parent_field": {
+					"Person": "household_id",
+					"Household": "location_id",
+					"Building": "survey_id"
+				}
+			},
+			"properties": {
+				"geo_point": {
+					"type": "geo_point"
+				},
+				"aet_relationship": {
+					"type": "join",
+					"relations": {
+						"Survey": "Building",
+						"Building": "Household",
+						"Household": "Person"
+					}
+				}
+			}
 
-            }
-        },
-        "Survey": {}
-    }
+		}
+	}
 }
