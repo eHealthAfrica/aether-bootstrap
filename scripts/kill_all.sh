@@ -20,11 +20,6 @@
 #
 set -Eeuo pipefail
 
-for dc_file in $(find docker-compose*.yml 2> /dev/null)
-do
-  :
-
-  echo "Killing $dc_file containers"
+for dc_file in $(find docker-compose*.yml 2> /dev/null); do
   docker-compose -f $dc_file kill
 done
-

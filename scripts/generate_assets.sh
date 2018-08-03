@@ -19,5 +19,6 @@
 # under the License.
 #
 set -Eeuo pipefail
+
 docker-compose -f ./docker-compose-generation.yml build
 docker-compose -f ./docker-compose-generation.yml run assets generate ${@:1}

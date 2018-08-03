@@ -21,4 +21,5 @@
 set -Eeuo pipefail
 
 docker-compose -f docker-compose.yml down --volumes
+docker volume rm aether_database_data
 sudo rm -R ./.persistent_data
