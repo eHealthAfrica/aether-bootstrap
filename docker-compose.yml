@@ -28,17 +28,6 @@ services:
       - aether
 
   # ---------------------------------
-  # NGINX
-  # ---------------------------------
-
-  nginx:
-    extends:
-      file: ./docker-compose-base.yml
-      service: nginx-base
-    networks:
-      - aether
-
-  # ---------------------------------
   # Aether kernel
   # ---------------------------------
 
@@ -89,3 +78,21 @@ services:
       aether:
         aliases:
           - ui.aether.local
+
+  # ---------------------------------
+  # NGINX
+  # ---------------------------------
+
+  nginx:
+    extends:
+      file: ./docker-compose-base.yml
+      service: nginx-base
+    depends_on:
+      kernel:
+        condition: service_started
+      odk:
+        condition: service_started
+      ui:
+        condition: service_started
+    networks:
+      - aether
