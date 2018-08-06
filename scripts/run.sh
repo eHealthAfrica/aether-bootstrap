@@ -19,6 +19,6 @@
 # under the License.
 #
 set -Eeuo pipefail
+
 scripts/run_kernel.sh &
 scripts/run_connect.sh &
-
