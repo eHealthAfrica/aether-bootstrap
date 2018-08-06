@@ -1,9 +1,16 @@
 version: "2.1"
 
 networks:
+  # docker network create aether_internal
   aether:
     external:
       name: aether_internal
+
+volumes:
+  # docker volume create aether_database_data
+  database_data:
+    external:
+      name: aether_database_data
 
 services:
 
@@ -13,8 +20,10 @@ services:
 
   db:
     extends:
-      file: docker-compose-base.yml
+      file: ./docker-compose-base.yml
       service: postgres-base
+    volumes:
+      - database_data:/var/lib/postgresql/data
     networks:
       - aether
 
@@ -24,10 +33,11 @@ services:
 
   kernel:
     extends:
-      file: docker-compose-base.yml
+      file: ./docker-compose-base.yml
       service: kernel-base
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       aether:
         aliases:
@@ -39,11 +49,13 @@ services:
 
   odk:
     extends:
-      file: docker-compose-base.yml
+      file: ./docker-compose-base.yml
       service: odk-base
     depends_on:
-      - db
-      - kernel
+      db:
+        condition: service_healthy
+      kernel:
+        condition: service_started
     networks:
       aether:
         aliases:
@@ -55,11 +67,13 @@ services:
 
   ui:
     extends:
-      file: docker-compose-base.yml
+      file: ./docker-compose-base.yml
       service: ui-base
     depends_on:
-      - db
-      - kernel
+      db:
+        condition: service_healthy
+      kernel:
+        condition: service_started
     networks:
       aether:
         aliases:
@@ -71,11 +85,14 @@ services:
 
   nginx:
     extends:
-      file: docker-compose-base.yml
+      file: ./docker-compose-base.yml
       service: nginx-base
     depends_on:
-      - kernel
-      - odk
-      - ui
+      kernel:
+        condition: service_started
+      odk:
+        condition: service_started
+      ui:
+        condition: service_started
     networks:
       - aether

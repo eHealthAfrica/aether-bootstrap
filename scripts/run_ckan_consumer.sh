@@ -21,4 +21,3 @@
 set -Eeuo pipefail
 
 docker-compose -f ckan-consumer/docker-compose.yml up --build
-

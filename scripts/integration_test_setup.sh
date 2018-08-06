@@ -24,12 +24,11 @@ set -Eeuo pipefail
 {
     docker network create aether_test
 } || { # catch
-    echo "aether_test is ready."
+    echo "aether_test network is ready."
 }
 
 DC_TEST="docker-compose -f docker-compose-test.yml"
 
 $DC_TEST up -d db-test
-$DC_TEST run kernel-test setuplocaldb
 $DC_TEST up -d kernel-test
 $DC_TEST up -d zookeeper-test kafka-test producer-test

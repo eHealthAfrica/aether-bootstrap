@@ -1,15 +1,19 @@
-# Adds Kafka and Aether Producer
 version: "2.1"
+
+networks:
+  aether:
+    external:
+      name: aether_internal
+
+services:
 
   # ---------------------------------
   # Aether Kafka Containers
   # ---------------------------------
 
-services:
-
   zookeeper:
     extends:
-      file: docker-compose-base.yml
+      file: ./docker-compose-base.yml
       service: zookeeper-base
     restart: on-failure
     networks:
@@ -17,7 +21,7 @@ services:
 
   kafka:
     extends:
-      file: docker-compose-base.yml
+      file: ./docker-compose-base.yml
       service: kafka-base
     restart: on-failure
     depends_on:
@@ -33,14 +37,13 @@ services:
 
   producer:
     extends:
-      file: docker-compose-base.yml
+      file: ./docker-compose-base.yml
       service: aether-producer-base
     restart: on-failure
     environment:
       PRODUCER_SETTINGS_FILE: /code/producer/settings.json
-      KERNEL_ADMIN_USERNAME: admin
-      KERNEL_ADMIN_PASSWORD: adminadmin
-
+      KERNEL_ADMIN_USERNAME: ${KERNEL_ADMIN_USERNAME}
+      KERNEL_ADMIN_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
     volumes:
       - ./conf/default/producer.json:/code/producer/settings.json
     links:
@@ -51,9 +54,3 @@ services:
     networks:
       - aether
     command: start
-
-networks:
-  aether:
-    external:
-      name: aether_internal
-
