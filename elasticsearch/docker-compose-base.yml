@@ -16,7 +16,7 @@ services:
       kibana.index: "aether-demo-2"
 
   es-consumer-base:
-    image: ehealthafrica/aether-elasticsearch-consumer:0.9.1-rc
+    image: ehealthafrica/aether-elasticsearch-consumer:0.9.1
     stdin_open: true
     ports:
       - "9009:9009"
