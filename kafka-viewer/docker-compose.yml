@@ -1,4 +1,10 @@
 version: "2.1"
+
+networks:
+  aether:
+    external:
+      name: aether_internal
+
 services:
 
   kafka-viewer:
@@ -14,11 +20,3 @@ services:
     command: start
     networks:
       - aether
-
-networks:
-  aether:
-    external:
-      name: aether_internal
-
-
-

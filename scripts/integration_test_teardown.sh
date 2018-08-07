@@ -21,6 +21,7 @@
 set -Eeuo pipefail
 
 DC_TEST="docker-compose -f docker-compose-test.yml"
-
 $DC_TEST kill
 $DC_TEST down
+docker volume rm aether_test_database_data --force
+sleep 1
