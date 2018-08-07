@@ -6,6 +6,12 @@ networks:
     external:
       name: aether_test
 
+volumes:
+  # docker volume create aether_test_database_data
+  aether_test_database_data:
+    external:
+      name: aether_test_database_data
+
 services:
 
   # ---------------------------------
@@ -13,7 +19,11 @@ services:
   # ---------------------------------
 
   db-test:
-    image: postgres:9.6-alpine
+    extends:
+      file: ./docker-compose-base.yml
+      service: postgres-base
+    volumes:
+      - aether_test_database_data:/var/lib/postgresql/data
     networks:
       - test
 
@@ -47,7 +57,8 @@ services:
     ports:
       - "9000:9000"
     depends_on:
-      - db-test
+      db-test:
+        condition: service_healthy
     networks:
       - test
 
@@ -81,8 +92,10 @@ services:
     ports:
       - "9002:9002"
     depends_on:
-      - db-test
-      - kernel-test
+      db-test:
+        condition: service_healthy
+      kernel-test:
+        condition: service_started
     networks:
       - test
 

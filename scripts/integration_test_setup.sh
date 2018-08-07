@@ -20,12 +20,9 @@
 #
 set -Eeuo pipefail
 
-# Setup test network if it doesn't exist.
-{
-    docker network create aether_test
-} || { # catch
-    echo "aether_test network is ready."
-}
+# Setup test network and volume if it doesn't exist.
+docker network create aether_test 2>/dev/null || true
+docker volume create --name=aether_test_database_data 2>/dev/null || true
 
 DC_TEST="docker-compose -f docker-compose-test.yml"
 
