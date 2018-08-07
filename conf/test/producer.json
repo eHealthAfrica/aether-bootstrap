@@ -18,7 +18,7 @@
 
 
     "kafka_failure_wait_time" : 4,
-    "kafka_bootstrap_servers" : "kafka-test:29092",
+    "kafka_bootstrap_servers" : "kafka-test:29099",
     "kafka_settings" : {
         "acks" : 1,
         "max.in.flight.requests.per.connection" : 1,
