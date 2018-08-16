@@ -6,7 +6,6 @@ networks:
     external:
       name: aether_internal
 
-
 services:
 
   # ---------------------------------
@@ -19,10 +18,10 @@ services:
     volumes:
       - ./assets:/code/assets
     environment:
-      KERNEL_URL: "http://kernel:8000"
+      KERNEL_URL: http://kernel:8000
       KERNEL_USER: ${KERNEL_ADMIN_USERNAME}
       KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
-      PROJECT_NAME: "DefaultDemo"
-      SUBMISSION_ENDPOINT: "default_mapping"
+      PROJECT_NAME: DefaultDemo
+      SUBMISSION_ENDPOINT: default_mapping
     networks:
       - aether

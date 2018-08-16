@@ -11,8 +11,8 @@ services:
     environment:
       PGUSER: postgres
     healthcheck:
-      test: ["CMD", "pg_isready"]
-      interval: 1s
+      test: pg_isready
+      interval: 5s
       timeout: 3s
       retries: 30
 
@@ -29,20 +29,25 @@ services:
       - ./conf/nginx/sites-enabled:/etc/nginx/sites-enabled
 
       # nginx log files
-      - ./.persistent_data/nginx:/var/log/nginx/
-
-      # aether favicon
-      - ./assets/aether.ico:/media/aether.ico
-
-      # media folders per container
-      - ./.persistent_data/media:/media
+      - ./.persistent_data/nginx:/var/log/nginx
 
       # static folders per container
       - ./.persistent_data/static:/static
+
+      # aether favicon
+      - ./assets/aether.ico:/static/aether.ico
+
+      # media folders per container
+      - ./.persistent_data/media:/media
     ports:
       # "HOST:CONTAINER"
       - "80:80"
       - "8443:8443"
+    healthcheck:
+      test: nginx -t
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
 
   # ---------------------------------
@@ -53,7 +58,6 @@ services:
     image: ehealthafrica/aether-kernel:${AETHER_VERSION:-latest}
     environment:
       CSRF_COOKIE_DOMAIN: .aether.local
-      DEBUG: ""
       DJANGO_SECRET_KEY: ${KERNEL_DJANGO_SECRET_KEY}
 
       ADMIN_USERNAME: ${KERNEL_ADMIN_USERNAME}
@@ -79,17 +83,21 @@ services:
       # "HOST:CONTAINER"
       - "8000:8000"
     command: start
+    healthcheck:
+      test: /code/entrypoint.sh health
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
 
   # ---------------------------------
-  # ODK Module
+  # Aether ODK Module
   # ---------------------------------
 
   odk-base:
     image: ehealthafrica/aether-odk:${AETHER_VERSION:-latest}
     environment:
       CSRF_COOKIE_DOMAIN: .aether.local
-      DEBUG: ""
       DJANGO_SECRET_KEY: ${ODK_DJANGO_SECRET_KEY}
 
       ADMIN_USERNAME: ${ODK_ADMIN_USERNAME}
@@ -115,6 +123,11 @@ services:
     ports:
       - "8002:8002"
     command: start
+    healthcheck:
+      test: /code/entrypoint.sh health
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
 
   # ---------------------------------
@@ -123,9 +136,8 @@ services:
 
   ui-base:
     image: ehealthafrica/aether-ui:${AETHER_VERSION:-latest}
-    environment: &ui-environment
+    environment:
       CSRF_COOKIE_DOMAIN: .aether.local
-      DEBUG: ""
       DJANGO_SECRET_KEY: ${UI_DJANGO_SECRET_KEY}
 
       ADMIN_USERNAME: ${UI_ADMIN_USERNAME}
@@ -148,6 +160,11 @@ services:
     ports:
       - "8004:8004"
     command: start
+    healthcheck:
+      test: /code/entrypoint.sh health
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
 
   # ---------------------------------
@@ -156,7 +173,6 @@ services:
 
   zookeeper-base:
     image: confluentinc/cp-zookeeper:latest
-    restart: on-failure
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
@@ -165,7 +181,6 @@ services:
 
   kafka-base:
     image: confluentinc/cp-kafka:latest
-    restart: on-failure
     ports:
       - "29092:29092"
     environment:
@@ -185,4 +200,23 @@ services:
 
   aether-producer-base:
     image: ehealthafrica/aether-producer:${AETHER_VERSION:-latest}
-    restart: on-failure
+    environment:
+      # These variables will override the ones indicated in the settings file
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
+      KERNEL_URL: http://kernel:8000
+      KERNEL_ADMIN_USERNAME: ${KERNEL_ADMIN_USERNAME}
+      KERNEL_ADMIN_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
+
+      POSTGRES_HOST: db
+      POSTGRES_DBNAME: aether
+      POSTGRES_USER: ${KERNEL_READONLY_DB_USERNAME}
+      POSTGRES_PASSWORD: ${KERNEL_READONLY_DB_PASSWORD}
+
+      SERVER_PORT: 5005
+
+      # default settings file
+      PRODUCER_SETTINGS_FILE: /code/producer/settings.json
+    ports:
+      - "5005:5005"
+    command: start
