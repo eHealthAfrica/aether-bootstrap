@@ -12,7 +12,7 @@ services:
       PGUSER: postgres
     healthcheck:
       test: pg_isready
-      interval: 5s
+      interval: 2s
       timeout: 3s
       retries: 30
 

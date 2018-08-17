@@ -55,7 +55,7 @@ services:
       db:
         condition: service_healthy
       kernel:
-        condition: service_healthy
+        condition: service_started
     networks:
       aether:
         aliases:
@@ -73,7 +73,7 @@ services:
       db:
         condition: service_healthy
       kernel:
-        condition: service_healthy
+        condition: service_started
     networks:
       aether:
         aliases:

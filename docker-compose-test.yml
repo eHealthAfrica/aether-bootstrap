@@ -95,7 +95,7 @@ services:
       db-test:
         condition: service_healthy
       kernel-test:
-        condition: service_healthy
+        condition: service_started
     networks:
       - test
 
