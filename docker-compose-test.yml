@@ -15,7 +15,7 @@ volumes:
 services:
 
   # ---------------------------------
-  # Database container
+  # Database
   # ---------------------------------
 
   db-test:
@@ -28,7 +28,7 @@ services:
       - test
 
   # ---------------------------------
-  # Aether kernel container
+  # Aether kernel
   # ---------------------------------
 
   kernel-test:
@@ -63,7 +63,7 @@ services:
       - test
 
   # ---------------------------------
-  # ODK Adapter container
+  # Aether ODK module
   # ---------------------------------
 
   odk-test:
@@ -100,7 +100,7 @@ services:
       - test
 
   # ---------------------------------
-  # Aether Kafka Containers
+  # Kafka & Zookeeper
   # ---------------------------------
 
   kafka-test:
@@ -138,22 +138,25 @@ services:
     extends:
       file: ./docker-compose-base.yml
       service: aether-producer-base
-    restart: on-failure
     environment:
-      PRODUCER_SETTINGS_FILE: /code/producer/test/test.json
-      KERNEL_URL: "http://kernel-test:9000"
+      OFFSET_DB_URL: sqlite:///test-offset.db
+
+      KAFKA_BOOTSTRAP_SERVERS: kafka-test:29099
+
+      KERNEL_URL: http://kernel-test:9000
       KERNEL_ADMIN_USERNAME: ${TEST_KERNEL_ADMIN_USERNAME}
       KERNEL_ADMIN_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
-      POSTGRES_DBNAME: "aether-kernel-test"
+
+      POSTGRES_HOST: db-test
+      POSTGRES_DBNAME: aether-kernel-test
       POSTGRES_USER: ${TEST_KERNEL_READONLY_DB_USERNAME}
       POSTGRES_PASSWORD: ${TEST_KERNEL_READONLY_DB_PASSWORD}
-    volumes:
-      - ./conf/test/producer.json:/code/producer/test/test.json
+
+      SERVER_PORT: 9005
     links:
       - kafka-test
       - zookeeper-test
     ports:
       - "9005:9005"
-    command: start
     networks:
       - test

@@ -20,5 +20,4 @@
 #
 set -Eeuo pipefail
 
-cd ckan
-docker-compose -f docker-compose.yml kill
+docker-compose -f ckan/docker-compose.yml kill

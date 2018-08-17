@@ -1,0 +1,18 @@
+sudo: required
+language: python
+python:
+  - '3.6'
+
+services:
+  - docker
+
+before_script:
+  - ./scripts/initialise_docker_environment.sh
+
+script:
+  # just check that the images exist
+  - docker-compose pull
+  - docker-compose -f docker-compose-connect.yml pull
+
+after_script:
+  - ./scripts/kill_all.sh

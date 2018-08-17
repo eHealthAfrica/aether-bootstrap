@@ -1,56 +1,60 @@
 {
-	"doc": "A Survey",
-	"name": "Survey",
-	"type": "record",
-	"fields": [{
-			"doc": "xForm ID",
-			"name": "_id",
-			"type": "string",
-			"default": "aether-walkthrough-microcensus"
-		},
-		{
-			"doc": "xForm version",
-			"name": "_version",
-			"type": "string",
-			"default": "vpkhiFfVvdndDQeusEcAF9"
-		},
-		{
-			"name": "start",
-			"type": [
-				"null",
-				"string"
-			]
-		},
-		{
-			"name": "end",
-			"type": [
-				"null",
-				"string"
-			]
-		},
-		{
-			"doc": "Which surveyor is entering this data?",
-			"name": "surveyor",
-			"type": [
-				"null",
-				"string"
-			]
-		},{
-			"name": "__version__",
-			"type": [
-				"null",
-				"string"
-			]
-		}, {
-			"doc": "ID",
-			"name": "id",
-			"type": "string",
-			"jsonldPredicate": "@id"
-		}, {
-			"doc": "REV",
-			"name": "rev",
-			"type": "string"
-		}
-	],
-	"namespace": "eha.aether.clusterdemo"
+    "doc": "A Survey",
+    "name": "Survey",
+    "type": "record",
+    "fields": [
+        {
+            "doc": "xForm ID",
+            "name": "_id",
+            "type": "string",
+            "default": "aether-walkthrough-microcensus"
+        },
+        {
+            "doc": "xForm version",
+            "name": "_version",
+            "type": "string",
+            "default": "vpkhiFfVvdndDQeusEcAF9"
+        },
+        {
+            "name": "start",
+            "type": [
+                "null",
+                "string"
+            ]
+        },
+        {
+            "name": "end",
+            "type": [
+                "null",
+                "string"
+            ]
+        },
+        {
+            "doc": "Which surveyor is entering this data?",
+            "name": "surveyor",
+            "type": [
+                "null",
+                "string"
+            ]
+        },
+        {
+            "name": "__version__",
+            "type": [
+                "null",
+                "string"
+            ]
+        },
+        {
+            "doc": "ID",
+            "name": "id",
+            "type": "string",
+            "jsonldPredicate": "@id"
+        },
+        {
+            "doc": "REV",
+            "name": "rev",
+            "type": "string"
+        }
+    ],
+    "namespace": "eha.aether.clusterdemo"
 }
