@@ -51,11 +51,6 @@ services:
     extends:
       file: ./docker-compose-base.yml
       service: odk-base
-    depends_on:
-      db:
-        condition: service_healthy
-      kernel:
-        condition: service_started
     networks:
       aether:
         aliases:
@@ -69,11 +64,6 @@ services:
     extends:
       file: ./docker-compose-base.yml
       service: ui-base
-    depends_on:
-      db:
-        condition: service_healthy
-      kernel:
-        condition: service_started
     networks:
       aether:
         aliases:
@@ -87,12 +77,5 @@ services:
     extends:
       file: ./docker-compose-base.yml
       service: nginx-base
-    depends_on:
-      kernel:
-        condition: service_healthy
-      odk:
-        condition: service_healthy
-      ui:
-        condition: service_healthy
     networks:
       - aether
