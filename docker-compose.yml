@@ -44,7 +44,7 @@ services:
           - kernel.aether.local
 
   # ---------------------------------
-  # ODK Module
+  # Aether ODK Module
   # ---------------------------------
 
   odk:
@@ -54,8 +54,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      kernel:
-        condition: service_started
     networks:
       aether:
         aliases:
@@ -72,8 +70,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      kernel:
-        condition: service_started
     networks:
       aether:
         aliases:
@@ -87,12 +83,5 @@ services:
     extends:
       file: ./docker-compose-base.yml
       service: nginx-base
-    depends_on:
-      kernel:
-        condition: service_started
-      odk:
-        condition: service_started
-      ui:
-        condition: service_started
     networks:
       - aether

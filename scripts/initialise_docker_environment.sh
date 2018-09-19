@@ -18,6 +18,12 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+
 docker network create aether_internal 2>/dev/null || true
 docker volume create --name=aether_database_data 2>/dev/null || true
 ./scripts/generate_env_vars.sh
+docker-compose up -d
+echo "Initializing Environment, this will take 30 seconds."
+sleep 30
+docker-compose run kernel eval python /code/sql/create_readonly_user.py
+docker-compose kill
