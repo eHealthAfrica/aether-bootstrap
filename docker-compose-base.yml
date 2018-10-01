@@ -43,11 +43,6 @@ services:
       # "HOST:CONTAINER"
       - "80:80"
       - "8443:8443"
-    healthcheck:
-      test: nginx -t
-      interval: 5s
-      timeout: 3s
-      retries: 30
 
 
   # ---------------------------------
@@ -83,11 +78,6 @@ services:
       # "HOST:CONTAINER"
       - "8000:8000"
     command: start
-    healthcheck:
-      test: /code/entrypoint.sh health
-      interval: 5s
-      timeout: 3s
-      retries: 30
 
 
   # ---------------------------------
@@ -124,11 +114,6 @@ services:
     ports:
       - "8002:8002"
     command: start
-    healthcheck:
-      test: /code/entrypoint.sh health
-      interval: 5s
-      timeout: 3s
-      retries: 30
 
 
   # ---------------------------------
@@ -162,12 +147,7 @@ services:
     ports:
       - "8004:8004"
     command: start
-    healthcheck:
-      test: /code/entrypoint.sh health
-      interval: 5s
-      timeout: 3s
-      retries: 30
-
+    
 
   # ---------------------------------
   # Kafka & Zookeeper
