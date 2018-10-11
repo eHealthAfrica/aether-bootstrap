@@ -18,7 +18,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from aether.client import KernelClient
+from aether.client import Client
 import json
 import os
 import requests
@@ -32,27 +32,19 @@ SUBMISSION_ENDPOINT = env('SUBMISSION_ENDPOINT')
 
 kernel_url = env('KERNEL_URL')
 
-kernel_credentials = {
-    "username": env('KERNEL_USER'),
-    "password": env('KERNEL_PASSWORD')
-    }
+user = env('KERNEL_USER')
+pw = env('KERNEL_PASSWORD')
 
 def file_to_json(path):
     with open(path) as f:
         return json.load(f)
 
 def pprint(obj):
-    print(json.dumps(obj, indent=2))
+    print(obj)
 
 
 #Projects
-project_obj = {
-    "revision": "1",
-    "name": PROJECT_NAME,
-    "salad_schema": {"a": "schema"},
-    "jsonld_context": "[]",
-    "rdf_definition": "[]"
-}
+project_obj = { "name": PROJECT_NAME }
 
 schema_names = []
 schemas = []
@@ -79,16 +71,16 @@ mapping_obj = {
 }
 
 try:
-    client = KernelClient(kernel_url, **kernel_credentials)
-except requests.exceptions.RequestException:
-    print("Kernel is ready. Please check it's status or wait a moment and try again.")
+    client = Client(kernel_url, user, pw)
+except Exception as err:
+    print("Kernel is not ready. Please check it's status or wait a moment and try again : %s" % err)
     sys.exit(1)
 
 def register_project():
-    return client.Resource.Project.add(project_obj)
+    return client.projects.create(data=project_obj)
 
 def schema():
-    return [client.Resource.Schema.add(obj) for obj in schemas]
+    return [client.schemas.create(data=obj) for obj in schemas]
 
 def project_schema(project, ids):
     out = {}
@@ -102,30 +94,38 @@ def project_schema(project, ids):
             "transport_rule": "[]",
             "mandatory_fields": "[]"
         }
-        out[name] = client.Resource.ProjectSchema.add(project_schema_obj)
+        out[name] = client.projectschemas.create(data=project_schema_obj)
     return out
 
-def mapping(project, ids):
+def mappingset(project):
+    return client.mappingsets.create(data={
+            "project": project,
+            "name": "default_set"}
+        )
+
+def mapping(project, mapping_set_id, ids):
     mapping_obj['definition']['entities'] = ids
+    mapping_obj['mappingset'] = mapping_set_id
     mapping_obj['project'] = project
-    return client.Resource.Mapping.add(mapping_obj)
+    return client.mappings.create(data=mapping_obj)
 
 def register():
     project = register_project()
-    project_id = project.get("id")
+    project_id = project.id
     if not project_id:
         print('project could not be registerd, does it already exist?')
         sys.exit(0)
     schema_info = schema()
     pprint(schema_info)
-    schema_ids = {obj.get('name') : obj.get('id') for obj in schema_info}
+    schema_ids = {obj.name : obj.id for obj in schema_info}
     pprint(schema_ids)
     project_schemas = project_schema(project_id, schema_ids)
     pprint(project_schemas)
-    ps_ids = {ps.get('name') : ps.get('id') for ps in project_schemas.values()}
-    sub_id = mapping(project_id, ps_ids)
+    ps_ids = {ps.name : ps.id for ps in project_schemas.values()}
+    ms = mappingset(project_id)
+    sub_id = mapping(project_id, ms.id, ps_ids)
     pprint(sub_id)
-    entity_references = sub_id.get('definition', {}).get('entities')
+    entity_references = sub_id.definition.get('entities')
 
 
 if __name__ == "__main__":
