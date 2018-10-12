@@ -4,7 +4,7 @@ from setuptools import setup
 
 
 setup(name='aether-helm-generator',
-      version='0.1',
+      version='1.3',
       description='Generate values and secrets for Helm',
       url='http://github.com/ehealthafrica/aether-bootstrap',
       author='Will Pink',
@@ -12,10 +12,7 @@ setup(name='aether-helm-generator',
       license='MIT',
       install_requires=['jinja2'],
       packages=['helm_generator'],
-      data_files=[('aether_helm_generator/templates',
-                  ['templates/secrets.tmpl.yaml',
-                   'templates/values.tmpl.yaml'])],
-      include_package_data=True,
+      package_data={'': ['templates/*.tmpl.yaml']},
       entry_points={
              'console_scripts':
              ['aether-helm-generator=helm_generator.generator:main'],

@@ -18,9 +18,9 @@ def check_dir(dir_path):
 
 def render_template(arg_opts, f_type):
     """Template loader."""
-    path = os.path.join(sys.prefix, 'aether_helm_generator', 'templates')
-    print(os.listdir(os.path.join(sys.prefix)))
-    print(os.listdir(os.path.join(sys.prefix, 'aether_helm_generator', 'templates')))
+    for path in sys.path:
+        if os.path.isdir(os.path.join(path, 'helm_generator', 'templates')):
+            path = os.path.join(path, 'helm_generator', 'templates')
     env = Environment(loader=FileSystemLoader(path),
                       trim_blocks=True,
                       lstrip_blocks=True)
