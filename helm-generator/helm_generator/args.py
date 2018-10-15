@@ -15,7 +15,7 @@ def arg_list():
         ['-db', '--database-host', 'Specify the database host', True],
         ['--acm', '--aws-cert-arn', 'Specify AWS ACM', False],
         ['--alb', '--alb-ingress-controller', 'True or False', False],
-        ['--nginx-ingress', '--nginx-ingress-controller', 'True|False', False],
+        ['--nginx-ingress', '--nginx-ingress-controller', 'True or False', False],
         ['--sg-id', '--aws-alg-sg-id', 'Specify AWS SG ID', False],
         ['--sentry', '--senty-dsn', 'Specify Sentry DSN', False],
         ['-e', '--environment', 'Specify environment', True],

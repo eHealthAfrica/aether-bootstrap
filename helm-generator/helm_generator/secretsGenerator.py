@@ -19,7 +19,7 @@ def generate_secrets(application):
         'secret_key',
         'admin_password',
         'database_password',
-        'readonly-db-password'
+        'readonly_db_password'
     ]
     for secret in secrets_list:
         secrets_dict[secret] = generate_encoded_secret()
