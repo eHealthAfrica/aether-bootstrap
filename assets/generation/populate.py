@@ -25,7 +25,7 @@ import random
 import requests
 import sys
 
-from aether.mocker import MockingManager, MockFn, Generic
+from mocker import MockingManager, MockFn, Generic
 
 log = logging.getLogger("AssetGeneration:")
 

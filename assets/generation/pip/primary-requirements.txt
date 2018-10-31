@@ -10,4 +10,3 @@
 
 requests
 aether.client
-aether.mocker
