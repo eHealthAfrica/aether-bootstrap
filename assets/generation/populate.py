@@ -25,7 +25,7 @@ import random
 import requests
 import sys
 
-from aether.mocker import MockingManager, MockFn, Generic
+from mocker import MockingManager, MockFn, Generic
 
 log = logging.getLogger("AssetGeneration:")
 
@@ -98,17 +98,17 @@ def main(seed_size=1000):
     building = "eha.aether.clusterdemo.Building"
     household = "eha.aether.clusterdemo.HouseHold"
     person = "eha.aether.clusterdemo.Person"
-    kernel_credentials = {
-        "username": env('KERNEL_USER'),
-        "password": env('KERNEL_PASSWORD'),
-    }
-    try:
-        manager = MockingManager(kernel_url=env(
-            'KERNEL_URL'), kernel_credentials=kernel_credentials)
-    except requests.exceptions.RequestException:
-        log.error(
-            "Kernel is not ready or not available. Check settings or try again.")
-        sys.exit(1)
+    url = env('KERNEL_URL')
+    username = env('KERNEL_USER')
+    password = env('KERNEL_PASSWORD')
+
+    # try:
+    manager = MockingManager(url, username, password)
+    
+    # except Exception as err:
+    #     log.error(
+    #         "Kernel is not ready or not available. Check settings or try again : %s" % err)
+    #     sys.exit(1)
     for i in manager.types.keys():
         log.error(i)
     for k, v in manager.names.items():
