@@ -116,6 +116,7 @@ UI_ADMIN_PASSWORD=adminadmin
 UI_DJANGO_SECRET_KEY=$(gen_random_string)
 UI_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
+
 EOF
 }
 
