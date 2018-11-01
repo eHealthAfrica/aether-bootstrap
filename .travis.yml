@@ -8,15 +8,11 @@ services:
 
 install: true
 
-before_script:
+script:
+  # just check that the script works
   - ./scripts/initialise_docker_environment.sh
 
-script:
-  # just check that the images exist
-  - docker-compose pull
-  - docker-compose -f docker-compose-connect.yml pull
-
-  # build generation container
+  # build assets generation container
   - docker-compose -f docker-compose-generation.yml build assets
 
 after_script:
