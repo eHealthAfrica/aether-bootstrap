@@ -19,11 +19,30 @@
 # under the License.
 #
 
-docker network create aether_internal 2>/dev/null || true
-docker volume create --name=aether_database_data 2>/dev/null || true
+docker network create --name=aether_internal      2>/dev/null || true
+docker volume  create --name=aether_database_data 2>/dev/null || true
+
 ./scripts/generate_env_vars.sh
-docker-compose up -d
-echo "Initializing Environment, this will take 30 seconds."
-sleep 30
+
+echo "Initializing Environment, this will take about 30 seconds."
+
+docker-compose -f docker-compose-base.yml pull
+docker-compose up -d db
+
+# sometimes this is not as faster as we wanted... :'(
+until docker-compose run kernel eval pg_isready -q; do
+    >&2 echo "Waiting for database..."
+    sleep 2
+done
+
+# setup container (model migration, admin user, static content...)
+CONTAINERS=( kernel ui odk )
+for container in "${CONTAINERS[@]}"
+do
+    docker-compose run $container setup
+done
+
 docker-compose run kernel eval python /code/sql/create_readonly_user.py
 docker-compose kill
+
+echo "Done."
