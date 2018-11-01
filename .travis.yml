@@ -6,13 +6,14 @@ python:
 services:
   - docker
 
-before_script:
-  - ./scripts/initialise_docker_environment.sh
+install: true
 
 script:
-  # just check that the images exist
-  - docker-compose pull
-  - docker-compose -f docker-compose-connect.yml pull
+  # just check that the script works
+  - ./scripts/initialise_docker_environment.sh
+
+  # build assets generation container
+  - docker-compose -f docker-compose-generation.yml build assets
 
 after_script:
   - ./scripts/kill_all.sh

@@ -1,21 +1,17 @@
-FROM python:3.6-slim
+FROM python:3.6-slim-jessie
 
 ################################################################################
 ## setup container
 ################################################################################
 
-################################################################################
-## install app
-## copy files one by one and split commands to use docker cache
-################################################################################
-
 WORKDIR /code
 
-COPY ./pip /code/pip
-
-RUN pip3 install -f /code/pip/requires -r /code/pip/requirements.txt
-
 COPY ./ /code
+
+RUN apt-get update -qq \
+    && apt-get -qq --yes --force-yes install gcc \
+    && pip install --upgrade pip \
+    && pip install -q -f /code/pip/requires -r /code/pip/requirements.txt
 
 ################################################################################
 ## last setup steps
