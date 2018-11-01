@@ -20,7 +20,7 @@
 #
 set -Eeuo pipefail
 
-echo "Initializing Environment, this will take about 30 seconds."
+echo "Initializing Aether environment, this will take about 30 seconds."
 
 docker network create aether_internal      2>/dev/null || true
 docker volume  create aether_database_data 2>/dev/null || true
