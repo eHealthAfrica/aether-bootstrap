@@ -21,14 +21,12 @@
 set -Eeuo pipefail
 
 
-# Define help message
 show_help() {
     echo """
     Commands
     ----------------------------------------------------------------------------
     bash          : run bash
     eval          : eval shell command
-    pip_freeze    : freeze pip dependencies and write to requirements.txt
 
     register      : register types in /assets
     generate      : create mock types from registered assets
@@ -43,15 +41,6 @@ case "$1" in
 
     eval )
         eval "${@:2}"
-    ;;
-
-    pip_freeze )
-
-        rm -rf /tmp/env
-        pip3 install -f ./pip/requires -r ./pip/primary-requirements.txt --upgrade
-
-        cat pip/requirements_header.txt | tee pip/requirements.txt
-        pip3 freeze --local | grep -v appdir | tee -a pip/requirements.txt
     ;;
 
     register )

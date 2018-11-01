@@ -14,5 +14,10 @@ script:
   - docker-compose pull
   - docker-compose -f docker-compose-connect.yml pull
 
+  # build generation container
+  - docker-compose -f docker-compose-generation.yml build assets
+  # generate assets
+  - docker-compose -f docker-compose-generation.yml run assets generate
+
 after_script:
   - ./scripts/kill_all.sh
