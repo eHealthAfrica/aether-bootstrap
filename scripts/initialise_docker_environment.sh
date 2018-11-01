@@ -18,18 +18,18 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+set -Eeuo pipefail
+
+echo "Initializing Environment, this will take about 30 seconds."
 
 docker network create aether_internal      2>/dev/null || true
 docker volume  create aether_database_data 2>/dev/null || true
 
 ./scripts/generate_env_vars.sh
 
-echo "Initializing Environment, this will take about 30 seconds."
-
 docker-compose -f docker-compose-base.yml pull
-docker-compose up -d db
 
-# sometimes this is not as faster as we wanted... :'(
+docker-compose up -d db
 until docker-compose run kernel eval pg_isready -q; do
     >&2 echo "Waiting for database..."
     sleep 2
