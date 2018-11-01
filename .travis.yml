@@ -6,6 +6,8 @@ python:
 services:
   - docker
 
+install: true
+
 before_script:
   - ./scripts/initialise_docker_environment.sh
 
@@ -16,8 +18,6 @@ script:
 
   # build generation container
   - docker-compose -f docker-compose-generation.yml build assets
-  # generate assets
-  - docker-compose -f docker-compose-generation.yml run assets generate
 
 after_script:
   - ./scripts/kill_all.sh
