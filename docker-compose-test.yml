@@ -173,4 +173,6 @@ services:
       KERNEL_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
     volumes:
       - ./VERSION:/code/VERSION
+    networks:
+      - test
     command: test
