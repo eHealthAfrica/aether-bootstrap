@@ -15,5 +15,11 @@ script:
   # build assets generation container
   - docker-compose -f docker-compose-generation.yml build assets
 
+  # setup integration test requirements
+  - ./scripts/integration_test_setup.sh
+  
+  # run integration tests
+  - docker-compose -f docker-compose-test.yml run --no-deps integration-test test
+
 after_script:
   - ./scripts/kill_all.sh

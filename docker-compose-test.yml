@@ -160,3 +160,18 @@ services:
       - "9005:9005"
     networks:
       - test
+
+  # ---------------------------------
+  # Aether Integration Tests
+  # ---------------------------------
+
+  integration-test:
+    image: ehealthafrica/aether-integration-test:${AETHER_VERSION}
+    environment:
+      KERNEL_URL: http://kernel-test:9000
+      KERNEL_USERNAME: ${KERNEL_ADMIN_USERNAME}
+      KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
+    volumes:
+      - ./VERSION:/code/VERSION
+    command: test
+    
