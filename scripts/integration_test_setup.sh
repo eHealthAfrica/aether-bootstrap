@@ -36,6 +36,8 @@ DC_TEST="docker-compose -f docker-compose-test.yml"
 $DC_TEST up -d db-test
 sleep 3
 docker-compose -f docker-compose-test.yml \
+        run --no-deps kernel-test setup
+docker-compose -f docker-compose-test.yml \
         run --no-deps kernel-test eval python /code/sql/create_readonly_user.py
 docker-compose -f docker-compose-test.yml kill kernel-test
 $DC_TEST up -d kernel-test
