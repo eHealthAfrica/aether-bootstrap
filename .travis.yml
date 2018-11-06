@@ -26,3 +26,5 @@ after_script:
   - ./scripts/integration_test_teardown.sh
   - ./scripts/kill_all.sh
 
+after_failure:
+  - docker-compose -f docker-compose-test.yml logs -t --tail="all"
