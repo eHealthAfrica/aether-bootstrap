@@ -20,6 +20,14 @@
 #
 set -Eeuo pipefail
 
+wait_for_kernel() {
+    KERNEL_HEALTH_URL="http://localhost:9000/health"
+    until curl -s $KERNEL_HEALTH_URL > /dev/null; do
+        >&2 echo "Waiting for Kernel..."
+        sleep 2
+    done
+}
+
 # Setup test network and volume if it doesn't exist.
 docker network create aether_test 2>/dev/null || true
 docker volume create --name=aether_test_database_data 2>/dev/null || true
@@ -29,3 +37,5 @@ $DC_TEST up -d db-test
 sleep 3
 $DC_TEST up -d kernel-test
 $DC_TEST up -d zookeeper-test kafka-test producer-test
+echo "Containers started, waiting for Kernel to be available..."
+wait_for_kernel
