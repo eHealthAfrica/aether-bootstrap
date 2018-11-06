@@ -22,4 +22,7 @@ script:
   - docker-compose -f docker-compose-test.yml run --no-deps integration-test test
 
 after_script:
+  # setup integration teardown
+  - ./scripts/integration_test_teardown.sh
   - ./scripts/kill_all.sh
+
