@@ -3,15 +3,26 @@ domain: {{arg_opts['domain']}}
 provider:
   {{arg_opts['cloud_platform']}}: true
 app:
+  storage:
+    backend: {{arg_opts['storage_backend']}}
+    {% if arg_opts['storage_backend']  == 's3' or 'gcp' %}
+    bucket:
+      name: {{arg_opts['storage_bucket_name']}}
+    {% endif %}
   db:
-    name: {{arg_opts['application']}}_{{arg_opts['project']}}
+    name: {{arg_opts['pg_name']}}
     host: {{arg_opts['database_host']}}
     port: 5432
-    user: {{arg_opts['application']}}_{{arg_opts['project']}}
-    readonly_user: ro_{{arg_opts['application']}}_{{arg_opts['project']}}
+    user: {{arg_opts['pg_name']}}
+    readonly_user: ro_{{arg_opts['pg_name']}}
+    secret: database-credentials
 ingress:
   hosts:
+    {% if arg_opts['application'] == 'gather' %}
+    - {{ arg_opts['domain'] }}
+    {% else %}
     - {{arg_opts['application']}}.{{ arg_opts['domain'] }}
+    {% endif %}
   {% if arg_opts['cert_manager'] %}
   ssl:
     letsencrypt: true
@@ -36,6 +47,8 @@ ingress:
 {% if arg_opts['application'] == 'gather' %}
 aether_modules: {{ arg_opts['am'] }}
 {% endif %}
+aether:
 {% for module in arg_opts['aether_modules'] %}
-{{module}}_url: https://{{module}}.{{arg_opts['domain']}}
+  {{module}}:
+    url: https://{{module}}.{{arg_opts['domain']}}
 {% endfor %}

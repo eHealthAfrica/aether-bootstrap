@@ -17,7 +17,8 @@ def create_value_override_file():
 
 def create_secrets_file():
     """Create secrets files."""
-    secrets = secretsGenerator.generate_secrets(arg_opts['application'])
+    secrets = secretsGenerator.generate_secrets(arg_opts['application'],
+                                                arg_opts['project'])
     templateGenerator.write_file(secrets, 'secrets',
                                  arg_opts['secrets_path'])
 

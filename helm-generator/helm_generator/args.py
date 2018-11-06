@@ -13,6 +13,8 @@ def arg_list():
         ['-p', '--project', 'Specify a project name', True],
         ['-c', '--cloud-platform', 'Specify the platform used', True],
         ['-db', '--database-host', 'Specify the database host', True],
+        ['-sbn', '--storage-bucket-name', 'Specify storage bucket name', False],
+        ['-sb', '--storage-backend', 'Specify storage backend s3/gcp/filesystem', False],
         ['--acm', '--aws-cert-arn', 'Specify AWS ACM', False],
         ['--alb', '--alb-ingress-controller', 'True or False', False],
         ['--nginx-ingress', '--nginx-ingress-controller', 'True or False', False],

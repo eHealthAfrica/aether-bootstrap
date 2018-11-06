@@ -24,16 +24,21 @@ def render_template(arg_opts, f_type):
     env = Environment(loader=FileSystemLoader(path),
                       trim_blocks=True,
                       lstrip_blocks=True)
+    if f_type == 'values':
+        postgres_ident = '{}_{}'.format(arg_opts['application'], arg_opts['project'])
+        arg_opts['pg_name'] = postgres_ident.replace("-", "_")
     template = env.get_template('{}.tmpl.yaml'.format(f_type))
-    template = template.render(arg_opts=arg_opts)
-    return template
+    rendered_template = template.render(arg_opts=arg_opts)
+    return rendered_template
 
 
 def write_file(arg_opts, f_type, dir_path):
     """Write out YAML."""
     output = render_template(arg_opts, f_type)
+    filename = arg_opts['application']
+    if f_type == 'secrets':
+        filename = '{}-secrets'.format(arg_opts['application'])
     path = os.path.join(check_dir(dir_path),
-                        '{}.yaml').format(f_type)
-
+                        '{}.yaml').format(filename)
     with open(path, 'w') as file:
         file.write(output)

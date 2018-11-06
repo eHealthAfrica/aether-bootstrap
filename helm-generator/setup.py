@@ -4,7 +4,7 @@ from setuptools import setup
 
 
 setup(name='aether-helm-generator',
-      version='1.4',
+      version='1.5',
       description='Generate values and secrets for Helm',
       url='http://github.com/ehealthafrica/aether-bootstrap',
       author='Will Pink',

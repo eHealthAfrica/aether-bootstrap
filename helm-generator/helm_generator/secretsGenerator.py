@@ -6,13 +6,13 @@ import base64
 
 def generate_encoded_secret():
     """Generate secure token."""
-    generated_secret = secrets.token_hex(36).encode()
+    generated_secret = secrets.token_hex(18).encode()
     encoded_secret = base64.b64encode(generated_secret)
     secret = encoded_secret.decode("utf-8")
     return(secret)
 
 
-def generate_secrets(application):
+def generate_secrets(application, project):
     """Generate secrets."""
     secrets_dict = {}
     secrets_list = [
@@ -24,6 +24,6 @@ def generate_secrets(application):
     ]
     for secret in secrets_list:
         secrets_dict[secret] = generate_encoded_secret()
-        print(secrets_dict[secret])
     secrets_dict['application'] = application
+    secrets_dict['project'] = project
     return secrets_dict
