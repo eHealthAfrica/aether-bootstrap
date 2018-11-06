@@ -147,7 +147,6 @@ services:
       OFFSET_DB_URL: sqlite:///test-offset.db
       POSTGRES_DBNAME: aether-kernel-test
       POSTGRES_HOST: db-test
-      POSTGRES_HOST: db
       POSTGRES_USER: ${TEST_KERNEL_READONLY_DB_USERNAME}
       POSTGRES_PASSWORD: ${TEST_KERNEL_READONLY_DB_PASSWORD}
       SERVER_PORT: 9005
