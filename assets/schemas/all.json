@@ -208,5 +208,71 @@
             }
         ],
         "namespace": "eha.aether.clusterdemo"
+    },
+    {
+        "doc": "A Surveyor",
+        "name": "Surveyor",
+        "type": "record",
+        "fields": [
+            {
+                "doc": "ID",
+                "name": "id",
+                "type": "string",
+                "jsonldPredicate": "@id"
+            },
+            {
+                "doc": "REV",
+                "name": "rev",
+                "type": "string"
+            },
+            {
+                "doc": "Full name of the surveyor",
+                "name": "name",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        ],
+        "namespace": "eha.aether.clusterdemo"
+    },
+        {
+        "doc": "A Position that a Surveyor has been reported in.",
+        "name": "SurveyorPosition",
+        "type": "record",
+        "fields": [
+            {
+                "doc": "ID",
+                "name": "id",
+                "type": "string",
+                "jsonldPredicate": "@id"
+            },
+            {
+                "doc": "ID Surveyor being tracked",
+                "name": "surveyor_id",
+                "type": "string",
+                "jsonldPredicate": {
+                    "_id": "eha.aether.clusterdemo.Surveyor",
+                    "_type": "@id"
+                }
+            },
+            {
+                "doc": "latitude",
+                "name": "latitude",
+                "type": "float"
+            },
+            {
+                "doc": "longitude",
+                "name": "longitude",
+                "type": "float"
+            },
+            {
+                "doc": "time of collection",
+                "name": "timestamp",
+                "type": "string"
+            }
+
+        ],
+        "namespace": "eha.aether.clusterdemo"
     }
 ]
