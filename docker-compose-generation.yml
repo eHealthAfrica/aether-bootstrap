@@ -18,7 +18,7 @@ services:
     volumes:
       - ./assets:/code/assets
     environment:
-      KERNEL_URL: http://kernel:8000
+      KERNEL_URL: ${GCP_KERNEL_URL}
       KERNEL_USER: ${KERNEL_ADMIN_USERNAME}
       KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
       PROJECT_NAME: DefaultDemo
