@@ -34,6 +34,7 @@ Session.vim
 
 # Environment variables
 .env
+gcp.env
 
 # extra containers configuration
 conf/nginx/sites-enabled/*.extra.conf
