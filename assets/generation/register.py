@@ -80,7 +80,15 @@ def register_project():
     return client.projects.create(data=project_obj)
 
 def schema():
-    return [client.schemas.create(data=obj) for obj in schemas]
+    out = []
+    for obj in schemas:
+        try:
+            out.append(client.schemas.create(data=obj))
+        except Exception as err:
+            print(err)
+            print(obj)
+    return out
+
 
 def project_schema(project, ids):
     out = {}
