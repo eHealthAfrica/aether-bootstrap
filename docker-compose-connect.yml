@@ -55,6 +55,7 @@ services:
     links:
       - kafka
       - zookeeper
+      - cloud-proxy
     networks:
       - aether
 
@@ -65,7 +66,7 @@ services:
   cloud-proxy:
     image: gcr.io/cloudsql-docker/gce-proxy:1.11
     command: ["/cloud_sql_proxy",
-                    "-instances=${GCP_DB_PATH}=tcp:5432",
+                    "-instances=${GCP_DB_PATH}=tcp:0.0.0.0:5432",
                     "-credential_file=/secrets/cloudsql/credentials.json"]
     volumes:
       # point to your credentials file
