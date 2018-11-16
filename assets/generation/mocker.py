@@ -32,7 +32,7 @@ from uuid import uuid4
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
-from aether.client import Client
+from aether.client import Client, AetherAPIException
 
 
 class Generic(object):
@@ -433,8 +433,11 @@ class MockingManager(object):
         type_id = self.schema_id.get(name)
         ps_id = self.project_schema.get(type_id)
         data = self.payload_to_data(ps_id, payload)
-        res = self.client.entities.create(data=data)
-        log.debug("Created instance # %s of type %s" % (self.type_count[name], name))
+        try:
+            res = self.client.entities.create(data=data)
+            log.debug("Created instance # %s of type %s" % (self.type_count[name], name))
+        except AetherAPIException as err:
+            log.error("in creation of entity of type %s: %s" % (name, err))
         return data
 
 

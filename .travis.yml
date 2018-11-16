@@ -9,11 +9,12 @@ services:
 install: true
 
 script:
-  # just check that the script works
-  - ./scripts/initialise_docker_environment.sh
-
-  # build assets generation container
-  - docker-compose -f docker-compose-generation.yml build assets
+  - ./scripts/travis_tests.sh
 
 after_script:
+  # setup integration teardown
+  - ./scripts/integration_test_teardown.sh
   - ./scripts/kill_all.sh
+
+after_failure:
+  - docker-compose -f docker-compose-test.yml logs -t --tail="all"

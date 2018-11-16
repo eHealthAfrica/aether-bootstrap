@@ -21,7 +21,6 @@
 from aether.client import Client
 import json
 import os
-import requests
 import sys
 
 def env(key):
@@ -29,11 +28,16 @@ def env(key):
 
 PROJECT_NAME = env('PROJECT_NAME')
 SUBMISSION_ENDPOINT = env('SUBMISSION_ENDPOINT')
-
 kernel_url = env('KERNEL_URL')
-
 user = env('KERNEL_USER')
 pw = env('KERNEL_PASSWORD')
+
+try:
+    client = Client(kernel_url, user, pw)
+except Exception as err:
+    print("Kernel is not ready. Please check it's status or wait a moment and try again : %s" % err)
+    sys.exit(1)
+
 
 def file_to_json(path):
     with open(path) as f:
@@ -42,45 +46,33 @@ def file_to_json(path):
 def pprint(obj):
     print(obj)
 
-
-#Projects
-project_obj = { "name": PROJECT_NAME }
-
-schema_names = []
-schemas = []
-defs = file_to_json("/code/assets/schemas/all.json")
-for obj in defs:
-    name = obj.get('name')
-    schema_names.append(name)
-    schema_obj = {
-        "name": name,
-        "type": "record",
-        "revision": "1",
-        "definition": obj
-    }
-    schemas.append(schema_obj)
-
-mapping_def = file_to_json("/code/assets/schemas/mapping.json")
-
-
-
-mapping_obj = {
-    "name": SUBMISSION_ENDPOINT,
-    "definition": {"mapping": mapping_def},
-    "revision": "1"
-}
-
-try:
-    client = Client(kernel_url, user, pw)
-except Exception as err:
-    print("Kernel is not ready. Please check it's status or wait a moment and try again : %s" % err)
-    sys.exit(1)
-
 def register_project():
+    project_obj = { "name": PROJECT_NAME }
     return client.projects.create(data=project_obj)
 
 def schema():
-    return [client.schemas.create(data=obj) for obj in schemas]
+    schema_names = []
+    schemas = []
+    defs = file_to_json("/code/assets/schemas/all.json")
+    for obj in defs:
+        name = obj.get('name')
+        schema_names.append(name)
+        schema_obj = {
+            "name": name,
+            "type": "record",
+            "revision": "1",
+            "definition": obj
+        }
+        schemas.append(schema_obj)
+    out = []
+    for obj in schemas:
+        try:
+            out.append(client.schemas.create(data=obj))
+        except Exception as err:
+            print(err)
+            print(obj)
+    return out
+
 
 def project_schema(project, ids):
     out = {}
@@ -104,6 +96,12 @@ def mappingset(project):
         )
 
 def mapping(project, mapping_set_id, ids):
+    mapping_def = file_to_json("/code/assets/schemas/mapping.json")
+    mapping_obj = {
+        "name": SUBMISSION_ENDPOINT,
+        "definition": {"mapping": mapping_def},
+        "revision": "1"
+    }
     mapping_obj['definition']['entities'] = ids
     mapping_obj['mappingset'] = mapping_set_id
     mapping_obj['project'] = project
