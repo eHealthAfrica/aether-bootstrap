@@ -11,7 +11,7 @@ def get_apps():
     modules = arg_opts['modules'].split(',')
     for module in modules:
         apps.append(module)
-    if 'gather' in arg_opts:
+    if arg_opts['gather']:
         apps.append('gather')
     return apps
 
