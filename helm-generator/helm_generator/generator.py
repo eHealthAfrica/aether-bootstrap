@@ -9,11 +9,9 @@ def get_apps():
     """Get list of apps."""
     apps = ['kernel']
     modules = arg_opts['modules'].split(',')
-    if 'kernel' in modules:
-        modules.remove('kernel')
     for module in modules:
         apps.append(module)
-    if 'enable_gather' in arg_opts:
+    if 'gather' in arg_opts:
         apps.append('gather')
     return apps
 
@@ -30,16 +28,14 @@ def create_secrets_file(app):
     secrets = secretsGenerator.generate_secrets(app,
                                                 arg_opts['project'])
     templateGenerator.write_file(secrets, 'secrets',
-                                 arg_opts['secrets_path'], app, modules=False)
+                                 arg_opts['secrets_path'], app,
+                                 modules=False)
 
 
 def main():
     """Main."""
     apps = get_apps()
-    if 'gather' in apps:
-        modules = apps.remove('gather')
-    else:
-        modules = apps
+    modules = arg_opts['modules'].split(',')
     for app in apps:
         print('Creating Helm override for: {}'.format(app))
         create_value_override_file(app, modules)

@@ -17,7 +17,7 @@ def arg_list():
         ['--sg-id', '--aws-alg-sg-id', 'Specify AWS SG ID', False],
         ['--sentry', '--senty-dsn', 'Specify Sentry DSN', False],
         ['-e', '--environment', 'Specify environment', True],
-        ['-g', '--gather', 'enable Gather, expects True or False', False],
+        ['-g', '--gather', 'enable Gather yes or no', False],
         ['--cm', '--cert-manager', 'Using cert manager?', False],
         ['-m', '--modules', 'Aether modules i.e odk,ui,sync', False]
     ]
