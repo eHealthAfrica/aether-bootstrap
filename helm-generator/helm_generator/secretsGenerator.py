@@ -12,7 +12,7 @@ def generate_encoded_secret():
     return(secret)
 
 
-def generate_secrets(application, project):
+def generate_secrets(app, project):
     """Generate secrets."""
     secrets_dict = {}
     secrets_list = [
@@ -24,6 +24,6 @@ def generate_secrets(application, project):
     ]
     for secret in secrets_list:
         secrets_dict[secret] = generate_encoded_secret()
-    secrets_dict['application'] = application
+    secrets_dict['application'] = app
     secrets_dict['project'] = project
     return secrets_dict

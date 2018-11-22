@@ -16,7 +16,7 @@ def check_dir(dir_path):
     return dir
 
 
-def render_template(arg_opts, f_type):
+def render_template(arg_opts, f_type, app, modules):
     """Template loader."""
     for path in sys.path:
         if os.path.isdir(os.path.join(path, 'helm_generator', 'templates')):
@@ -25,19 +25,20 @@ def render_template(arg_opts, f_type):
                       trim_blocks=True,
                       lstrip_blocks=True)
     if f_type == 'values':
-        postgres_ident = '{}_{}'.format(arg_opts['application'], arg_opts['project'])
+        postgres_ident = '{}_{}'.format(app, arg_opts['project'])
         arg_opts['pg_name'] = postgres_ident.replace("-", "_")
     template = env.get_template('{}.tmpl.yaml'.format(f_type))
-    rendered_template = template.render(arg_opts=arg_opts)
+    rendered_template = template.render(arg_opts=arg_opts, app=app,
+                                        modules=modules)
     return rendered_template
 
 
-def write_file(arg_opts, f_type, dir_path):
+def write_file(arg_opts, f_type, dir_path, app, modules):
     """Write out YAML."""
-    output = render_template(arg_opts, f_type)
-    filename = arg_opts['application']
+    output = render_template(arg_opts, f_type, app, modules)
+    filename = app
     if f_type == 'secrets':
-        filename = '{}-secrets'.format(arg_opts['application'])
+        filename = '{}-secrets'.format(app)
     path = os.path.join(check_dir(dir_path),
                         '{}.yaml').format(filename)
     with open(path, 'w') as file:

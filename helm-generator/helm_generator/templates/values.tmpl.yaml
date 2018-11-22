@@ -5,7 +5,7 @@ provider:
 app:
   storage:
     backend: {{arg_opts['storage_backend']}}
-    {% if arg_opts['storage_backend']  == 's3' or 'gcp' %}
+    {% if arg_opts['storage_bucket_name'] %}
     bucket:
       name: {{arg_opts['storage_bucket_name']}}
     {% endif %}
@@ -18,10 +18,10 @@ app:
     secret: database-credentials
 ingress:
   hosts:
-    {% if arg_opts['application'] == 'gather' %}
+    {% if arg_opts['gather'] %}
     - {{ arg_opts['domain'] }}
     {% else %}
-    - {{arg_opts['application']}}.{{ arg_opts['domain'] }}
+    - {{app}}.{{ arg_opts['domain'] }}
     {% endif %}
   {% if arg_opts['cert_manager'] %}
   ssl:
@@ -29,13 +29,13 @@ ingress:
     cert_secret: {{ arg_opts['cert_secret'] }}
   {% endif %}
   annotations:
-  {% if arg_opts['alb'] %}
+  {% if arg_opts['cloud_platform'] == 'aws'  %}
     alb.ingress.kubernetes.io/security-groups: {{ arg_opts['sg_id'] }}
     alb.ingress.kubernetes.io/certificate-arn: {{ arg_opts['acm'] }}
     alb.ingress.kubernetes.io/scheme: "internet-facing"
     alb.ingress.kubernetes.io/healthcheck-path: /health
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80,"HTTPS": 443}]'
-  {% elif arg_opts['nginx_ingress'] %}
+  {% elif arg_opts['cloud_platform'] == 'gcp'  %}
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "75M"
     ingress.kubernetes.io/ssl-redirect: "true"
@@ -44,11 +44,12 @@ ingress:
     certmanager.k8s.io/issuer: letsencrypt
     {% endif %}
   {% endif %}
-{% if arg_opts['application'] == 'gather' %}
-aether_modules: {{ arg_opts['am'] }}
+{% if app == 'gather' %}
+aether_modules: {{ modules }}
 {% endif %}
 aether:
-{% for module in arg_opts['aether_modules'] %}
+{% for module in modules %}
   {{module}}:
     url: https://{{module}}.{{arg_opts['domain']}}
+    sercrets: {{module}}-secrets
 {% endfor %}

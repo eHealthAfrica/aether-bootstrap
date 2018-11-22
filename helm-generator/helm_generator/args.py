@@ -9,20 +9,18 @@ def arg_list():
         ['-d', '--domain', 'Specify the domain you are using', True],
         ['-t', '--template-path', 'Specify template path', True],
         ['-s', '--secrets-path', 'Specify template path', True],
-        ['-a', '--application', 'Specify the application', True],
         ['-p', '--project', 'Specify a project name', True],
         ['-c', '--cloud-platform', 'Specify the platform used', True],
         ['-db', '--database-host', 'Specify the database host', True],
         ['-sbn', '--storage-bucket-name', 'Specify storage bucket name', False],
-        ['-sb', '--storage-backend', 'Specify storage backend s3/gcp/filesystem', False],
+        ['-sb', '--storage-backend', 'Specify storage backend s3/gcp/filesystem', True],
         ['--acm', '--aws-cert-arn', 'Specify AWS ACM', False],
-        ['--alb', '--alb-ingress-controller', 'True or False', False],
-        ['--nginx-ingress', '--nginx-ingress-controller', 'True or False', False],
         ['--sg-id', '--aws-alg-sg-id', 'Specify AWS SG ID', False],
         ['--sentry', '--senty-dsn', 'Specify Sentry DSN', False],
         ['-e', '--environment', 'Specify environment', True],
+        ['-g', '--gather', 'enable Gather, expects True or False', False],
         ['--cm', '--cert-manager', 'Using cert manager?', False],
-        ['--am', '--aether-modules', 'Aether modules i.e kernel,odk', False]
+        ['-m', '--modules', 'Aether modules i.e kernel,odk,ui', False]
     ]
     return arg_list
 
