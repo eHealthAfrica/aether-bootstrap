@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import helm_generator.args as args
 import helm_generator.templateGenerator as templateGenerator
 import helm_generator.secretsGenerator as secretsGenerator
@@ -9,8 +7,10 @@ arg_opts = args.arg_options()
 
 def get_apps():
     """Get list of apps."""
-    apps = []
+    apps = ['kernel']
     modules = arg_opts['modules'].split(',')
+    if 'kernel' in modules:
+        modules.remove('kernel')
     for module in modules:
         apps.append(module)
     if 'enable_gather' in arg_opts:

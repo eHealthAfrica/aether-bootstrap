@@ -1,6 +1,5 @@
-#!/usr/bin/env python3
-
 import argparse
+import sys
 
 
 def arg_list():
@@ -20,9 +19,21 @@ def arg_list():
         ['-e', '--environment', 'Specify environment', True],
         ['-g', '--gather', 'enable Gather, expects True or False', False],
         ['--cm', '--cert-manager', 'Using cert manager?', False],
-        ['-m', '--modules', 'Aether modules i.e kernel,odk,ui', False]
+        ['-m', '--modules', 'Aether modules i.e odk,ui,sync', False]
     ]
     return arg_list
+
+
+def test_args(args):
+    """Test Argparse options."""
+    backend = args['storage_backend']
+    if backend == 'gcp' or 's3':
+        if 'storage_bucket_name' not in args:
+            print('ERROR: Please set the bucket storage name')
+            sys.exit(2)
+    if not 'gcp' or 'aws' in args['cloud_platform']:
+        print('Please specify AWS or GCP for --cloud-platform')
+        sys.exit(2)
 
 
 def arg_options():
@@ -35,6 +46,7 @@ def arg_options():
                             required=arg[3])
     parsed_args = parser.parse_args(args=None, namespace=None)
     arg_dict = vars(parsed_args)
+    test_args(arg_dict)
     return arg_dict
 
 if __name__ == '__main__':

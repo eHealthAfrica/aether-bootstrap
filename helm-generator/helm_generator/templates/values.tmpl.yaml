@@ -51,5 +51,5 @@ aether:
 {% for module in modules %}
   {{module}}:
     url: https://{{module}}.{{arg_opts['domain']}}
-    sercrets: {{module}}-secrets
+    secrets: {{module}}-secrets
 {% endfor %}
