@@ -16,6 +16,13 @@ def get_apps():
     return apps
 
 
+def get_modules():
+    """Get modules."""
+    modules = arg_opts['modules'].split(',')
+    modules.append('kernel')
+    return modules
+
+
 def create_value_override_file(app, modules):
     """Create override files."""
     templateGenerator.write_file(arg_opts, 'values',
@@ -35,7 +42,7 @@ def create_secrets_file(app):
 def main():
     """Main."""
     apps = get_apps()
-    modules = arg_opts['modules'].split(',')
+    modules = get_modules()
     for app in apps:
         print('Creating Helm override for: {}'.format(app))
         create_value_override_file(app, modules)

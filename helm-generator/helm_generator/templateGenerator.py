@@ -26,8 +26,13 @@ def render_template(arg_opts, f_type, app, modules):
         postgres_ident = '{}_{}'.format(app, arg_opts['project'])
         arg_opts['pg_name'] = postgres_ident.replace("-", "_")
     template = env.get_template('{}.tmpl.yaml'.format(f_type))
+    if modules:
+        aether_modules = ', '.join(modules)
+    else:
+        aether_modules = False
     rendered_template = template.render(arg_opts=arg_opts, app=app,
-                                        modules=modules)
+                                        modules=modules,
+                                        aether_modules=aether_modules)
     return rendered_template
 
 
