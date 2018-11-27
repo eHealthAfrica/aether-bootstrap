@@ -144,11 +144,16 @@ services:
       KERNEL_URL: http://kernel-test:9000
       KERNEL_USERNAME: ${TEST_KERNEL_ADMIN_USERNAME}
       KERNEL_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
-      OFFSET_DB_URL: sqlite:///test-offset.db
-      POSTGRES_DBNAME: aether-kernel-test
       POSTGRES_HOST: db-test
+      POSTGRES_DBNAME: aether-kernel-test
       POSTGRES_USER: ${TEST_KERNEL_READONLY_DB_USERNAME}
       POSTGRES_PASSWORD: ${TEST_KERNEL_READONLY_DB_PASSWORD}
+      OFFSET_DB_HOST: db-test
+      OFFSET_DB_USER: postgres
+      OFFSET_DB_PORT: 5432
+      OFFSET_DB_PASSWORD: ${TEST_KERNEL_DB_PASSWORD}
+      OFFSET_DB_NAME: producer_offset_db_test
+
       SERVER_PORT: 9005
     links:
       - kafka-test
