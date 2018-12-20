@@ -20,17 +20,12 @@ services:
       - "5000:5000"
     environment:
       PYTHONUNBUFFERED: 0
-      REDASH_LOG_LEVEL: "INFO"
+      REDASH_LOG_LEVEL: ${REDASH_LOG_LEVEL}
       REDASH_REDIS_URL: "redis://redis:6379/0"
-      REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
-      REDASH_COOKIE_SECRET: veryverysecret
+      REDASH_DATABASE_URL: ${REDASH_DATABASE_URL}
+      REDASH_COOKIE_SECRET: ${REDASH_COOKIE_SECRET}
       REDASH_WEB_WORKERS: 4
-    
-    environment:
-      PYTHONUNBUFFERED: 0
-      REDASH_LOG_LEVEL: "INFO"
-      REDASH_REDIS_URL: "redis://redis:6379/0"
-      REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
+
     networks:
      - redash_net
      - aether
@@ -42,9 +37,9 @@ services:
       - server
     environment:
       PYTHONUNBUFFERED: 0
-      REDASH_LOG_LEVEL: "INFO"
+      REDASH_LOG_LEVEL: ${REDASH_LOG_LEVEL}
       REDASH_REDIS_URL: "redis://redis:6379/0"
-      REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
+      REDASH_DATABASE_URL: ${REDASH_DATABASE_URL}
       QUEUES: "queries,scheduled_queries,celery"
       WORKERS_COUNT: 2
     networks:
@@ -64,6 +59,8 @@ services:
     # tests.
     ports:
       - "15432:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     command: "postgres -c fsync=off -c full_page_writes=off -c synchronous_commit=OFF"
     restart: unless-stopped
     networks:
