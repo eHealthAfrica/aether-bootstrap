@@ -176,6 +176,7 @@ services:
       KERNEL_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
       PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PW}
+      PRODUCER_URL: http://producer-test:9005
     volumes:
       - ./VERSION:/code/VERSION
     networks:
