@@ -9,27 +9,40 @@ sentry:
 provider:
   {{arg_opts['cloud_platform']}}: true
 app:
+  secret: {{ app }}-secret
   {% if app == 'gather' %}
   url: {{ arg_opts['domain'] }}
   {% else %}
-  url: {{app}}.{{ arg_opts['domain'] }}
+  url: {{ app }}.{{ arg_opts['domain'] }}
+  {% endif %}
+  {% if app == 'couchdb-sync' %}
+  couchdb:
+    url: {{arg_opts['couchdb_url']}}
+    secret: {{arg_opts['couchdb_secret']}}
+  redis:
+    url: {{ arg_opts['redis_url'] }}
+    secret: {{ arg_opts['couchdb_secret'] }}
   {% endif %}
   storage:
-    backend: {{arg_opts['storage_backend']}}
+    backend: {{ arg_opts['storage_backend'] }}
     bucket:
     {% if arg_opts['storage_bucket_name'] %}
       enabled: true
-      name: {{arg_opts['storage_bucket_name']}}
+      name: {{ arg_opts['storage_bucket_name'] }}
     {% else %}
       enabled: false
     {% endif %}
   db:
-    name: {{arg_opts['pg_name']}}
-    host: {{arg_opts['database_host']}}
+    name: {{ arg_opts['pg_name'] }}
+    host: {{ arg_opts['database_host'] }}
     port: 5432
-    user: {{arg_opts['pg_name']}}
-    readonly_user: ro_{{arg_opts['pg_name']}}
+    user: {{ arg_opts['pg_name'] }}
+    readonly_user: ro_{{ arg_opts['pg_name'] }}
     secret: database-credentials
+{% if arg_opts['cloud_platform'] == 'gcp' %}
+database:
+  instance: {{ arg_opts['db_connection_name'] }}
+{% endif %}
 ingress:
   hosts:
     {% if app == 'gather' %}
@@ -43,13 +56,13 @@ ingress:
     cert_secret: {{ arg_opts['cert_secret'] }}
   {% endif %}
   annotations:
-  {% if arg_opts['cloud_platform'] == 'AWS'  %}
+  {% if arg_opts['cloud_platform'] == 'aws'  %}
     alb.ingress.kubernetes.io/security-groups: {{ arg_opts['sg_id'] }}
     alb.ingress.kubernetes.io/certificate-arn: {{ arg_opts['acm'] }}
     alb.ingress.kubernetes.io/scheme: "internet-facing"
     alb.ingress.kubernetes.io/healthcheck-path: /health
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80,"HTTPS": 443}]'
-  {% elif arg_opts['cloud_platform'] == 'GCP'  %}
+  {% elif arg_opts['cloud_platform'] == 'gcp'  %}
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "75M"
     ingress.kubernetes.io/ssl-redirect: "true"
@@ -66,5 +79,5 @@ aether:
   {{module}}:
     enabled: true
     url: https://{{module}}.{{arg_opts['domain']}}
-    secrets: {{module}}-secrets
+    secret: {{module}}-secrets
 {% endfor %}
