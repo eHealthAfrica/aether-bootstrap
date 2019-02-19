@@ -17,6 +17,7 @@ services:
      - CONSUMER_CONFIG=/code/conf/consumer/consumer.json
     volumes:
      - ./conf:/code/conf/consumer
+     - ./logs:/code/logs
     command: start
     networks:
       - aether
