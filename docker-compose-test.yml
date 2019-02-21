@@ -116,7 +116,7 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-test:32189
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-test:29092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-test:29092
       ADVERTISED_HOST_NAME: kafka-test
     networks:
       - test
