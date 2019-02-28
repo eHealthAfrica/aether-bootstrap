@@ -42,6 +42,11 @@ services:
     extends:
       file: ./docker-compose-base.yml
       service: kernel-base
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_started
     networks:
       aether:
         aliases:
@@ -55,6 +60,11 @@ services:
     extends:
       file: ./docker-compose-base.yml
       service: ui-base
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_started
     networks:
       aether:
         aliases:
@@ -71,6 +81,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      minio:
+        condition: service_started
     networks:
       aether:
         aliases:
