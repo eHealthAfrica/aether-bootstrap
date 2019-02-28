@@ -15,7 +15,7 @@ volumes:
 services:
 
   # ---------------------------------
-  # Database
+  # Databases
   # ---------------------------------
 
   db:
@@ -27,6 +27,13 @@ services:
     networks:
       - aether
 
+  minio:
+    extends:
+      file: ./docker-compose-base.yml
+      service: minio-base
+    networks:
+      - aether
+
   # ---------------------------------
   # Aether kernel
   # ---------------------------------
@@ -35,13 +42,23 @@ services:
     extends:
       file: ./docker-compose-base.yml
       service: kernel-base
-    depends_on:
-      db:
-        condition: service_healthy
     networks:
       aether:
         aliases:
           - kernel.aether.local
+
+  # ---------------------------------
+  # Aether UI
+  # ---------------------------------
+
+  ui:
+    extends:
+      file: ./docker-compose-base.yml
+      service: ui-base
+    networks:
+      aether:
+        aliases:
+          - ui.aether.local
 
   # ---------------------------------
   # Aether ODK Module
@@ -58,22 +75,6 @@ services:
       aether:
         aliases:
           - odk.aether.local
-
-  # ---------------------------------
-  # Aether UI
-  # ---------------------------------
-
-  ui:
-    extends:
-      file: ./docker-compose-base.yml
-      service: ui-base
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      aether:
-        aliases:
-          - ui.aether.local
 
   # ---------------------------------
   # NGINX
