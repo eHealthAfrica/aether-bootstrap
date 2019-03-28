@@ -15,7 +15,7 @@ volumes:
 services:
 
   # ---------------------------------
-  # Database
+  # Databases
   # ---------------------------------
 
   db:
@@ -24,6 +24,13 @@ services:
       service: postgres-base
     volumes:
       - database_data:/var/lib/postgresql/data
+    networks:
+      - aether
+
+  minio:
+    extends:
+      file: ./docker-compose-base.yml
+      service: minio-base
     networks:
       - aether
 
@@ -38,26 +45,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      minio:
+        condition: service_started
     networks:
       aether:
         aliases:
           - kernel.aether.local
-
-  # ---------------------------------
-  # Aether ODK Module
-  # ---------------------------------
-
-  odk:
-    extends:
-      file: ./docker-compose-base.yml
-      service: odk-base
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      aether:
-        aliases:
-          - odk.aether.local
 
   # ---------------------------------
   # Aether UI
@@ -70,10 +63,30 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      minio:
+        condition: service_started
     networks:
       aether:
         aliases:
           - ui.aether.local
+
+  # ---------------------------------
+  # Aether ODK Module
+  # ---------------------------------
+
+  odk:
+    extends:
+      file: ./docker-compose-base.yml
+      service: odk-base
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    networks:
+      aether:
+        aliases:
+          - odk.aether.local
 
   # ---------------------------------
   # NGINX
