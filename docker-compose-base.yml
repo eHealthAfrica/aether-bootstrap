@@ -63,7 +63,7 @@ services:
       # CAS_SERVER_URL: https://your.cas.server
       # HOSTNAME: kernel.aether.local
 
-      CSRF_COOKIE_DOMAIN: .aether.local
+      CSRF_COOKIE_DOMAIN: aether.local
       DJANGO_SECRET_KEY: ${KERNEL_DJANGO_SECRET_KEY}
       LOGGING_FORMATTER: verbose
       HTML_SELECT_CUTOFF: 10
@@ -104,6 +104,8 @@ services:
       EXPORT_HEADER_SHORTEN: "no"
 
       WEB_SERVER_PORT: 8000
+      UWSGI_BUFFER_SIZE: 32768
+      UWSGI_SERVE_STATIC: "true"
     volumes:
       # static folder
       - ./.persistent_data/static/kernel:/var/www/static
@@ -280,3 +282,54 @@ services:
     ports:
       - "5005:5005"
     command: start
+
+  # ---------------------------------
+  # API & Auth
+  # ---------------------------------
+
+  kong-base:
+    build: ./api-auth/kong
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: db
+      KONG_PG_DATABASE: kong
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: ${KONG_PG_PASSWORD}
+
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_PROXY_LISTEN: 0.0.0.0:80
+      KONG_LOG_LEVEL: debug
+
+      KONG_PLUGINS: bundled,kong-oidc-auth
+
+  keycloak-base:
+    build: ./api-auth/aether-auth/keycloak
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: db
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: ${KEYCLOAK_PG_PASSWORD}
+      KEYCLOAK_USER: ${KEYCLOAK_GLOBAL_ADMIN}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
+      PROXY_ADDRESS_FORWARDING: 'true'
+      PROXY_PORT_FORWARDING: 'true'
+
+  auth-base:
+    build: ./api-auth/aether-auth
+    environment:
+      KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
+      KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
+
+      JWT_COOKIE: ${JWT_COOKIE}
+      REALM_COOKIE: ${REALM_COOKIE}
+
+      APP_NAME: auth
+      APP_PORT: 3012
+
+      APP_INTERNAL: http://auth:3012
+      BASE_HOST: ${BASE_HOST}
+      KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
+      KONG_INTERNAL: ${KONG_INTERNAL}
+    volumes:
+      - ./api-auth/aether-auth:/code

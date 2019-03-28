@@ -22,6 +22,13 @@ services:
     extends:
       file: ./docker-compose-base.yml
       service: postgres-base
+    environment:
+      PGUSER: postgres
+    healthcheck:
+      test: pg_isready
+      interval: 2s
+      timeout: 3s
+      retries: 30
     volumes:
       - database_data:/var/lib/postgresql/data
     networks:
@@ -88,13 +95,61 @@ services:
         aliases:
           - odk.aether.local
 
+  # # ---------------------------------
+  # # NGINX
+  # # ---------------------------------
+
+  # nginx:
+  #   extends:
+  #     file: ./docker-compose-base.yml
+  #     service: nginx-base
+  #   networks:
+  #     - aether
+
+
   # ---------------------------------
-  # NGINX
+  # API & Auth
   # ---------------------------------
 
-  nginx:
+  kong:
     extends:
       file: ./docker-compose-base.yml
-      service: nginx-base
+      service: kong-base
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 80:80
+      # - 8001:8001  # TODO Remove
+    networks:
+      - aether
+    extra_hosts:
+      - "aether.local:127.0.0.1"
+    command: ["kong", "start"]
+
+  keycloak:
+    extends:
+      file: ./docker-compose-base.yml
+      service: keycloak-base
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    networks:
+      - aether
+
+  auth:
+    extends:
+      file: ./docker-compose-base.yml
+      service: auth-base
+    depends_on:
+      kong:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    ports:
+      - 3012:3012
+    command: ['cat', '/dev/null']  # nothing to do here on "start"
     networks:
       - aether

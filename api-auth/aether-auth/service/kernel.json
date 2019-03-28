@@ -1,0 +1,7 @@
+{
+    "name": "kernel-open",
+    "service_url": "http://kernel:8000",
+    "public_endpoints": {
+        "base": "/"
+    }
+}

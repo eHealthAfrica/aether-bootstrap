@@ -1,0 +1,140 @@
+version: '2.1'
+
+networks:
+  # docker network create api_demo_internal
+  internal:
+    external:
+      # if this isn't explicitly set it inherits from the containing folder name (aether or not)
+      name: api_demo_internal
+
+volumes:
+  # docker volume create api_demo_database_data
+  database_data:
+    external:
+      name: api_demo_database_data
+
+services:
+
+  # ---------------------------------
+  # Database
+  # ---------------------------------
+
+  db:
+    image: postgres:9.6-alpine
+    environment:
+      PGUSER: postgres
+    healthcheck:
+      test: pg_isready
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    networks:
+      - internal
+
+  # ---------------------------------
+  # Authorization modules
+  # ---------------------------------
+
+  kong:
+    build: ./kong
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: db
+      KONG_PG_DATABASE: kong
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: ${KONG_PG_PASSWORD}
+
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_PROXY_LISTEN: 0.0.0.0:80
+      KONG_LOG_LEVEL: debug
+
+      KONG_PLUGINS: bundled,kong-oidc-auth
+
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 80:80
+      # - 8001:8001  # TODO Remove
+    networks:
+      - internal
+    extra_hosts:
+      - "aether.local:127.0.0.1"
+    command: ["kong", "start"]
+
+  keycloak:
+    build: ./aether-auth/keycloak
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: db
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: ${KEYCLOAK_PG_PASSWORD}
+
+      KEYCLOAK_USER: ${KEYCLOAK_GLOBAL_ADMIN}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
+
+      PROXY_ADDRESS_FORWARDING: 'true'
+      PROXY_PORT_FORWARDING: 'true'
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    networks:
+      - internal
+
+  auth:
+    image: aether-auth
+    build: ./aether-auth
+    environment:
+      KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
+      KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
+
+      JWT_COOKIE: ${JWT_COOKIE}
+      REALM_COOKIE: ${REALM_COOKIE}
+
+      APP_NAME: auth
+      APP_PORT: 3012
+
+      APP_INTERNAL: http://auth:3012
+      BASE_HOST: ${BASE_HOST}
+      KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
+      KONG_INTERNAL: ${KONG_INTERNAL}
+    volumes:
+      - ./aether-auth:/code
+    depends_on:
+      kong:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    ports:
+      - 3012:3012
+    command: ['cat', '/dev/null']  # nothing to do here on "start"
+    networks:
+      - internal
+
+  demo-service:
+    image: demo-service
+    build: ./simple-demo-service
+    environment:
+      
+      JWT_COOKIE: ${JWT_COOKIE}
+      REALM_COOKIE: ${REALM_COOKIE}
+
+      APP_NAME: demo-service
+      APP_PORT: 3013
+
+      APP_INTERNAL: http://demo-service:3013
+      BASE_HOST: ${BASE_HOST}
+      KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
+      KONG_INTERNAL: ${KONG_INTERNAL}
+    volumes:
+      - ./simple-demo-service:/code
+    ports:
+      - 3013:3013
+    command: start
+    networks:
+      - internal

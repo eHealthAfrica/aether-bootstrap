@@ -63,6 +63,23 @@ gen_env_file () {
 AETHER_VERSION=1.3.0
 # ------------------------------------------------------------------
 
+# ------------------------------------------------------------------
+# Authorization & Authentication
+# ==================================================================
+KEYCLOAK_GLOBAL_ADMIN=admin
+KEYCLOAK_GLOBAL_PASSWORD=password
+KEYCLOAK_PG_PASSWORD=$(gen_random_string)
+KONG_PG_PASSWORD=$(gen_random_string)
+JWT_COOKIE=aether-jwt
+REALM_COOKIE=aether-realm
+# ------------------------------------------------------------------
+
+# ------------------------------------------------------------------
+# Routing
+# ==================================================================
+BASE_HOST=http://aether.local
+KEYCLOAK_INTERNAL=http://keycloak:8080
+KONG_INTERNAL=http://kong:8001
 
 # ------------------------------------------------------------------
 # Aether Kernel
