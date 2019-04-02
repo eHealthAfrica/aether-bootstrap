@@ -104,7 +104,7 @@ services:
       EXPORT_HEADER_SHORTEN: "no"
 
       APP_URL: "/<slug:realm>/<slug:service>"
-      STATIC_URL_PREFIX: "/_static/kernel/"
+      STATIC_URL: "/_static/kernel/static/"
       MULTITENANCY: "true"
       WEB_SERVER_PORT: 8000
       UWSGI_BUFFER_SIZE: 32768
@@ -299,6 +299,8 @@ services:
       KONG_PG_DATABASE: kong
       KONG_PG_USER: kong
       KONG_PG_PASSWORD: ${KONG_PG_PASSWORD}
+
+      KONG_NGINX_PROXY_LARGE_CLIENT_HEADER_BUFFERS: "16 128k"
 
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
       KONG_PROXY_LISTEN: 0.0.0.0:80

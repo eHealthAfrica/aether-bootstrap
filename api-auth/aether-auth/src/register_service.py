@@ -155,9 +155,10 @@ def add_service_to_realm(realm, config):
 
 def remove_service_from_realm(realm, config):
     name = config['name']  # app name
-    oidc_endpoints = config.get('oidc_endpoints', {})
+    oidc_endpoints = config.get('oidc_endpoints', [])
     print(f'Removing service {config["name"]} from realm {realm}')
-    for endpoint_name, endpoint_url in oidc_endpoints.items():
+    for ep in oidc_endpoints:
+        endpoint_name = ep['name']
         service_name = f'{name}_oidc_{endpoint_name}'
         routes_url = f'{KONG_URL}services/{service_name}/routes'
         res = __get(routes_url)
@@ -188,9 +189,10 @@ def remove_service_from_realm(realm, config):
 
 def remove_service(config):
     name = config['name']  # app name
-    oidc_endpoints = config.get('oidc_endpoints', {})
     print(f'Removing service {config["name"]} from ALL')
-    for endpoint_name, endpoint_url in oidc_endpoints.items():
+    oidc_endpoints = config.get('oidc_endpoints', [])
+    for ep in oidc_endpoints:
+        endpoint_name = ep['name']
         service_name = f'{name}_oidc_{endpoint_name}'
         routes_url = f'{KONG_URL}services/{service_name}/routes'
         try:
