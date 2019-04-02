@@ -32,7 +32,8 @@ from settings import (
     KC_ADMIN_PASSWORD,
     KC_MASTER_REALM,
     KEYCLOAK_URL,
-    SERVICES_PATH
+    SERVICES_PATH,
+    SOLUTIONS_PATH
 )
 
 
@@ -322,14 +323,18 @@ def load_service_definitions():
     return definitions
 
 
-CMDS = ['ADD', 'REMOVE']
+def load_solution_definitions():
+    definitions = {}
+    _files = os.listdir(SOLUTIONS_PATH)
+    for f in _files:
+        with open(f'{SOLUTIONS_PATH}/{f}') as _f:
+            config = json.load(_f)
+            service_name = config['name']
+            definitions[service_name] = config
+    return definitions
 
-if __name__ == '__main__':
-    REALM_NAME = sys.argv[1]
-    SERVICE_NAME = sys.argv[2]
-    CMD = sys.argv[3]
-    if CMD not in CMDS:
-        raise KeyError(f'No command: {CMD}')
+
+def handle_service(REALM_NAME, SERVICE_NAME, CMD):
     SERVICE_DEFINITIONS = load_service_definitions()
     if SERVICE_NAME not in SERVICE_DEFINITIONS:
         raise KeyError(f'No service definition for name: {SERVICE_NAME}')
@@ -348,3 +353,34 @@ if __name__ == '__main__':
             remove_service(service_config)
         else:
             remove_service_from_realm(REALM_NAME, service_config)
+
+
+def handle_solution(REALM, SOLUTION, CMD):
+    SOLUTION_DEFINITIONS = load_solution_definitions()
+    if SOLUTION not in SOLUTION_DEFINITIONS:
+        raise KeyError(f'No Solution definition for name: {SOLUTION}')
+    config = SOLUTION_DEFINITIONS[SOLUTION]
+    services = config['services']
+    for service in services:
+        handle_service(REALM, service, CMD)
+
+CMDS = ['ADD', 'REMOVE']
+TYPES = ['SERVICE', 'SOLUTION']
+
+
+if __name__ == '__main__':
+    CMD = sys.argv[1]
+    TYPE = sys.argv[2]
+    SERVICE_NAME = sys.argv[3]
+    REALM_NAME = sys.argv[4]
+
+    if TYPE not in TYPES:
+        raise KeyError(f'No type: {TYPE}')
+    if CMD not in CMDS:
+        raise KeyError(f'No command: {CMD}')
+
+    if TYPE == 'SERVICE':
+        handle_service(REALM_NAME, SERVICE_NAME, CMD)
+
+    if TYPE == 'SOLUTION':
+        handle_solution(REALM_NAME, SERVICE_NAME, CMD)

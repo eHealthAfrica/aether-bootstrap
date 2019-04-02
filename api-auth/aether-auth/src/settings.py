@@ -45,5 +45,6 @@ CONSUMERS_URL = f'{KONG_URL}consumers'
 
 REALMS_PATH = '/code/realm'
 SERVICES_PATH = '/code/service'
+SOLUTIONS_PATH = '/code/solution'
 JWT_COOKIE = get_env('JWT_COOKIE') or 'aether-jwt'
 REALM_COOKIE = get_env('REALM_COOKIE') or 'aether-realm'

@@ -1,0 +1,18 @@
+{
+    "name": "odk",
+    "service_url": "http://odk:8002",
+    "oidc_endpoints": [
+        {
+            "name": "base",
+            "url": "/",
+            "strip_path": false
+        }
+    ],
+    "global_public_endpoints": [
+        {
+            "name": "static",
+            "url": "/_static/odk/static/",
+            "strip_path": true
+        }
+    ]
+}
