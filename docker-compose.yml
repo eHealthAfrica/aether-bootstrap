@@ -95,18 +95,6 @@ services:
         aliases:
           - odk.aether.local
 
-  # # ---------------------------------
-  # # NGINX
-  # # ---------------------------------
-
-  # nginx:
-  #   extends:
-  #     file: ./docker-compose-base.yml
-  #     service: nginx-base
-  #   networks:
-  #     - aether
-
-
   # ---------------------------------
   # API & Auth
   # ---------------------------------
