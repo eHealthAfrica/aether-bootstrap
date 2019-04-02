@@ -120,7 +120,7 @@ services:
         condition: service_healthy
     ports:
       - 80:80
-      # - 8001:8001  # TODO Remove
+      - 8001:8001  # TODO Remove
     networks:
       - aether
     extra_hosts:

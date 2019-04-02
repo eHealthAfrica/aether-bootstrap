@@ -47,7 +47,28 @@ def __post(url, data):
         raise e
 
 
-def add_realm(realm, config):
+def __get(url):
+    res = requests.get(url)
+    try:
+        res.raise_for_status()
+        return res.json()
+    except Exception as e:
+        print(res.status_code)
+        print(res.json())
+        raise e
+
+
+def __delete(url):
+    res = requests.delete(url)
+    try:
+        res.raise_for_status()
+        return res.text
+    except Exception as e:
+        print(res.status_code)
+        raise e
+
+
+def add_service_to_realm(realm, config):
 
     name = config['name']
 
@@ -94,32 +115,132 @@ def add_realm(realm, config):
         'config.user_info_cache_enabled': 'true'
     }
 
-    oidc_endpoints = config.get('oidc_endpoints', {})
-    for endpoint_name, endpoint_url in oidc_endpoints.items():
+    oidc_endpoints = config.get('oidc_endpoints', [])
+    for ep in oidc_endpoints:
+        endpoint_name = ep['name']
+        endpoint_url = ep['url']
+        strip_path = json.dumps(ep['strip_path'])
 
         route_name = f'{name}_oidc_{endpoint_name}'
         ROUTE_URL = f'{KONG_URL}services/{route_name}/routes'
         route_data = {
             'paths': [f'/{realm}/{name}{endpoint_url}'],
-            'strip_path': 'true',
+            'strip_path': strip_path,
         }
         route_info = __post(url=ROUTE_URL, data=route_data)
         print(json.dumps(route_info, indent=2))
         protected_route_id = route_info['id']
 
-        confirmation = __post(url=f'{KONG_URL}routes/{protected_route_id}/plugins', data=oidc_data)
+        confirmation = __post(
+            url=f'{KONG_URL}routes/{protected_route_id}/plugins',
+            data=oidc_data
+        )
         print(json.dumps(confirmation, indent=2))
 
-    public_endpoints = config.get('public_endpoints', {})
-    for endpoint_name, endpoint_url in public_endpoints.items():
+    public_endpoints = config.get('public_endpoints', [])
+    for ep in public_endpoints:
+        endpoint_name = ep['name']
+        endpoint_url = ep['url']
+        strip_path = json.dumps(ep['strip_path'])
+        print(f'{endpoint_name} | {endpoint_url} | {strip_path}')
         route_name = f'{name}_public_{endpoint_name}'
         PUBLIC_ROUTE_URL = f'{KONG_URL}services/{route_name}/routes'
         route_data = {
             'paths': [f'/{realm}/{name}{endpoint_url}'],
-            'strip_path': 'true',
+            'strip_path': strip_path,
         }
         confirmation = __post(url=PUBLIC_ROUTE_URL, data=route_data)
         print(json.dumps(confirmation, indent=2))
+
+
+def remove_service_from_realm(realm, config):
+    name = config['name']  # app name
+    oidc_endpoints = config.get('oidc_endpoints', {})
+    print(f'Removing service {config["name"]} from realm {realm}')
+    for endpoint_name, endpoint_url in oidc_endpoints.items():
+        service_name = f'{name}_oidc_{endpoint_name}'
+        routes_url = f'{KONG_URL}services/{service_name}/routes'
+        res = __get(routes_url)
+        for service in res['data']:
+            remove = any([path.strip('/').startswith(realm)
+                         for path in service['paths']])
+            if remove:
+                print(f'Removing {service["paths"]}')
+                remove_url = f'{KONG_URL}routes/{service["id"]}'
+                res = __delete(remove_url)
+                print(res)
+
+    public_endpoints = config.get('public_endpoints', [])
+    for ep in public_endpoints:
+        endpoint_name = ep['name']
+        service_name = f'{name}_public_{endpoint_name}'
+        routes_url = f'{KONG_URL}services/{service_name}/routes'
+        res = __get(routes_url)
+        for service in res['data']:
+            remove = any([path.strip('/').startswith(realm)
+                         for path in service['paths']])
+            if remove:
+                print(f'Removing {service["paths"]}')
+                remove_url = f'{KONG_URL}routes/{service["id"]}'
+                res = __delete(remove_url)
+                print(res)
+
+
+def remove_service(config):
+    name = config['name']  # app name
+    oidc_endpoints = config.get('oidc_endpoints', {})
+    print(f'Removing service {config["name"]} from ALL')
+    for endpoint_name, endpoint_url in oidc_endpoints.items():
+        service_name = f'{name}_oidc_{endpoint_name}'
+        routes_url = f'{KONG_URL}services/{service_name}/routes'
+        try:
+            res = __get(routes_url)
+            for service in res['data']:
+                print(f'Removing {service["paths"]}')
+                remove_url = f'{KONG_URL}routes/{service["id"]}'
+                try:
+                    res = __delete(remove_url)
+                    print(res)
+                except requests.exceptions.HTTPError:
+                    print(f'Could not add endpoint {endpoint_name}')
+        except requests.exceptions.HTTPError:
+            print(f'Route not found at {routes_url}')
+
+    public_endpoints = config.get('public_endpoints', [])
+    for ep in public_endpoints:
+        endpoint_name = ep['name']
+        service_name = f'{name}_public_{endpoint_name}'
+        routes_url = f'{KONG_URL}services/{service_name}/routes'
+        try:
+            res = __get(routes_url)
+            for service in res['data']:
+                print(f'Removing {service["paths"]}')
+                remove_url = f'{KONG_URL}routes/{service["id"]}'
+                try:
+                    res = __delete(remove_url)
+                    print(res)
+                except requests.exceptions.HTTPError:
+                    print(f'Could not add endpoint {endpoint_name}')
+        except requests.exceptions.HTTPError:
+            print(f'Route not found at {routes_url}')
+
+    global_endpoints = config.get('global_public_endpoints', [])
+    for ep in global_endpoints:
+        endpoint_name = ep['name']
+        service_name = f'{name}_global_{endpoint_name}'
+        routes_url = f'{KONG_URL}services/{service_name}/routes'
+        try:
+            res = __get(routes_url)
+            for service in res['data']:
+                print(f'Removing {service["paths"]}')
+                remove_url = f'{KONG_URL}routes/{service["id"]}'
+                try:
+                    res = __delete(remove_url)
+                    print(res)
+                except requests.exceptions.HTTPError:
+                    print(f'Could not add endpoint {endpoint_name}')
+        except requests.exceptions.HTTPError:
+            print(f'Route not found at {routes_url}')
 
 
 def register_app(realm, config):
@@ -128,23 +249,64 @@ def register_app(realm, config):
     name = config['name']  # app name
     url = config['service_url']  # service_url
 
-    oidc_endpoints = config.get('oidc_endpoints', {})
-    for endpoint_name, endpoint_url in oidc_endpoints.items():
+    oidc_endpoints = config.get('oidc_endpoints', [])
+    for ep in oidc_endpoints:
+        endpoint_name = ep['name']
+        endpoint_url = ep['url']
         data = {
             'name': f'{name}_oidc_{endpoint_name}',
             'url': f'{url}{endpoint_url}'
         }
-        __post(url=f'{KONG_URL}services/', data=data)
-        print(f'Added oidc kong service component: {name}_public_{endpoint_name} for service: {name}')
+        try:
+            __post(url=f'{KONG_URL}services/', data=data)
+            print(f'Added oidc kong service component: '
+                  f'{name}_public_{endpoint_name} for service: {name}')
+        except requests.exceptions.HTTPError:
+            print(f'Could not add endpoint {endpoint_name}')
 
-    public_endpoints = config.get('public_endpoints', {})
-    for endpoint_name, endpoint_url in public_endpoints.items():
+    public_endpoints = config.get('public_endpoints', [])
+    for ep in public_endpoints:
+        endpoint_name = ep['name']
+        endpoint_url = ep['url']
+
         data = {
             'name': f'{name}_public_{endpoint_name}',
             'url': f'{url}{endpoint_url}'
         }
-        __post(url=f'{KONG_URL}services/', data=data)
-        print(f'Added public kong service component: {name}_public_{endpoint_name} for service: {name}')
+        try:
+            __post(url=f'{KONG_URL}services/', data=data)
+            print(f'Added public kong service component: '
+                  f'{name}_public_{endpoint_name} for service: {name}')
+        except requests.exceptions.HTTPError:
+            print(f'Could not add endpoint {endpoint_name}')
+
+    global_endpoints = config.get('global_public_endpoints', [])
+    for ep in global_endpoints:
+        endpoint_name = ep['name']
+        endpoint_url = ep['url']
+        strip_path = json.dumps(ep['strip_path'])
+        service_name = f'{name}_global_{endpoint_name}'
+        data = {
+            'name': service_name,
+            'url': f'{url}{endpoint_url}'
+        }
+        try:
+            __post(url=f'{KONG_URL}services/', data=data)
+            print(f'Added global kong service component: '
+                  f'{service_name} for service: {name}')
+        except requests.exceptions.HTTPError as err:
+            print(f'Global service exists: {err}')
+
+        PUBLIC_ROUTE_URL = f'{KONG_URL}services/{service_name}/routes'
+        route_data = {
+            'paths': [f'{endpoint_url}'],
+            'strip_path': strip_path,
+        }
+        try:
+            confirmation = __post(url=PUBLIC_ROUTE_URL, data=route_data)
+            print(json.dumps(confirmation, indent=2))
+        except requests.exceptions.HTTPError:
+            print(f'Could not add endpoint {endpoint_name}')
 
 
 def load_service_definitions():
@@ -158,18 +320,29 @@ def load_service_definitions():
     return definitions
 
 
+CMDS = ['ADD', 'REMOVE']
+
 if __name__ == '__main__':
     REALM_NAME = sys.argv[1]
     SERVICE_NAME = sys.argv[2]
+    CMD = sys.argv[3]
+    if CMD not in CMDS:
+        raise KeyError(f'No command: {CMD}')
     SERVICE_DEFINITIONS = load_service_definitions()
-    if not SERVICE_NAME in SERVICE_DEFINITIONS:
+    if SERVICE_NAME not in SERVICE_DEFINITIONS:
         raise KeyError(f'No service definition for name: {SERVICE_NAME}')
     service_config = SERVICE_DEFINITIONS[SERVICE_NAME]
-
-    try:
-        register_app(REALM_NAME, service_config)
-    except Exception as err:
-        print(f'Could not register service: {err}')
-    print(f'Adding realm {REALM_NAME} to service: {SERVICE_NAME}')
-    add_realm(REALM_NAME, service_config)
-    print(f'Service {SERVICE_NAME} now being served by kong for realm {REALM_NAME}.')
+    if CMD == 'ADD':
+        try:
+            register_app(REALM_NAME, service_config)
+        except Exception as err:
+            print(f'Could not register service: {err}')
+        print(f'Adding realm {REALM_NAME} to service: {SERVICE_NAME}')
+        add_service_to_realm(REALM_NAME, service_config)
+        print(f'Service {SERVICE_NAME} now being served '
+              f'by kong for realm {REALM_NAME}.')
+    elif CMD == 'REMOVE':
+        if REALM_NAME == "ALL":
+            remove_service(service_config)
+        else:
+            remove_service_from_realm(REALM_NAME, service_config)

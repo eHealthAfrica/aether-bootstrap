@@ -27,7 +27,7 @@ docker volume  create aether_database_data 2>/dev/null || true
 
 ./scripts/generate_env_vars.sh
 
-docker-compose -f docker-compose-base.yml pull
+# docker-compose -f docker-compose-base.yml pull
 
 docker-compose up -d db
 until docker-compose run kernel eval pg_isready -q; do

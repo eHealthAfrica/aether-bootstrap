@@ -57,7 +57,7 @@ services:
   # ---------------------------------
 
   kernel-base:
-    image: ehealthafrica/aether-kernel:${AETHER_VERSION}
+    image: aether-kernel:latest # ehealthafrica/aether-kernel:${AETHER_VERSION}
     environment:
       # Uncomment these lines to enable single sign on if you use CAS
       # CAS_SERVER_URL: https://your.cas.server
@@ -103,9 +103,13 @@ services:
       EXPORT_HEADER_SEPARATOR: "/"
       EXPORT_HEADER_SHORTEN: "no"
 
+      APP_URL: "/<slug:realm>/<slug:service>"
+      STATIC_URL_PREFIX: "/_static/kernel/"
+      MULTITENANCY: "true"
       WEB_SERVER_PORT: 8000
       UWSGI_BUFFER_SIZE: 32768
-      UWSGI_SERVE_STATIC: "true"
+      # UWSGI_SERVE_STATIC: "true"
+      CUSTOM_UWSGI_SERVE_STATIC: "true"
     volumes:
       # static folder
       - ./.persistent_data/static/kernel:/var/www/static
