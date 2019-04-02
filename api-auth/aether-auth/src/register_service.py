@@ -68,6 +68,10 @@ def __delete(url):
         raise e
 
 
+def _realm_in_service(realm, service):
+    return any([path.strip('/').startswith(realm) for path in service['paths']])
+
+
 def add_service_to_realm(realm, config):
 
     name = config['name']
@@ -163,9 +167,7 @@ def remove_service_from_realm(realm, config):
         routes_url = f'{KONG_URL}services/{service_name}/routes'
         res = __get(routes_url)
         for service in res['data']:
-            remove = any([path.strip('/').startswith(realm)
-                         for path in service['paths']])
-            if remove:
+            if _realm_in_service(realm, service):
                 print(f'Removing {service["paths"]}')
                 remove_url = f'{KONG_URL}routes/{service["id"]}'
                 res = __delete(remove_url)
@@ -178,9 +180,7 @@ def remove_service_from_realm(realm, config):
         routes_url = f'{KONG_URL}services/{service_name}/routes'
         res = __get(routes_url)
         for service in res['data']:
-            remove = any([path.strip('/').startswith(realm)
-                         for path in service['paths']])
-            if remove:
+            if _realm_in_service(realm, service):
                 print(f'Removing {service["paths"]}')
                 remove_url = f'{KONG_URL}routes/{service["id"]}'
                 res = __delete(remove_url)
