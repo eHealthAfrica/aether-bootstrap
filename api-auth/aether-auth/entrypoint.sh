@@ -28,12 +28,12 @@ show_help () {
     eval                                : eval shell command
 
     make_realm                          : create realms from the artifacts in /code/realm
-    setup_auth                          : register keycloak and in Kong.
+    setup_auth                          : register keycloak in Kong.
 
     add_service      {service}  {realm} : adds a service to an existing realm,
                                           using the service definition in /service in Kong.
 
-    remove_service   {service}  {realm} : removes a service to an existing realm
+    remove_service   {service}  {realm} : removes a service from an existing realm
                                           using the service definition in /service in Kong.
 
     add_solution     {solution} {realm} : adds a package of services to an existing realm.
@@ -61,7 +61,7 @@ case "$1" in
 
     setup_auth )
         # add keycloak to Kong
-        python /code/src/register_keycloak.py keycloak    ${KEYCLOAK_INTERNAL}
+        python /code/src/register_keycloak.py keycloak ${KEYCLOAK_INTERNAL}
     ;;
 
     add_service )
@@ -72,7 +72,7 @@ case "$1" in
     ;;
 
     remove_service )
-        # removes a service to an existing realm,
+        # removes a service from an existing realm,
         # using the service definition in /service
         # usage: remove_service {service} {realm}
         python /code/src/manage_service.py REMOVE SERVICE "${@:2}"
