@@ -31,7 +31,6 @@ APP_PORT = get_env('APP_PORT')
 
 # Keycloak Information
 KEYCLOAK_INTERNAL = get_env('KEYCLOAK_INTERNAL')
-KEYCLOAK_URL = f'{HOST}/keycloak/auth/'
 
 KC_URL = f'{KEYCLOAK_INTERNAL}/keycloak/auth/'  # internal
 KC_ADMIN_USER = get_env('KEYCLOAK_GLOBAL_ADMIN')
@@ -40,8 +39,8 @@ KC_MASTER_REALM = 'master'
 
 
 # Kong Information
-KONG_URL = f'{get_env("KONG_INTERNAL")}/'
-CONSUMERS_URL = f'{KONG_URL}consumers'
+KONG_URL = get_env('KONG_INTERNAL')
+CONSUMERS_URL = f'{KONG_URL}/consumers'
 
 
 REALMS_PATH = '/code/realm'

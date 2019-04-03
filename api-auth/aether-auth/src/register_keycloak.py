@@ -43,11 +43,11 @@ def register_app(name, url):
         'name': f'{name}',
         'url': f'{url}',
     }
-    client_info = __post(url=f'{KONG_URL}services/', data=data)
+    client_info = __post(url=f'{KONG_URL}/services/', data=data)
     client_id = client_info['id']
 
     # ADD CORS Plugin to Kong for whole domain CORS
-    PLUGIN_URL = f'{KONG_URL}services/{name}/plugins'
+    PLUGIN_URL = f'{KONG_URL}/services/{name}/plugins'
     data = {
         'name': 'cors',
         'config.origins': f'{HOST}/*',
@@ -61,7 +61,7 @@ def register_app(name, url):
 
     # Routes
     # Add a route which we will NOT protect
-    ROUTE_URL = f'{KONG_URL}services/{name}/routes'
+    ROUTE_URL = f'{KONG_URL}/services/{name}/routes'
     data = {
         'paths' : [f'/{name}'],
         'strip_path': 'false',

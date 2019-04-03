@@ -139,6 +139,9 @@ function _create_kc_public_client {
     REALM=$1
     CLIENT=$2
 
+    KC_ID=$(docker-compose ps -q keycloak)
+    KCADM="docker container exec -i ${KC_ID} ./keycloak/bin/kcadm.sh"
+
     CLIENT_URL="${BASE_HOST}/${REALM}/${CLIENT}"
     echo "_________________________________________________________________ Creating client  [${CLIENT}]..."
     $KCADM \
@@ -158,6 +161,10 @@ function _create_kc_private_client {
 
     echo "_________________________________________________________________ Creating client  [${REALM}-oidc]..."
     CLIENT_URL="${BASE_HOST}/${REALM}/"
+
+    KC_ID=$(docker-compose ps -q keycloak)
+    KCADM="docker container exec -i ${KC_ID} ./keycloak/bin/kcadm.sh"
+
     $KCADM \
         create clients \
         -r "${REALM}" \

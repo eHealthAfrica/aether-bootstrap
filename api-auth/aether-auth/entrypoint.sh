@@ -27,7 +27,6 @@ show_help () {
     bash                                : run bash
     eval                                : eval shell command
 
-    make_realm                          : create realms from the artifacts in /code/realm
     setup_auth                          : register keycloak in Kong.
 
     add_service      {service}  {realm} : adds a service to an existing realm,
@@ -52,11 +51,6 @@ case "$1" in
 
     eval )
         eval "${@:2}"
-    ;;
-
-    make_realm )
-        # setups realms from those available in /realm folder
-        python /code/src/make_realm.py
     ;;
 
     setup_auth )

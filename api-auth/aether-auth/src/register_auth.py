@@ -43,11 +43,11 @@ def register_app(name, url):
         'name':f'{name}',
         'url': f'{url}',
     }
-    client_info = __post(url=f'{KONG_URL}services/', data=data)
+    client_info = __post(url=f'{KONG_URL}/services/', data=data)
     client_id = client_info['id']
 
     # ADD CORS Plugin to Kong for all localhost requests
-    PLUGIN_URL = f'{KONG_URL}services/{name}/plugins'
+    PLUGIN_URL = f'{KONG_URL}/services/{name}/plugins'
     data = {
         'name': 'cors',
         'config.origins': f'{HOST}/*',
@@ -60,7 +60,7 @@ def register_app(name, url):
     __post(url=PLUGIN_URL, data=data)
 
     # routes
-    ROUTE_URL = f'{KONG_URL}services/{name}/routes'
+    ROUTE_URL = f'{KONG_URL}/services/{name}/routes'
 
     # open Route
     # EVERYTHING past /login will be public
@@ -80,7 +80,7 @@ def register_app(name, url):
     protected_route_id = route_info['id']
 
     # Add JWT Plugin to protected route.
-    ROUTE_URL = f'{KONG_URL}routes/{protected_route_id}/plugins'
+    ROUTE_URL = f'{KONG_URL}/routes/{protected_route_id}/plugins'
     data = {
         'name': 'jwt',
         'config.cookie_names' : [JWT_COOKIE],
