@@ -327,12 +327,12 @@ def load_definitions(def_path):
     return definitions
 
 
-def handle_service(realm, service, action):
+def handle_service(realm, service, command):
     if service not in SERVICE_DEFINITIONS:
         raise KeyError(f'No service definition for name: {service}')
 
     service_config = SERVICE_DEFINITIONS[service]
-    if action == 'ADD':
+    if command == 'ADD':
         try:
             register_app(realm, service_config)
         except Exception as err:
@@ -342,39 +342,39 @@ def handle_service(realm, service, action):
         add_service_to_realm(realm, service_config)
         print(f'Service {service} now being served by kong for realm {realm}.')
 
-    elif action == 'REMOVE':
-        if realm == 'ALL':
+    elif command == 'REMOVE':
+        if realm in ['ALL', '*']:
             remove_service(service_config)
         else:
             remove_service_from_realm(realm, service_config)
 
 
-def handle_solution(realm, solution, action):
+def handle_solution(realm, solution, command):
     if solution not in SOLUTION_DEFINITIONS:
         raise KeyError(f'No Solution definition for name: {solution}')
 
     services = SOLUTION_DEFINITIONS[solution]['services']
     for service in services:
-        handle_service(realm, service, action)
+        handle_service(realm, service, command)
 
 
 CMDS = ['ADD', 'REMOVE']
 TYPES = ['SERVICE', 'SOLUTION']
 
-
 if __name__ == '__main__':
     CMD = sys.argv[1]
+    if CMD not in CMDS:
+        raise KeyError(f'No command: {CMD}')
+
     TYPE = sys.argv[2]
+    if TYPE not in TYPES:
+        raise KeyError(f'No type: {TYPE}')
+
     SERVICE_NAME = sys.argv[3]
     REALM_NAME = sys.argv[4]
 
     SERVICE_DEFINITIONS = load_definitions(SERVICES_PATH)
     SOLUTION_DEFINITIONS = load_definitions(SOLUTIONS_PATH)
-
-    if TYPE not in TYPES:
-        raise KeyError(f'No type: {TYPE}')
-    if CMD not in CMDS:
-        raise KeyError(f'No command: {CMD}')
 
     if TYPE == 'SERVICE':
         handle_service(REALM_NAME, SERVICE_NAME, CMD)
