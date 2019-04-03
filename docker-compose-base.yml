@@ -320,7 +320,7 @@ services:
       KONG_PLUGINS: bundled,kong-oidc-auth
 
   keycloak-base:
-    build: ./api-auth/aether-auth/keycloak
+    build: ./api-auth/keycloak
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: db
