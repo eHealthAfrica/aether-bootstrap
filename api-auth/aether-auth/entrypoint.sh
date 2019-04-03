@@ -63,7 +63,7 @@ case "$1" in
 
     setup_auth )
         # add Keycloak to Kong
-        python /code/src/register_keycloak.py keycloak ${KEYCLOAK_INTERNAL}
+        python /code/src/register_keycloak.py
     ;;
 
     add_service )

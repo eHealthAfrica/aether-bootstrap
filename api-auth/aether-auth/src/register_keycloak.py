@@ -18,22 +18,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
-import requests
-import sys
-
-from settings import HOST, KONG_URL
-
-
-def __post(url, data):
-    res = requests.post(url, data=data)
-    try:
-        res.raise_for_status()
-        return res.json()
-    except Exception as e:
-        print(res.status_code)
-        print(res.json())
-        raise e
+from helpers import request_post
+from settings import HOST, KONG_URL, KEYCLOAK_INTERNAL
 
 
 def register_app(name, url):
@@ -43,21 +29,21 @@ def register_app(name, url):
         'name': f'{name}',
         'url': f'{url}',
     }
-    client_info = __post(url=f'{KONG_URL}/services/', data=data)
+    client_info = request_post(url=f'{KONG_URL}/services/', data=data)
     client_id = client_info['id']
 
     # ADD CORS Plugin to Kong for whole domain CORS
     PLUGIN_URL = f'{KONG_URL}/services/{name}/plugins'
     data = {
         'name': 'cors',
-        'config.origins': f'{HOST}/*',
-        'config.methods': ['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-        'config.headers': 'Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, Authorization',
-        'config.exposed_headers': 'Authorization',
-        'config.max_age': 3600,
         'config.credentials': 'true',
+        'config.exposed_headers': 'Authorization',
+        'config.headers': 'Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, Authorization',
+        'config.max_age': 3600,
+        'config.methods': ['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        'config.origins': f'{HOST}/*',
     }
-    __post(url=PLUGIN_URL, data=data)
+    request_post(url=PLUGIN_URL, data=data)
 
     # Routes
     # Add a route which we will NOT protect
@@ -67,14 +53,14 @@ def register_app(name, url):
         'strip_path': 'false',
         'preserve_host': 'false',  # This is keycloak specific.
     }
-    __post(url=ROUTE_URL, data=data)
+    request_post(url=ROUTE_URL, data=data)
 
     return client_id
 
 
 if __name__ == '__main__':
-    CLIENT_NAME = sys.argv[1]
-    CLIENT_URL = sys.argv[2]
+    CLIENT_NAME = 'keycloak'
+    CLIENT_URL = KEYCLOAK_INTERNAL
 
     print(f'Exposing Service {CLIENT_NAME} @ {CLIENT_URL}')
     register_app(CLIENT_NAME, CLIENT_URL)

@@ -20,11 +20,12 @@
 
 import json
 import os
-import requests
 import sys
 
 from keycloak import KeycloakAdmin, KeycloakOpenID
+from requests.exceptions import HTTPError
 
+from helpers import request_post, request_get, request_delete
 from settings import (
     HOST,
     DOMAIN,
@@ -39,38 +40,6 @@ from settings import (
     SERVICES_PATH,
     SOLUTIONS_PATH,
 )
-
-
-def __post(url, data):
-    res = requests.post(url, data=data)
-    try:
-        res.raise_for_status()
-        return res.json()
-    except Exception as e:
-        print(res.status_code)
-        print(res.json())
-        raise e
-
-
-def __get(url):
-    res = requests.get(url)
-    try:
-        res.raise_for_status()
-        return res.json()
-    except Exception as e:
-        print(res.status_code)
-        print(res.json())
-        raise e
-
-
-def __delete(url):
-    res = requests.delete(url)
-    try:
-        res.raise_for_status()
-        return res.text
-    except Exception as e:
-        print(res.status_code)
-        raise e
 
 
 def _realm_in_service(realm, service):
@@ -135,11 +104,11 @@ def add_service_to_realm(realm, config):
             'paths': [f'/{realm}/{service_name}{endpoint_url}'],
             'strip_path': strip_path,
         }
-        route_info = __post(url=ROUTE_URL, data=route_data)
+        route_info = request_post(url=ROUTE_URL, data=route_data)
         print(json.dumps(route_info, indent=2))
         protected_route_id = route_info['id']
 
-        confirmation = __post(
+        confirmation = request_post(
             url=f'{KONG_URL}/routes/{protected_route_id}/plugins',
             data=oidc_data
         )
@@ -157,7 +126,7 @@ def add_service_to_realm(realm, config):
             'paths': [f'/{realm}/{service_name}{endpoint_url}'],
             'strip_path': strip_path,
         }
-        confirmation = __post(url=PUBLIC_ROUTE_URL, data=route_data)
+        confirmation = request_post(url=PUBLIC_ROUTE_URL, data=route_data)
         print(json.dumps(confirmation, indent=2))
 
 
@@ -169,12 +138,12 @@ def remove_service_from_realm(realm, config):
         endpoint_name = ep['name']
         service_name = f'{name}_oidc_{endpoint_name}'
         routes_url = f'{KONG_URL}/services/{service_name}/routes'
-        res = __get(routes_url)
+        res = request_get(routes_url)
         for service in res['data']:
             if _realm_in_service(realm, service):
                 print(f'Removing {service["paths"]}')
                 remove_url = f'{KONG_URL}/routes/{service["id"]}'
-                res = __delete(remove_url)
+                res = request_delete(remove_url)
                 print(res)
 
     public_endpoints = config.get('public_endpoints', [])
@@ -182,12 +151,12 @@ def remove_service_from_realm(realm, config):
         endpoint_name = ep['name']
         service_name = f'{name}_public_{endpoint_name}'
         routes_url = f'{KONG_URL}/services/{service_name}/routes'
-        res = __get(routes_url)
+        res = request_get(routes_url)
         for service in res['data']:
             if _realm_in_service(realm, service):
                 print(f'Removing {service["paths"]}')
                 remove_url = f'{KONG_URL}/routes/{service["id"]}'
-                res = __delete(remove_url)
+                res = request_delete(remove_url)
                 print(res)
 
 
@@ -200,16 +169,16 @@ def remove_service(config):
         service_name = f'{name}_oidc_{endpoint_name}'
         routes_url = f'{KONG_URL}/services/{service_name}/routes'
         try:
-            res = __get(routes_url)
+            res = request_get(routes_url)
             for service in res['data']:
                 print(f'Removing {service["paths"]}')
                 remove_url = f'{KONG_URL}/routes/{service["id"]}'
                 try:
-                    res = __delete(remove_url)
+                    res = request_delete(remove_url)
                     print(res)
-                except requests.exceptions.HTTPError:
+                except HTTPError:
                     print(f'Could not remove endpoint {endpoint_name}')
-        except requests.exceptions.HTTPError:
+        except HTTPError:
             print(f'Route not found at {routes_url}')
 
     public_endpoints = config.get('public_endpoints', [])
@@ -218,16 +187,16 @@ def remove_service(config):
         service_name = f'{name}_public_{endpoint_name}'
         routes_url = f'{KONG_URL}/services/{service_name}/routes'
         try:
-            res = __get(routes_url)
+            res = request_get(routes_url)
             for service in res['data']:
                 print(f'Removing {service["paths"]}')
                 remove_url = f'{KONG_URL}/routes/{service["id"]}'
                 try:
-                    res = __delete(remove_url)
+                    res = request_delete(remove_url)
                     print(res)
-                except requests.exceptions.HTTPError:
+                except HTTPError:
                     print(f'Could not remove endpoint {endpoint_name}')
-        except requests.exceptions.HTTPError:
+        except HTTPError:
             print(f'Route not found at {routes_url}')
 
     global_endpoints = config.get('global_public_endpoints', [])
@@ -236,16 +205,16 @@ def remove_service(config):
         service_name = f'{name}_global_{endpoint_name}'
         routes_url = f'{KONG_URL}/services/{service_name}/routes'
         try:
-            res = __get(routes_url)
+            res = request_get(routes_url)
             for service in res['data']:
                 print(f'Removing {service["paths"]}')
                 remove_url = f'{KONG_URL}/routes/{service["id"]}'
                 try:
-                    res = __delete(remove_url)
+                    res = request_delete(remove_url)
                     print(res)
-                except requests.exceptions.HTTPError:
+                except HTTPError:
                     print(f'Could not remove endpoint {endpoint_name}')
-        except requests.exceptions.HTTPError:
+        except HTTPError:
             print(f'Route not found at {routes_url}')
 
 
@@ -264,10 +233,10 @@ def register_app(realm, config):
             'url': f'{url}{endpoint_url}'
         }
         try:
-            __post(url=f'{KONG_URL}/services/', data=data)
+            request_post(url=f'{KONG_URL}/services/', data=data)
             print(f'Added oidc kong service component: '
                   f'{name}_public_{endpoint_name} for service: {name}')
-        except requests.exceptions.HTTPError:
+        except HTTPError:
             print(f'Could not add endpoint {endpoint_name}')
 
     public_endpoints = config.get('public_endpoints', [])
@@ -280,10 +249,10 @@ def register_app(realm, config):
             'url': f'{url}{endpoint_url}'
         }
         try:
-            __post(url=f'{KONG_URL}/services/', data=data)
+            request_post(url=f'{KONG_URL}/services/', data=data)
             print(f'Added public kong service component: '
                   f'{name}_public_{endpoint_name} for service: {name}')
-        except requests.exceptions.HTTPError:
+        except HTTPError:
             print(f'Could not add endpoint {endpoint_name}')
 
     global_endpoints = config.get('global_public_endpoints', [])
@@ -297,10 +266,10 @@ def register_app(realm, config):
             'url': f'{url}{endpoint_url}'
         }
         try:
-            __post(url=f'{KONG_URL}/services/', data=data)
+            request_post(url=f'{KONG_URL}/services/', data=data)
             print(f'Added global kong service component: '
                   f'{service_name} for service: {name}')
-        except requests.exceptions.HTTPError as err:
+        except HTTPError as err:
             print(f'Global service exists: {err}')
 
         PUBLIC_ROUTE_URL = f'{KONG_URL}/services/{service_name}/routes'
@@ -309,9 +278,9 @@ def register_app(realm, config):
             'strip_path': strip_path,
         }
         try:
-            confirmation = __post(url=PUBLIC_ROUTE_URL, data=route_data)
+            confirmation = request_post(url=PUBLIC_ROUTE_URL, data=route_data)
             print(json.dumps(confirmation, indent=2))
-        except requests.exceptions.HTTPError:
+        except HTTPError:
             print(f'Could not add endpoint {endpoint_name}')
 
 
