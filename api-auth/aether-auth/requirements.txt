@@ -1,5 +1,0 @@
-jwcrypto
-pycrypto
-pyjwt
-python-keycloak
-requests

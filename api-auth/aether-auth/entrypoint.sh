@@ -24,22 +24,30 @@ show_help () {
     echo """
     Commands
     ----------------------------------------------------------------------------
-    bash                                : run bash
-    eval                                : eval shell command
+    bash             : run bash
+    eval             : eval shell command
 
-    setup_auth                          : register keycloak in Kong.
+    setup_auth       : register Keycloak in Kong.
 
-    add_service      {service}  {realm} : adds a service to an existing realm,
-                                          using the service definition in /service in Kong.
+    add_service      : adds a service to an existing realm in Kong,
+                       using the service definition in /service directory.
 
-    remove_service   {service}  {realm} : removes a service from an existing realm
-                                          using the service definition in /service in Kong.
+                       usage: add_service {service} {realm}
 
-    add_solution     {solution} {realm} : adds a package of services to an existing realm.
-                                          using the service definition in /service in Kong.
+    remove_service   : removes a service from an existing realm in Kong,
+                       using the service definition in /service directory.
 
-    remove_solution  {solution} {realm} : removes a package of services from an existing realm
-                                          using the service definition in /service in Kong.
+                       usage: remove_service {service} {realm}
+
+    add_solution     : adds a package of services to an existing realm in Kong,
+                       using the solution definition in /solution directory.
+
+                       usage: add_solution {solution} {realm}
+
+    remove_solution  : removes a package of services from an existing realm in Kong,
+                       using the solution definition in /solution directory.
+
+                       usage: remove_solution {solution} {realm}
 
     """
 }
@@ -54,7 +62,7 @@ case "$1" in
     ;;
 
     setup_auth )
-        # add keycloak to Kong
+        # add Keycloak to Kong
         python /code/src/register_keycloak.py keycloak ${KEYCLOAK_INTERNAL}
     ;;
 
@@ -74,15 +82,15 @@ case "$1" in
 
     add_solution )
         # adds a package of services to an existing realm,
-        # using the service definition in /service
-        # usage: add_solution {service} {realm}
+        # using the solution definition in /solution
+        # usage: add_solution {solution} {realm}
         python /code/src/manage_service.py ADD SOLUTION "${@:2}"
     ;;
 
     remove_solution )
         # removes a package of services from an existing realm,
-        # using the service definition in /service
-        # usage: remove_solution {service} {realm}
+        # using the solution definition in /solution
+        # usage: remove_solution {solution} {realm}
         python /code/src/manage_service.py REMOVE SOLUTION "${@:2}"
     ;;
 
