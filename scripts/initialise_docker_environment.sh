@@ -23,9 +23,9 @@ set -Eeuo pipefail
 source ./scripts/aether_functions.sh
 
 echo ""
-echo "================================================================="
-echo "Initializing Aether environment, this will take about 60 seconds."
-echo "================================================================="
+echo "========================================================================="
+echo "    Initializing Aether environment, this will take about 60 seconds."
+echo "========================================================================="
 echo ""
 
 create_docker_assets
@@ -35,6 +35,7 @@ docker-compose kill
 
 echo "_________________________________________________________________ Pulling docker images..."
 docker-compose -f docker-compose-base.yml pull
+echo ""
 
 echo "_________________________________________________________________ Starting database server..."
 docker-compose up -d db
@@ -42,6 +43,7 @@ until docker-compose run --no-deps kernel eval pg_isready -q; do
     >&2 echo "Waiting for database..."
     sleep 2
 done
+echo ""
 
 
 echo "_________________________________________________________________ Preparing aether containers..."
@@ -70,22 +72,6 @@ echo ""
 CHECK_URL="docker-compose run --no-deps kernel manage check_url -u"
 
 
-echo "_________________________________________________________________ Preparing keycloak..."
-docker-compose up -d keycloak
-until $CHECK_URL "$KEYCLOAK_INTERNAL/keycloak/auth/" >/dev/null; do
-    >&2 echo "Waiting for keycloak..."
-    sleep 2
-done
-echo ""
-
-echo "_________________________________________________________________ Creating initial realms in keycloak..."
-REALMS=( dev dev2 )
-for REALM in "${REALMS[@]}"; do
-    create_kc_realm $REALM
-done
-echo ""
-
-
 echo "_________________________________________________________________ Preparing kong..."
 #
 # https://docs.konghq.com/install/docker/
@@ -106,15 +92,36 @@ until $CHECK_URL $KONG_INTERNAL >/dev/null; do
 done
 echo ""
 
-echo "_________________________________________________________________ Registring keycloak in kong..."
+echo "_________________________________________________________________ Registering keycloak in kong..."
 docker-compose run auth setup_auth
+echo ""
+
+
+echo "_________________________________________________________________ Preparing keycloak..."
+docker-compose up -d keycloak
+until $CHECK_URL "$KEYCLOAK_INTERNAL/keycloak/auth/" >/dev/null; do
+    >&2 echo "Waiting for keycloak..."
+    sleep 2
+done
+echo ""
+
+echo "_________________________________________________________________ Creating initial realms in keycloak..."
+# REALMS=( dev dev2 )
+# for REALM in "${REALMS[@]}"; do
+#     create_kc_realm $REALM
+# done
+docker-compose run auth make_realm
+REALMS=( dev dev2 )
+for REALM in "${REALMS[@]}"; do
+    docker-compose run auth add_solution aether $REALM
+done
 echo ""
 
 
 docker-compose kill
 
 echo ""
-echo "================================================================="
-echo "Done."
-echo "================================================================="
+echo "========================================================================="
+echo "                                 Done!"
+echo "========================================================================="
 echo ""
