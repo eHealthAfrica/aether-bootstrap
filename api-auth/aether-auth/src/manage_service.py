@@ -23,7 +23,7 @@ import os
 import requests
 import sys
 
-from keycloak import KeycloakAdmin
+from keycloak import KeycloakAdmin, KeycloakOpenID
 
 from settings import (
     HOST,
@@ -35,7 +35,6 @@ from settings import (
     KC_ADMIN_USER,
     KC_ADMIN_PASSWORD,
     KC_MASTER_REALM,
-    KEYCLOAK_URL,
 
     SERVICES_PATH,
     SOLUTIONS_PATH,
@@ -80,51 +79,48 @@ def _realm_in_service(realm, service):
 
 def add_service_to_realm(realm, config):
 
-    name = config['name']
+    service_name = config['name']
+    client_id = f'{realm}-oidc'
+    client_secret = None
 
+    # https://bitbucket.org/agriness/python-keycloak
+
+    # find out client secret
     keycloak_admin = KeycloakAdmin(server_url=KC_URL,
                                    username=KC_ADMIN_USER,
                                    password=KC_ADMIN_PASSWORD,
                                    realm_name=KC_MASTER_REALM,
-                                   verify=False)
+                                   )
 
-    token = keycloak_admin.token['access_token']
-    headers = {
-        'content-type': 'application/json',
-        'authorization': f'Bearer {token}',
-    }
+    # change to our realm
+    keycloak_admin.realm_name = realm
+    for client in keycloak_admin.get_clients():
+        if client['clientId'] == client_id:
+            secret = keycloak_admin.get_client_secrets(client['id'])
+            client_secret = secret.get('value')
+            break
 
-    client_id = f'{realm}-oidc'
-    client_secret_url = f'{KC_URL}admin/realms/{realm}/clients/{client_id}/client-secret'
-    res = requests.get(url=client_secret_url, headers=headers)
-    try:
-        print(res.text)
-        res.raise_for_status()
-        client_secret = res.json()['value']
-    except Exception as e:
-        print(res.status_code)
-        print(str(e))
-        raise ValueError('Could not get realm secret.')
+    keycloak_openid = KeycloakOpenID(server_url=KC_URL,
+                                     realm_name=realm,
+                                     client_id=client_id,
+                                     client_secret_key=client_secret,
+                                     )
+    config_well_know = keycloak_openid.well_know()
 
     # OIDC plugin settings (same for all)
-    auth_path = f'{KEYCLOAK_URL}realms/{realm}/protocol/openid-connect/auth'
-    token_path = f'{KEYCLOAK_URL}realms/{realm}/protocol/openid-connect/token'
-    user_path = f'{KEYCLOAK_URL}realms/{realm}/protocol/openid-connect/userinfo'
-    logout_url = f'{KEYCLOAK_URL}realms/{realm}/protocol/openid-connect/logout'
-
     oidc_data = {
         'name': 'kong-oidc-auth',
-        'config.authorize_url': auth_path,
-        'config.scope': 'openid+profile+email+iss',
-        'config.token_url': token_path,
-        'config.client_id': f'{realm}-oidc',
+        'config.app_login_redirect_url': f'{HOST}/{realm}/{service_name}/',
+        'config.authorize_url': config_well_know['authorization_endpoint'],
+        'config.client_id': client_id,
         'config.client_secret': client_secret,
-        'config.user_url': user_path,
-        'config.email_key': 'email',
-        'config.app_login_redirect_url': f'{HOST}/{realm}/{name}/',
-        'config.service_logout_url': logout_url,
         'config.cookie_domain': DOMAIN,
-        'config.user_info_cache_enabled': 'true'
+        'config.email_key': 'email',
+        'config.scope': 'openid+profile+email+iss',
+        'config.service_logout_url': config_well_know['end_session_endpoint'],
+        'config.token_url': config_well_know['token_endpoint'],
+        'config.user_info_cache_enabled': 'true',
+        'config.user_url': config_well_know['userinfo_endpoint'],
     }
 
     oidc_endpoints = config.get('oidc_endpoints', [])
@@ -133,10 +129,10 @@ def add_service_to_realm(realm, config):
         endpoint_url = ep['url']
         strip_path = json.dumps(ep['strip_path'])
 
-        route_name = f'{name}_oidc_{endpoint_name}'
-        ROUTE_URL = f'{KONG_URL}services/{route_name}/routes'
+        route_name = f'{service_name}_oidc_{endpoint_name}'
+        ROUTE_URL = f'{KONG_URL}/services/{route_name}/routes'
         route_data = {
-            'paths': [f'/{realm}/{name}{endpoint_url}'],
+            'paths': [f'/{realm}/{service_name}{endpoint_url}'],
             'strip_path': strip_path,
         }
         route_info = __post(url=ROUTE_URL, data=route_data)
@@ -144,7 +140,7 @@ def add_service_to_realm(realm, config):
         protected_route_id = route_info['id']
 
         confirmation = __post(
-            url=f'{KONG_URL}routes/{protected_route_id}/plugins',
+            url=f'{KONG_URL}/routes/{protected_route_id}/plugins',
             data=oidc_data
         )
         print(json.dumps(confirmation, indent=2))
@@ -155,10 +151,10 @@ def add_service_to_realm(realm, config):
         endpoint_url = ep['url']
         strip_path = json.dumps(ep['strip_path'])
         print(f'{endpoint_name} | {endpoint_url} | {strip_path}')
-        route_name = f'{name}_public_{endpoint_name}'
-        PUBLIC_ROUTE_URL = f'{KONG_URL}services/{route_name}/routes'
+        route_name = f'{service_name}_public_{endpoint_name}'
+        PUBLIC_ROUTE_URL = f'{KONG_URL}/services/{route_name}/routes'
         route_data = {
-            'paths': [f'/{realm}/{name}{endpoint_url}'],
+            'paths': [f'/{realm}/{service_name}{endpoint_url}'],
             'strip_path': strip_path,
         }
         confirmation = __post(url=PUBLIC_ROUTE_URL, data=route_data)
@@ -172,12 +168,12 @@ def remove_service_from_realm(realm, config):
     for ep in oidc_endpoints:
         endpoint_name = ep['name']
         service_name = f'{name}_oidc_{endpoint_name}'
-        routes_url = f'{KONG_URL}services/{service_name}/routes'
+        routes_url = f'{KONG_URL}/services/{service_name}/routes'
         res = __get(routes_url)
         for service in res['data']:
             if _realm_in_service(realm, service):
                 print(f'Removing {service["paths"]}')
-                remove_url = f'{KONG_URL}routes/{service["id"]}'
+                remove_url = f'{KONG_URL}/routes/{service["id"]}'
                 res = __delete(remove_url)
                 print(res)
 
@@ -185,12 +181,12 @@ def remove_service_from_realm(realm, config):
     for ep in public_endpoints:
         endpoint_name = ep['name']
         service_name = f'{name}_public_{endpoint_name}'
-        routes_url = f'{KONG_URL}services/{service_name}/routes'
+        routes_url = f'{KONG_URL}/services/{service_name}/routes'
         res = __get(routes_url)
         for service in res['data']:
             if _realm_in_service(realm, service):
                 print(f'Removing {service["paths"]}')
-                remove_url = f'{KONG_URL}routes/{service["id"]}'
+                remove_url = f'{KONG_URL}/routes/{service["id"]}'
                 res = __delete(remove_url)
                 print(res)
 
@@ -202,17 +198,17 @@ def remove_service(config):
     for ep in oidc_endpoints:
         endpoint_name = ep['name']
         service_name = f'{name}_oidc_{endpoint_name}'
-        routes_url = f'{KONG_URL}services/{service_name}/routes'
+        routes_url = f'{KONG_URL}/services/{service_name}/routes'
         try:
             res = __get(routes_url)
             for service in res['data']:
                 print(f'Removing {service["paths"]}')
-                remove_url = f'{KONG_URL}routes/{service["id"]}'
+                remove_url = f'{KONG_URL}/routes/{service["id"]}'
                 try:
                     res = __delete(remove_url)
                     print(res)
                 except requests.exceptions.HTTPError:
-                    print(f'Could not add endpoint {endpoint_name}')
+                    print(f'Could not remove endpoint {endpoint_name}')
         except requests.exceptions.HTTPError:
             print(f'Route not found at {routes_url}')
 
@@ -220,17 +216,17 @@ def remove_service(config):
     for ep in public_endpoints:
         endpoint_name = ep['name']
         service_name = f'{name}_public_{endpoint_name}'
-        routes_url = f'{KONG_URL}services/{service_name}/routes'
+        routes_url = f'{KONG_URL}/services/{service_name}/routes'
         try:
             res = __get(routes_url)
             for service in res['data']:
                 print(f'Removing {service["paths"]}')
-                remove_url = f'{KONG_URL}routes/{service["id"]}'
+                remove_url = f'{KONG_URL}/routes/{service["id"]}'
                 try:
                     res = __delete(remove_url)
                     print(res)
                 except requests.exceptions.HTTPError:
-                    print(f'Could not add endpoint {endpoint_name}')
+                    print(f'Could not remove endpoint {endpoint_name}')
         except requests.exceptions.HTTPError:
             print(f'Route not found at {routes_url}')
 
@@ -238,17 +234,17 @@ def remove_service(config):
     for ep in global_endpoints:
         endpoint_name = ep['name']
         service_name = f'{name}_global_{endpoint_name}'
-        routes_url = f'{KONG_URL}services/{service_name}/routes'
+        routes_url = f'{KONG_URL}/services/{service_name}/routes'
         try:
             res = __get(routes_url)
             for service in res['data']:
                 print(f'Removing {service["paths"]}')
-                remove_url = f'{KONG_URL}routes/{service["id"]}'
+                remove_url = f'{KONG_URL}/routes/{service["id"]}'
                 try:
                     res = __delete(remove_url)
                     print(res)
                 except requests.exceptions.HTTPError:
-                    print(f'Could not add endpoint {endpoint_name}')
+                    print(f'Could not remove endpoint {endpoint_name}')
         except requests.exceptions.HTTPError:
             print(f'Route not found at {routes_url}')
 
@@ -268,7 +264,7 @@ def register_app(realm, config):
             'url': f'{url}{endpoint_url}'
         }
         try:
-            __post(url=f'{KONG_URL}services/', data=data)
+            __post(url=f'{KONG_URL}/services/', data=data)
             print(f'Added oidc kong service component: '
                   f'{name}_public_{endpoint_name} for service: {name}')
         except requests.exceptions.HTTPError:
@@ -284,7 +280,7 @@ def register_app(realm, config):
             'url': f'{url}{endpoint_url}'
         }
         try:
-            __post(url=f'{KONG_URL}services/', data=data)
+            __post(url=f'{KONG_URL}/services/', data=data)
             print(f'Added public kong service component: '
                   f'{name}_public_{endpoint_name} for service: {name}')
         except requests.exceptions.HTTPError:
@@ -301,13 +297,13 @@ def register_app(realm, config):
             'url': f'{url}{endpoint_url}'
         }
         try:
-            __post(url=f'{KONG_URL}services/', data=data)
+            __post(url=f'{KONG_URL}/services/', data=data)
             print(f'Added global kong service component: '
                   f'{service_name} for service: {name}')
         except requests.exceptions.HTTPError as err:
             print(f'Global service exists: {err}')
 
-        PUBLIC_ROUTE_URL = f'{KONG_URL}services/{service_name}/routes'
+        PUBLIC_ROUTE_URL = f'{KONG_URL}/services/{service_name}/routes'
         route_data = {
             'paths': [f'{endpoint_url}'],
             'strip_path': strip_path,
@@ -319,57 +315,48 @@ def register_app(realm, config):
             print(f'Could not add endpoint {endpoint_name}')
 
 
-def load_service_definitions():
+def load_definitions(def_path):
     definitions = {}
-    _files = os.listdir(SERVICES_PATH)
+    _files = os.listdir(def_path)
+
     for f in _files:
-        with open(f'{SERVICES_PATH}/{f}') as _f:
+        with open(f'{def_path}/{f}') as _f:
             config = json.load(_f)
-            service_name = config['name']
-            definitions[service_name] = config
+            name = config['name']
+            definitions[name] = config
     return definitions
 
 
-def load_solution_definitions():
-    definitions = {}
-    _files = os.listdir(SOLUTIONS_PATH)
-    for f in _files:
-        with open(f'{SOLUTIONS_PATH}/{f}') as _f:
-            config = json.load(_f)
-            service_name = config['name']
-            definitions[service_name] = config
-    return definitions
+def handle_service(realm, service, action):
+    if service not in SERVICE_DEFINITIONS:
+        raise KeyError(f'No service definition for name: {service}')
 
-
-def handle_service(REALM_NAME, SERVICE_NAME, CMD):
-    SERVICE_DEFINITIONS = load_service_definitions()
-    if SERVICE_NAME not in SERVICE_DEFINITIONS:
-        raise KeyError(f'No service definition for name: {SERVICE_NAME}')
-    service_config = SERVICE_DEFINITIONS[SERVICE_NAME]
-    if CMD == 'ADD':
+    service_config = SERVICE_DEFINITIONS[service]
+    if action == 'ADD':
         try:
-            register_app(REALM_NAME, service_config)
+            register_app(realm, service_config)
         except Exception as err:
             print(f'Could not register service: {err}')
-        print(f'Adding realm {REALM_NAME} to service: {SERVICE_NAME}')
-        add_service_to_realm(REALM_NAME, service_config)
-        print(f'Service {SERVICE_NAME} now being served '
-              f'by kong for realm {REALM_NAME}.')
-    elif CMD == 'REMOVE':
-        if REALM_NAME == "ALL":
+
+        print(f'Adding realm {realm} to service: {service}')
+        add_service_to_realm(realm, service_config)
+        print(f'Service {service} now being served by kong for realm {realm}.')
+
+    elif action == 'REMOVE':
+        if realm == 'ALL':
             remove_service(service_config)
         else:
-            remove_service_from_realm(REALM_NAME, service_config)
+            remove_service_from_realm(realm, service_config)
 
 
-def handle_solution(REALM, SOLUTION, CMD):
-    SOLUTION_DEFINITIONS = load_solution_definitions()
-    if SOLUTION not in SOLUTION_DEFINITIONS:
-        raise KeyError(f'No Solution definition for name: {SOLUTION}')
-    config = SOLUTION_DEFINITIONS[SOLUTION]
-    services = config['services']
+def handle_solution(realm, solution, action):
+    if solution not in SOLUTION_DEFINITIONS:
+        raise KeyError(f'No Solution definition for name: {solution}')
+
+    services = SOLUTION_DEFINITIONS[solution]['services']
     for service in services:
-        handle_service(REALM, service, CMD)
+        handle_service(realm, service, action)
+
 
 CMDS = ['ADD', 'REMOVE']
 TYPES = ['SERVICE', 'SOLUTION']
@@ -380,6 +367,9 @@ if __name__ == '__main__':
     TYPE = sys.argv[2]
     SERVICE_NAME = sys.argv[3]
     REALM_NAME = sys.argv[4]
+
+    SERVICE_DEFINITIONS = load_definitions(SERVICES_PATH)
+    SOLUTION_DEFINITIONS = load_definitions(SOLUTIONS_PATH)
 
     if TYPE not in TYPES:
         raise KeyError(f'No type: {TYPE}')
