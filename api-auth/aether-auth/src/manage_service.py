@@ -26,14 +26,19 @@ import sys
 from keycloak import KeycloakAdmin
 
 from settings import (
+    HOST,
+    DOMAIN,
+
     KONG_URL,
+
     KC_URL,
     KC_ADMIN_USER,
     KC_ADMIN_PASSWORD,
     KC_MASTER_REALM,
     KEYCLOAK_URL,
+
     SERVICES_PATH,
-    SOLUTIONS_PATH
+    SOLUTIONS_PATH,
 )
 
 
@@ -93,10 +98,12 @@ def add_service_to_realm(realm, config):
     client_secret_url = f'{KC_URL}admin/realms/{realm}/clients/{client_id}/client-secret'
     res = requests.get(url=client_secret_url, headers=headers)
     try:
+        print(res.text)
         res.raise_for_status()
         client_secret = res.json()['value']
-        print(res.text)
-    except Exception:
+    except Exception as e:
+        print(res.status_code)
+        print(str(e))
         raise ValueError('Could not get realm secret.')
 
     # OIDC plugin settings (same for all)
@@ -114,9 +121,9 @@ def add_service_to_realm(realm, config):
         'config.client_secret': client_secret,
         'config.user_url': user_path,
         'config.email_key': 'email',
-        'config.app_login_redirect_url': f'http://aether.local/{realm}/{name}/',
+        'config.app_login_redirect_url': f'{HOST}/{realm}/{name}/',
         'config.service_logout_url': logout_url,
-        'config.cookie_domain': 'aether.local',
+        'config.cookie_domain': DOMAIN,
         'config.user_info_cache_enabled': 'true'
     }
 

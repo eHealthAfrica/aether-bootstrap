@@ -29,10 +29,18 @@ show_help () {
 
     make_realm                          : create realms from the artifacts in /code/realm
     setup_auth                          : register keycloak and in Kong.
-    add_service      {service}  {realm} : register aether app/realm in Kong.
-    remove_service   {service}  {realm} : register aether app/realm in Kong.
-    add_solution     {solution} {realm} : register aether app/realm in Kong.
-    remove_solution  {solution} {realm} : register aether app/realm in Kong.
+
+    add_service      {service}  {realm} : adds a service to an existing realm,
+                                          using the service definition in /service in Kong.
+
+    remove_service   {service}  {realm} : removes a service to an existing realm
+                                          using the service definition in /service in Kong.
+
+    add_solution     {solution} {realm} : adds a package of services to an existing realm.
+                                          using the service definition in /service in Kong.
+
+    remove_solution  {solution} {realm} : removes a package of services from an existing realm
+                                          using the service definition in /service in Kong.
 
     """
 }
@@ -57,30 +65,30 @@ case "$1" in
     ;;
 
     add_service )
-        # adds a service to an existing realm, using the service definition
-        # in /service
-        # usage: register_service {service} {realm}
+        # adds a service to an existing realm,
+        # using the service definition in /service
+        # usage: add_service {service} {realm}
         python /code/src/manage_service.py ADD SERVICE "${@:2}"
     ;;
 
     remove_service )
-        # remove a service to an existing realm, using the service definition
-        # in /service
-        # usage: register_service {service} {realm}
+        # removes a service to an existing realm,
+        # using the service definition in /service
+        # usage: remove_service {service} {realm}
         python /code/src/manage_service.py REMOVE SERVICE "${@:2}"
     ;;
 
     add_solution )
-        # adds a package of services to an existing realm, using the service definition
-        # in /service
-        # usage: register_service {service} {realm}
+        # adds a package of services to an existing realm,
+        # using the service definition in /service
+        # usage: add_solution {service} {realm}
         python /code/src/manage_service.py ADD SOLUTION "${@:2}"
     ;;
 
     remove_solution )
-        # remove a package of services from an existing realm, using the service definition
-        # in /service
-        # usage: register_service {service} {realm}
+        # removes a package of services from an existing realm,
+        # using the service definition in /service
+        # usage: remove_solution {service} {realm}
         python /code/src/manage_service.py REMOVE SOLUTION "${@:2}"
     ;;
 

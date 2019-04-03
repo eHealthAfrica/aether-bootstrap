@@ -24,6 +24,7 @@ def get_env(name):
 
 
 HOST = get_env('BASE_HOST')  # External URL for host
+DOMAIN = HOST.replace('http://', '').replace('https://', '').strip('/')[0]
 APP_NAME = get_env('APP_NAME')
 APP_PORT = get_env('APP_PORT')
 

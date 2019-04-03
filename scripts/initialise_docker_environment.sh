@@ -37,13 +37,7 @@ echo "_________________________________________________________________ Pulling 
 docker-compose -f docker-compose-base.yml pull
 echo ""
 
-echo "_________________________________________________________________ Starting database server..."
-docker-compose up -d db
-until docker-compose run --no-deps kernel eval pg_isready -q; do
-    >&2 echo "Waiting for database..."
-    sleep 2
-done
-echo ""
+start_db
 
 
 echo "_________________________________________________________________ Preparing aether containers..."
@@ -60,16 +54,14 @@ echo ""
 # Initialize the kong & keycloak databases in the postgres instance
 
 # THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
-rebuild_db kong     kong     ${KONG_PG_PASSWORD}
-rebuild_db keycloak keycloak ${KEYCLOAK_PG_PASSWORD}
+rebuild_database kong     kong     ${KONG_PG_PASSWORD}
+rebuild_database keycloak keycloak ${KEYCLOAK_PG_PASSWORD}
 echo ""
 
 
 echo "_________________________________________________________________ Building custom docker images..."
 docker-compose build auth keycloak kong
 echo ""
-
-CHECK_URL="docker-compose run --no-deps kernel manage check_url -u"
 
 
 echo "_________________________________________________________________ Preparing kong..."
@@ -84,13 +76,8 @@ echo "_________________________________________________________________ Preparin
 docker-compose run kong kong migrations bootstrap 2>/dev/null || true
 docker-compose run kong kong migrations up
 echo ""
+start_kong
 
-docker-compose up -d kong
-until $CHECK_URL $KONG_INTERNAL >/dev/null; do
-    >&2 echo "Waiting for kong..."
-    sleep 2
-done
-echo ""
 
 echo "_________________________________________________________________ Registering keycloak in kong..."
 docker-compose run auth setup_auth
@@ -98,21 +85,16 @@ echo ""
 
 
 echo "_________________________________________________________________ Preparing keycloak..."
-docker-compose up -d keycloak
-until $CHECK_URL "$KEYCLOAK_INTERNAL/keycloak/auth/" >/dev/null; do
-    >&2 echo "Waiting for keycloak..."
-    sleep 2
-done
-echo ""
+start_keycloak
+connect_to_keycloak
 
 echo "_________________________________________________________________ Creating initial realms in keycloak..."
-# REALMS=( dev dev2 )
-# for REALM in "${REALMS[@]}"; do
-#     create_kc_realm $REALM
-# done
-docker-compose run auth make_realm
 REALMS=( dev dev2 )
 for REALM in "${REALMS[@]}"; do
+    create_kc_realm  $REALM
+    create_kc_user   $REALM  $KEYCLOAK_INITIAL_USER_USERNAME  $KEYCLOAK_INITIAL_USER_PASSWORD
+
+    echo "_________________________________________________________________ Adding solution in kong..."
     docker-compose run auth add_solution aether $REALM
 done
 echo ""
