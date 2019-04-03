@@ -20,66 +20,101 @@
 #
 set -Eeuo pipefail
 
+source ./scripts/aether_functions.sh
+
+echo ""
+echo "================================================================="
 echo "Initializing Aether environment, this will take about 60 seconds."
+echo "================================================================="
+echo ""
 
-docker network create aether_internal      2>/dev/null || true
-docker volume  create aether_database_data 2>/dev/null || true
+create_docker_assets
+source .env
 
-./scripts/generate_env_vars.sh
+docker-compose kill
 
+echo "_________________________________________________________________ Pulling docker images..."
 docker-compose -f docker-compose-base.yml pull
 
+echo "_________________________________________________________________ Starting database server..."
 docker-compose up -d db
-until docker-compose run kernel eval pg_isready -q; do
+until docker-compose run --no-deps kernel eval pg_isready -q; do
     >&2 echo "Waiting for database..."
     sleep 2
 done
 
-# Initialize the kong & keycloak databases in the postgres instance
 
-source .env
-
-DB_ID=$(docker-compose ps -q db)
-
-# THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
-docker container exec -i $DB_ID psql <<- EOSQL
-    DROP DATABASE kong;
-    DROP USER kong;
-
-    CREATE USER kong PASSWORD '${KONG_PG_PASSWORD}';
-    CREATE DATABASE kong OWNER kong;
-EOSQL
-docker container exec -i $DB_ID psql <<- EOSQL
-    DROP DATABASE keycloak;
-    DROP USER keycloak;
-
-    CREATE USER keycloak PASSWORD '${KEYCLOAK_PG_PASSWORD}';
-    CREATE DATABASE keycloak OWNER keycloak;
-EOSQL
-
-# build custom containers
-docker-compose build auth keycloak kong
-docker-compose run kong kong migrations bootstrap 2>/dev/null || :  # bootstrap not in all image versions?
-docker-compose run kong kong migrations up
-sleep 5
-
-# bring up to register realms & keycloak -> kong route
-docker-compose up -d kong keycloak
-docker-compose logs kong keycloak
-sleep 5  # wait for keycloak
-docker-compose run auth setup_auth
-sleep 5  # wait for keycloak
-docker-compose run auth make_realm
-
-
+echo "_________________________________________________________________ Preparing aether containers..."
 # setup container (model migration, admin user, static content...)
 CONTAINERS=( kernel ui odk )
 for container in "${CONTAINERS[@]}"
 do
-    docker-compose run $container setup
+    docker-compose run --no-deps $container setup
 done
+docker-compose run --no-deps kernel eval python /code/sql/create_readonly_user.py
+echo ""
 
-docker-compose run kernel eval python /code/sql/create_readonly_user.py
+
+# Initialize the kong & keycloak databases in the postgres instance
+
+# THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
+rebuild_db kong     kong     ${KONG_PG_PASSWORD}
+rebuild_db keycloak keycloak ${KEYCLOAK_PG_PASSWORD}
+echo ""
+
+
+echo "_________________________________________________________________ Building custom docker images..."
+docker-compose build auth keycloak kong
+echo ""
+
+CHECK_URL="docker-compose run --no-deps kernel manage check_url -u"
+
+
+echo "_________________________________________________________________ Preparing keycloak..."
+docker-compose up -d keycloak
+until $CHECK_URL "$KEYCLOAK_INTERNAL/keycloak/auth/" >/dev/null; do
+    >&2 echo "Waiting for keycloak..."
+    sleep 2
+done
+echo ""
+
+echo "_________________________________________________________________ Creating initial realms in keycloak..."
+REALMS=( dev dev2 )
+for REALM in "${REALMS[@]}"; do
+    create_kc_realm $REALM
+done
+echo ""
+
+
+echo "_________________________________________________________________ Preparing kong..."
+#
+# https://docs.konghq.com/install/docker/
+#
+# Note for Kong < 0.15: with Kong versions below 0.15 (up to 0.14),
+# use the up sub-command instead of bootstrap.
+# Also note that with Kong < 0.15, migrations should never be run concurrently;
+# only one Kong node should be performing migrations at a time.
+# This limitation is lifted for Kong 0.15, 1.0, and above.
+docker-compose run kong kong migrations bootstrap 2>/dev/null || true
+docker-compose run kong kong migrations up
+echo ""
+
+docker-compose up -d kong
+until $CHECK_URL $KONG_INTERNAL >/dev/null; do
+    >&2 echo "Waiting for kong..."
+    sleep 2
+done
+echo ""
+
+echo "_________________________________________________________________ Registring keycloak in kong..."
+docker-compose run auth setup_auth
+echo ""
+
+
 docker-compose kill
 
+echo ""
+echo "================================================================="
 echo "Done."
+echo "================================================================="
+echo ""
