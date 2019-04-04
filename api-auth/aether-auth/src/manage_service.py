@@ -59,6 +59,8 @@ def add_service_to_realm(realm, config):
         # https://bitbucket.org/agriness/python-keycloak
 
         # find out client secret
+
+        # connect ot master realm
         keycloak_admin = KeycloakAdmin(server_url=KC_URL,
                                        username=KC_ADMIN_USER,
                                        password=KC_ADMIN_PASSWORD,
@@ -66,21 +68,25 @@ def add_service_to_realm(realm, config):
                                        )
         # change to our realm
         keycloak_admin.realm_name = realm
-        for client in keycloak_admin.get_clients():
-            if client['clientId'] == client_id:
-                secret = keycloak_admin.get_client_secrets(client['id'])
-                client_secret = secret.get('value')
-                break
-
+        # get kong client internal id
+        client_pk = keycloak_admin.get_client_id(client_id)
+        # get its secrets
+        secret = keycloak_admin.get_client_secrets(client_pk)
+        client_secret = secret.get('value')
+        # get its well known info
         keycloak_openid = KeycloakOpenID(server_url=KC_URL,
                                          realm_name=realm,
                                          client_id=client_id,
                                          client_secret_key=client_secret,
                                          )
         config_well_know = keycloak_openid.well_know()
+
     except KeycloakError as ke:
         print(ke)
         raise RuntimeError(f'Could not get info from keycloak  {str(ke)}')
+    except Exception  as e:
+        print(e)
+        raise RuntimeError(f'Unexpected error, do the realm and the client exist?  {str(e)}')
 
     # OIDC plugin settings (same for all)
     oidc_data = {
