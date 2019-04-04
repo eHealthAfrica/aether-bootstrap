@@ -11,6 +11,7 @@ services:
   # ---------------------------------
   # Mock Data Container
   # ---------------------------------
+
   assets:
     build:
       context: ./assets/generation
@@ -23,5 +24,28 @@ services:
       KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
       PROJECT_NAME: DefaultDemo
       SUBMISSION_ENDPOINT: default_mapping
+    networks:
+      - aether
+
+
+  # ---------------------------------
+  # Auth builder Container
+  # ---------------------------------
+
+  auth:
+    build: ./api-auth/aether-auth
+    environment:
+      DEBUG: null
+
+      KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
+      KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
+      KEYCLOAK_KONG_CLIENT: ${KEYCLOAK_KONG_CLIENT}
+
+      BASE_HOST: ${BASE_HOST}
+      KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
+      KONG_INTERNAL: ${KONG_INTERNAL}
+    volumes:
+      - ./api-auth/aether-auth:/code
+    command: help
     networks:
       - aether

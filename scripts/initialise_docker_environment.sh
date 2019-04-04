@@ -33,6 +33,7 @@ source .env
 
 docker-compose kill
 
+DC_AUTH="docker-compose -f docker-compose-generation.yml"
 LINE="__________________________________________________________________"
 
 echo "${LINE} Pulling docker images..."
@@ -62,7 +63,8 @@ echo ""
 
 
 echo "${LINE} Building custom docker images..."
-docker-compose build auth keycloak kong
+docker-compose build keycloak kong
+$DC_AUTH build auth
 echo ""
 
 
@@ -82,7 +84,7 @@ start_kong
 
 
 echo "${LINE} Registering keycloak in kong..."
-docker-compose run auth setup_auth
+$DC_AUTH run auth setup_auth
 echo ""
 
 
@@ -91,7 +93,7 @@ start_keycloak
 connect_to_keycloak
 
 echo "${LINE} Creating initial realms in keycloak..."
-REALMS=( dev dev2 )
+REALMS=( aether dev prod )
 for REALM in "${REALMS[@]}"; do
     create_kc_realm          $REALM
     create_kc_aether_clients $REALM
@@ -101,8 +103,8 @@ for REALM in "${REALMS[@]}"; do
                     $KEYCLOAK_INITIAL_USER_USERNAME \
                     $KEYCLOAK_INITIAL_USER_PASSWORD
 
-    echo "${LINE} Adding solution in kong..."
-    docker-compose run auth add_solution aether $REALM
+    echo "${LINE} Adding  [aether]  solution in kong..."
+    $DC_AUTH run auth add_solution aether $REALM
 done
 echo ""
 

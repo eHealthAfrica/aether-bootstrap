@@ -24,11 +24,6 @@ services:
       service: postgres-base
     environment:
       PGUSER: postgres
-    healthcheck:
-      test: pg_isready
-      interval: 2s
-      timeout: 3s
-      retries: 30
     volumes:
       - database_data:/var/lib/postgresql/data
     networks:
@@ -55,9 +50,7 @@ services:
       minio:
         condition: service_started
     networks:
-      aether:
-        aliases:
-          - kernel.aether.local
+      - aether
 
   # ---------------------------------
   # Aether UI
@@ -73,9 +66,7 @@ services:
       minio:
         condition: service_started
     networks:
-      aether:
-        aliases:
-          - ui.aether.local
+      - aether
 
   # ---------------------------------
   # Aether ODK Module
@@ -91,9 +82,7 @@ services:
       minio:
         condition: service_started
     networks:
-      aether:
-        aliases:
-          - odk.aether.local
+      - aether
 
   # ---------------------------------
   # API & Auth
@@ -106,9 +95,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - 80:80
-      - 8001:8001  # TODO Remove
     networks:
       - aether
     extra_hosts:
@@ -122,22 +108,5 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - 8080:8080
-    networks:
-      - aether
-
-  auth:
-    extends:
-      file: ./docker-compose-base.yml
-      service: auth-base
-    depends_on:
-      kong:
-        condition: service_started
-      keycloak:
-        condition: service_started
-    ports:
-      - 3012:3012
-    command: ['cat', '/dev/null']  # nothing to do here on "start"
     networks:
       - aether
