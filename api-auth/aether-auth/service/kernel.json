@@ -1,18 +1,18 @@
 {
-    "name": "kernel",
-    "service_url": "http://kernel:8000",
-    "oidc_endpoints": [
-        {
-            "name": "base",
-            "url": "/",
-            "strip_path": false
-        }
-    ],
-    "global_public_endpoints": [
-        {
-            "name": "static",
-            "url": "/_static/kernel/static/",
-            "strip_path": true
-        }
-    ]
+  "name": "kernel",
+  "service_url": "http://kernel:8000",
+  "oidc_endpoints": [
+    {
+      "name": "base",
+      "url": "/",
+      "strip_path": false
+    }
+  ],
+  "global_public_endpoints": [
+    {
+      "name": "static",
+      "url": "/_static/kernel/static/",
+      "strip_path": true
+    }
+  ]
 }

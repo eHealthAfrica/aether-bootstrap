@@ -1,11 +1,11 @@
 {
-    "name": "demo2",
-    "service_url": "http://demo-service:3013",
-    "oidc_endpoints": {
-        "base": "/"
-    },
-    "public_endpoints": {
-        "public": "/public",
-        "static": "/static"
-    }
+  "name": "demo2",
+  "service_url": "http://demo-service:3013",
+  "oidc_endpoints": {
+    "base": "/"
+  },
+  "public_endpoints": {
+    "public": "/public",
+    "static": "/static"
+  }
 }

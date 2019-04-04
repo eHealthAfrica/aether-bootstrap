@@ -1,18 +1,18 @@
 {
-    "name": "ui",
-    "service_url": "http://ui:8004",
-    "oidc_endpoints": [
-        {
-            "name": "base",
-            "url": "/",
-            "strip_path": false
-        }
-    ],
-    "global_public_endpoints": [
-        {
-            "name": "static",
-            "url": "/_static/ui/static/",
-            "strip_path": true
-        }
-    ]
+  "name": "ui",
+  "service_url": "http://ui:8004",
+  "oidc_endpoints": [
+    {
+      "name": "base",
+      "url": "/",
+      "strip_path": false
+    }
+  ],
+  "global_public_endpoints": [
+    {
+      "name": "static",
+      "url": "/_static/ui/static/",
+      "strip_path": true
+    }
+  ]
 }
