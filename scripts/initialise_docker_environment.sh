@@ -33,14 +33,16 @@ source .env
 
 docker-compose kill
 
-echo "_________________________________________________________________ Pulling docker images..."
+LINE="__________________________________________________________________"
+
+echo "${LINE} Pulling docker images..."
 docker-compose -f docker-compose-base.yml pull
 echo ""
 
 start_db
 
 
-echo "_________________________________________________________________ Preparing aether containers..."
+echo "${LINE} Preparing aether containers..."
 # setup container (model migration, admin user, static content...)
 CONTAINERS=( kernel ui odk )
 for container in "${CONTAINERS[@]}"
@@ -59,12 +61,12 @@ rebuild_database keycloak keycloak ${KEYCLOAK_PG_PASSWORD}
 echo ""
 
 
-echo "_________________________________________________________________ Building custom docker images..."
+echo "${LINE} Building custom docker images..."
 docker-compose build auth keycloak kong
 echo ""
 
 
-echo "_________________________________________________________________ Preparing kong..."
+echo "${LINE} Preparing kong..."
 #
 # https://docs.konghq.com/install/docker/
 #
@@ -79,22 +81,27 @@ echo ""
 start_kong
 
 
-echo "_________________________________________________________________ Registering keycloak in kong..."
+echo "${LINE} Registering keycloak in kong..."
 docker-compose run auth setup_auth
 echo ""
 
 
-echo "_________________________________________________________________ Preparing keycloak..."
+echo "${LINE} Preparing keycloak..."
 start_keycloak
 connect_to_keycloak
 
-echo "_________________________________________________________________ Creating initial realms in keycloak..."
+echo "${LINE} Creating initial realms in keycloak..."
 REALMS=( dev dev2 )
 for REALM in "${REALMS[@]}"; do
-    create_kc_realm  $REALM
-    create_kc_user   $REALM  $KEYCLOAK_INITIAL_USER_USERNAME  $KEYCLOAK_INITIAL_USER_PASSWORD
+    create_kc_realm          $REALM
+    create_kc_aether_clients $REALM
+    create_kc_kong_client    $REALM
 
-    echo "_________________________________________________________________ Adding solution in kong..."
+    create_kc_user  $REALM \
+                    $KEYCLOAK_INITIAL_USER_USERNAME \
+                    $KEYCLOAK_INITIAL_USER_PASSWORD
+
+    echo "${LINE} Adding solution in kong..."
     docker-compose run auth add_solution aether $REALM
 done
 echo ""

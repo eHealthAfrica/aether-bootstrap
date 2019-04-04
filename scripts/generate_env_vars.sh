@@ -75,6 +75,7 @@ KONG_PG_PASSWORD=$(gen_random_string)
 KEYCLOAK_INITIAL_USER_USERNAME=user
 KEYCLOAK_INITIAL_USER_PASSWORD=password
 
+KEYCLOAK_KONG_CLIENT=kong
 JWT_COOKIE=aether-jwt
 REALM_COOKIE=aether-realm
 # ------------------------------------------------------------------

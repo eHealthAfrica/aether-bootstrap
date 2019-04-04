@@ -24,6 +24,8 @@ source .env
 
 CHECK_URL="docker-compose run --no-deps kernel manage check_url -u"
 KC_URL="${KEYCLOAK_INTERNAL}/keycloak/auth"
+LINE="__________________________________________________________________"
+AETHER_APPS=( kernel odk ui )
 
 
 function create_docker_assets {
@@ -35,7 +37,7 @@ function create_docker_assets {
 
 
 function start_db {
-    echo "_________________________________________________________________ Starting database server..."
+    echo "${LINE} Starting database server..."
     docker-compose up -d db
     until docker-compose run --no-deps kernel eval pg_isready -q; do
         >&2 echo "Waiting for database..."
@@ -46,7 +48,7 @@ function start_db {
 
 
 function start_kong {
-    echo "_________________________________________________________________ Starting kong server..."
+    echo "${LINE} Starting kong server..."
     docker-compose up -d kong
     until $CHECK_URL $KONG_INTERNAL >/dev/null; do
         >&2 echo "Waiting for kong..."
@@ -57,7 +59,7 @@ function start_kong {
 
 
 function start_keycloak {
-    echo "_________________________________________________________________ Starting keycloak server..."
+    echo "${LINE} Starting keycloak server..."
     docker-compose up -d keycloak
     until $CHECK_URL "$KC_URL" >/dev/null; do
         >&2 echo "Waiting for keycloak..."
@@ -76,7 +78,7 @@ function rebuild_database {
     DB_ID=$(docker-compose ps -q db)
     PSQL="docker container exec -i $DB_ID psql"
 
-    echo "_________________________________________________________________ Recreating $1 database..."
+    echo "${LINE} Recreating $1 database..."
 
     # drops database (terminating any previous connection) and creates it again
     $PSQL <<- EOSQL
@@ -98,9 +100,9 @@ EOSQL
 
 function connect_to_keycloak {
     KC_ID=$(docker-compose ps -q keycloak)
-    KCADM="docker container exec -i ${KC_ID} ./keycloak/bin/kcadm.sh"
+    export KCADM="docker container exec -i ${KC_ID} ./keycloak/bin/kcadm.sh"
 
-    echo "_________________________________________________________________ Connecting to keycloak server..."
+    echo "${LINE} Connecting to keycloak server..."
     $KCADM \
         config credentials \
         --server ${KC_URL} \
@@ -114,61 +116,49 @@ function connect_to_keycloak {
 function create_kc_realm {
     REALM=$1
 
-    KC_ID=$(docker-compose ps -q keycloak)
-    KCADM="docker container exec -i ${KC_ID} ./keycloak/bin/kcadm.sh"
-
-    echo "_________________________________________________________________ Creating realm  [${REALM}]..."
+    echo "${LINE} Creating realm  [${REALM}]..."
     $KCADM \
         create realms \
         -s realm="${REALM}" \
         -s enabled=true
+}
 
-    echo "_________________________________________________________________ Creating aether clients..."
-    APP_CLIENTS=( kernel odk ui )
-    for CLIENT in "${APP_CLIENTS[@]}"; do
-        _create_kc_public_client $REALM $CLIENT
+
+# Usage:    create_kc_aether_clients <realm-name>
+function create_kc_aether_clients {
+    REALM=$1
+
+    echo "${LINE} Creating aether clients in realm  [$REALM]..."
+
+
+    for CLIENT in "${AETHER_APPS[@]}"; do
+        CLIENT_URL="${BASE_HOST}/${REALM}/${CLIENT}"
+
+        echo "${LINE} Creating client  [${CLIENT}]  in realm  [$REALM]..."
+        $KCADM \
+            create clients \
+            -r "${REALM}" \
+            -s clientId="${CLIENT}" \
+            -s publicClient=true \
+            -s directAccessGrantsEnabled=true \
+            -s rootUrl="${CLIENT_URL}" \
+            -s baseUrl="${CLIENT_URL}" \
+            -s 'redirectUris=["/accounts/login/"]' \
+            -s enabled=true
     done
-
-    _create_kc_private_client $REALM
-
-    echo "_________________________________________________________________ [${REALM}] ready!"
 }
 
-
-function _create_kc_public_client {
-    REALM=$1
-    CLIENT=$2
-
-    KC_ID=$(docker-compose ps -q keycloak)
-    KCADM="docker container exec -i ${KC_ID} ./keycloak/bin/kcadm.sh"
-
-    CLIENT_URL="${BASE_HOST}/${REALM}/${CLIENT}"
-    echo "_________________________________________________________________ Creating client  [${CLIENT}]..."
-    $KCADM \
-        create clients \
-        -r "${REALM}" \
-        -s clientId="${CLIENT}" \
-        -s publicClient=true \
-        -s directAccessGrantsEnabled=true \
-        -s rootUrl="${CLIENT_URL}" \
-        -s baseUrl="${CLIENT_URL}" \
-        -s 'redirectUris=["/accounts/login/"]' \
-        -s enabled=true
-}
-
-function _create_kc_private_client {
+# Usage:    create_kc_kong_client <realm-name>
+function create_kc_kong_client {
     REALM=$1
 
-    echo "_________________________________________________________________ Creating client  [${REALM}-oidc]..."
+    echo "${LINE} Creating client  [${KEYCLOAK_KONG_CLIENT}]  in realm  [$REALM]..."
     CLIENT_URL="${BASE_HOST}/${REALM}/"
 
-    KC_ID=$(docker-compose ps -q keycloak)
-    KCADM="docker container exec -i ${KC_ID} ./keycloak/bin/kcadm.sh"
-
     $KCADM \
         create clients \
         -r "${REALM}" \
-        -s clientId="${REALM}-oidc" \
+        -s clientId="${KEYCLOAK_KONG_CLIENT}" \
         -s publicClient=false \
         -s clientAuthenticatorType=client-secret \
         -s directAccessGrantsEnabled=true \
@@ -179,25 +169,24 @@ function _create_kc_private_client {
 }
 
 
-# Usage:    create_kc_user <realm-name> <username> <password>
+# Usage:    create_kc_user <realm-name> <username> [<password>]
 function create_kc_user {
     REALM=$1
     USERNAME=$2
-    PASSWORD=$3
+    PASSWORD=${3:-}
 
-    KC_ID=$(docker-compose ps -q keycloak)
-    KCADM="docker container exec -i ${KC_ID} ./keycloak/bin/kcadm.sh"
-
-    echo "_________________________________________________________________ Creating user  [$USERNAME]  in realm  [$REALM]..."
+    echo "${LINE} Creating user  [$USERNAME]  in realm  [$REALM]..."
     $KCADM \
         create users \
         -r "${REALM}" \
         -s username="${USERNAME}" \
         -s enabled=true
 
-    $KCADM \
-        set-password \
-        -r "${REALM}" \
-        --username "${USERNAME}" \
-        --new-password="${PASSWORD}"
+    if [ ! -z "${PASSWORD}" ]; then
+        $KCADM \
+            set-password \
+            -r "${REALM}" \
+            --username "${USERNAME}" \
+            --new-password="${PASSWORD}"
+    fi
 }

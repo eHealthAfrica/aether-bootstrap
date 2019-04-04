@@ -23,6 +23,7 @@ import os
 import sys
 
 from keycloak import KeycloakAdmin, KeycloakOpenID
+from keycloak.exceptions import KeycloakError
 from requests.exceptions import HTTPError
 
 from helpers import request_post, request_get, request_delete
@@ -36,6 +37,7 @@ from settings import (
     KC_ADMIN_USER,
     KC_ADMIN_PASSWORD,
     KC_MASTER_REALM,
+    KEYCLOAK_KONG_CLIENT,
 
     SERVICES_PATH,
     SOLUTIONS_PATH,
@@ -49,36 +51,40 @@ def _realm_in_service(realm, service):
 def add_service_to_realm(realm, config):
 
     service_name = config['name']
-    client_id = f'{realm}-oidc'
+    client_id = KEYCLOAK_KONG_CLIENT
     client_secret = None
 
-    # https://bitbucket.org/agriness/python-keycloak
 
-    # find out client secret
-    keycloak_admin = KeycloakAdmin(server_url=KC_URL,
-                                   username=KC_ADMIN_USER,
-                                   password=KC_ADMIN_PASSWORD,
-                                   realm_name=KC_MASTER_REALM,
-                                   )
+    try:
+        # https://bitbucket.org/agriness/python-keycloak
 
-    # change to our realm
-    keycloak_admin.realm_name = realm
-    for client in keycloak_admin.get_clients():
-        if client['clientId'] == client_id:
-            secret = keycloak_admin.get_client_secrets(client['id'])
-            client_secret = secret.get('value')
-            break
+        # find out client secret
+        keycloak_admin = KeycloakAdmin(server_url=KC_URL,
+                                       username=KC_ADMIN_USER,
+                                       password=KC_ADMIN_PASSWORD,
+                                       realm_name=KC_MASTER_REALM,
+                                       )
+        # change to our realm
+        keycloak_admin.realm_name = realm
+        for client in keycloak_admin.get_clients():
+            if client['clientId'] == client_id:
+                secret = keycloak_admin.get_client_secrets(client['id'])
+                client_secret = secret.get('value')
+                break
 
-    keycloak_openid = KeycloakOpenID(server_url=KC_URL,
-                                     realm_name=realm,
-                                     client_id=client_id,
-                                     client_secret_key=client_secret,
-                                     )
-    config_well_know = keycloak_openid.well_know()
+        keycloak_openid = KeycloakOpenID(server_url=KC_URL,
+                                         realm_name=realm,
+                                         client_id=client_id,
+                                         client_secret_key=client_secret,
+                                         )
+        config_well_know = keycloak_openid.well_know()
+    except KeycloakError as ke:
+        print(ke)
+        raise RuntimeError(f'Could not get info from keycloak  {str(ke)}')
 
     # OIDC plugin settings (same for all)
     oidc_data = {
-        'name': 'kong-oidc-auth',
+        'name': f'{client_id}-oidc-auth',
         'config.app_login_redirect_url': f'{HOST}/{realm}/{service_name}/',
         'config.authorize_url': config_well_know['authorization_endpoint'],
         'config.client_id': client_id,

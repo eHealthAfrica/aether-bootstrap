@@ -31,6 +31,17 @@ start_db
 start_kong
 start_keycloak
 
+REALM=$1
+
 connect_to_keycloak
-create_kc_realm $1
-create_kc_user  $1 ${2:-} ${3:-}
+create_kc_realm          $REALM
+create_kc_aether_clients $REALM
+create_kc_kong_client    $REALM
+
+
+USER=${2:-}
+PWD=${3:-}
+
+if [ ! -z "${USER}" ]; then
+    create_kc_user $REALM $USER $PWD
+fi

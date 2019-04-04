@@ -36,7 +36,7 @@ KC_URL = f'{KEYCLOAK_INTERNAL}/keycloak/auth/'  # internal
 KC_ADMIN_USER = get_env('KEYCLOAK_GLOBAL_ADMIN')
 KC_ADMIN_PASSWORD = get_env('KEYCLOAK_GLOBAL_PASSWORD')
 KC_MASTER_REALM = 'master'
-
+KEYCLOAK_KONG_CLIENT = get_env('KEYCLOAK_KONG_CLIENT')
 
 # Kong Information
 KONG_URL = get_env('KONG_INTERNAL')
