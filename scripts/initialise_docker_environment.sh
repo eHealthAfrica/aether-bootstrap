@@ -63,8 +63,8 @@ echo ""
 
 
 echo "${LINE} Building custom docker images..."
-docker-compose build keycloak kong
-$DC_AUTH build auth
+docker-compose build --no-cache --force-rm --pull keycloak kong
+$DC_AUTH       build --no-cache --force-rm --pull auth
 echo ""
 
 

@@ -99,7 +99,6 @@ services:
       - aether
     extra_hosts:
       - "aether.local:127.0.0.1"
-    command: ["kong", "start"]
 
   keycloak:
     extends:

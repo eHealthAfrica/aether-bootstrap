@@ -151,7 +151,7 @@ function create_kc_kong_client {
     REALM=$1
 
     echo "${LINE} Creating client  [${KEYCLOAK_KONG_CLIENT}]  in realm  [$REALM]..."
-    CLIENT_URL="${BASE_HOST}/${REALM}/"
+    CLIENT_URL="${BASE_HOST}/${REALM}"
 
     $KCADM \
         create clients \
@@ -162,7 +162,7 @@ function create_kc_kong_client {
         -s directAccessGrantsEnabled=true \
         -s rootUrl="${CLIENT_URL}" \
         -s baseUrl="${CLIENT_URL}" \
-        -s 'redirectUris=["/*/accounts/login/"]' \
+        -s 'redirectUris=["/*"]' \
         -s enabled=true
 }
 

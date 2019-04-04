@@ -271,15 +271,14 @@ services:
       KONG_PG_PASSWORD: ${KONG_PG_PASSWORD}
 
       KONG_NGINX_PROXY_LARGE_CLIENT_HEADER_BUFFERS: "16 128k"
-
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
-      KONG_PROXY_LISTEN: 0.0.0.0:80,0.0.0.0:8443
-      KONG_LOG_LEVEL: debug
+      KONG_PROXY_LISTEN: 0.0.0.0:80, 0.0.0.0:8443
 
       KONG_PLUGINS: bundled,kong-oidc-auth
     ports:
       - 80:80
       - 8443:8443  # ODK Collect requirement!!!
+    command: ["kong", "start", "--v"]
 
   keycloak-base:
     build: ./api-auth/keycloak
@@ -289,9 +288,14 @@ services:
       DB_DATABASE: keycloak
       DB_USER: keycloak
       DB_PASSWORD: ${KEYCLOAK_PG_PASSWORD}
+
       KEYCLOAK_USER: ${KEYCLOAK_GLOBAL_ADMIN}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
+
       PROXY_ADDRESS_FORWARDING: "true"
       PROXY_PORT_FORWARDING: "true"
+
+      KEYCLOAK_LOGLEVEL: error
+      ROOT_LOGLEVEL: error
     ports:
       - 8080:8080

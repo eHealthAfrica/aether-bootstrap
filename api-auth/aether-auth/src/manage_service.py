@@ -22,7 +22,7 @@ import json
 import os
 import sys
 
-from keycloak import KeycloakAdmin, KeycloakOpenID
+from keycloak import KeycloakAdmin
 from keycloak.exceptions import KeycloakError
 from requests.exceptions import HTTPError
 
@@ -42,6 +42,10 @@ from settings import (
     SERVICES_PATH,
     SOLUTIONS_PATH,
 )
+
+# must be the public url
+KEYCLOAK_URL = f'{HOST}/keycloak/auth/realms'
+OPENID_PATH = 'protocol/openid-connect'
 
 
 def _realm_in_service(realm, service):
@@ -73,13 +77,6 @@ def add_service_to_realm(realm, config):
         # get its secrets
         secret = keycloak_admin.get_client_secrets(client_pk)
         client_secret = secret.get('value')
-        # get its well known info
-        keycloak_openid = KeycloakOpenID(server_url=KC_URL,
-                                         realm_name=realm,
-                                         client_id=client_id,
-                                         client_secret_key=client_secret,
-                                         )
-        config_well_know = keycloak_openid.well_know()
 
     except KeycloakError as ke:
         raise RuntimeError(f'Could not get info from keycloak  {str(ke)}')
@@ -89,17 +86,19 @@ def add_service_to_realm(realm, config):
     # OIDC plugin settings (same for all)
     oidc_data = {
         'name': f'{client_id}-oidc-auth',
-        'config.app_login_redirect_url': f'{HOST}/{realm}/{service_name}/',
-        'config.authorize_url': config_well_know['authorization_endpoint'],
+
         'config.client_id': client_id,
         'config.client_secret': client_secret,
         'config.cookie_domain': DOMAIN,
         'config.email_key': 'email',
         'config.scope': 'openid+profile+email+iss',
-        'config.service_logout_url': config_well_know['end_session_endpoint'],
-        'config.token_url': config_well_know['token_endpoint'],
         'config.user_info_cache_enabled': 'true',
-        'config.user_url': config_well_know['userinfo_endpoint'],
+
+        'config.app_login_redirect_url': f'{HOST}/{realm}/{service_name}/',
+        'config.authorize_url': f'{KEYCLOAK_URL}/{realm}/{OPENID_PATH}/auth',
+        'config.service_logout_url': f'{KEYCLOAK_URL}/{realm}/{OPENID_PATH}/logout',
+        'config.token_url': f'{KEYCLOAK_URL}/{realm}/{OPENID_PATH}/token',
+        'config.user_url': f'{KEYCLOAK_URL}/{realm}/{OPENID_PATH}/userinfo',
     }
 
     oidc_endpoints = config.get('oidc_endpoints', [])
