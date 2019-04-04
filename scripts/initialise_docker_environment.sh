@@ -93,7 +93,7 @@ start_keycloak
 connect_to_keycloak
 
 echo "${LINE} Creating initial realms in keycloak..."
-REALMS=( aether dev prod )
+REALMS=( dev prod )
 for REALM in "${REALMS[@]}"; do
     create_kc_realm          $REALM
     create_kc_aether_clients $REALM

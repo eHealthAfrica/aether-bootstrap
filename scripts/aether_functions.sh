@@ -120,6 +120,7 @@ function create_kc_realm {
     $KCADM \
         create realms \
         -s realm="${REALM}" \
+        -s displayName="Realm ${REALM} for the Aether Platform" \
         -s enabled=true
 }
 

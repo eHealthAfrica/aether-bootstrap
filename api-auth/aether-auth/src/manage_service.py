@@ -58,7 +58,6 @@ def add_service_to_realm(realm, config):
     client_id = KEYCLOAK_KONG_CLIENT
     client_secret = None
 
-
     try:
         # https://bitbucket.org/agriness/python-keycloak
 

@@ -295,7 +295,7 @@ services:
       PROXY_ADDRESS_FORWARDING: "true"
       PROXY_PORT_FORWARDING: "true"
 
-      KEYCLOAK_LOGLEVEL: error
-      ROOT_LOGLEVEL: error
+      KEYCLOAK_LOGLEVEL: ERROR
+      ROOT_LOGLEVEL: ERROR
     ports:
       - 8080:8080
