@@ -129,8 +129,6 @@ function create_kc_aether_clients {
     REALM=$1
 
     echo "${LINE} Creating aether clients in realm  [$REALM]..."
-
-
     for CLIENT in "${AETHER_APPS[@]}"; do
         CLIENT_URL="${BASE_HOST}/${REALM}/${CLIENT}"
 
