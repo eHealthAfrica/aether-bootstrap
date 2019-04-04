@@ -24,23 +24,23 @@ def get_env(name):
 
 
 HOST = get_env('BASE_HOST')  # External URL for host
+DOMAIN = HOST.replace('http://', '').replace('https://', '').strip('/')[0]
 APP_NAME = get_env('APP_NAME')
 APP_PORT = get_env('APP_PORT')
 
 
 # Keycloak Information
 KEYCLOAK_INTERNAL = get_env('KEYCLOAK_INTERNAL')
-KEYCLOAK_URL = f'{HOST}/keycloak/auth/'
 
 KC_URL = f'{KEYCLOAK_INTERNAL}/keycloak/auth/'  # internal
 KC_ADMIN_USER = get_env('KEYCLOAK_GLOBAL_ADMIN')
 KC_ADMIN_PASSWORD = get_env('KEYCLOAK_GLOBAL_PASSWORD')
 KC_MASTER_REALM = 'master'
-
+KEYCLOAK_KONG_CLIENT = get_env('KEYCLOAK_KONG_CLIENT')
 
 # Kong Information
-KONG_URL = f'{get_env("KONG_INTERNAL")}/'
-CONSUMERS_URL = f'{KONG_URL}consumers'
+KONG_URL = get_env('KONG_INTERNAL')
+CONSUMERS_URL = f'{KONG_URL}/consumers'
 
 
 REALMS_PATH = '/code/realm'

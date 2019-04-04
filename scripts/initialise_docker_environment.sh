@@ -20,66 +20,97 @@
 #
 set -Eeuo pipefail
 
-echo "Initializing Aether environment, this will take about 60 seconds."
+source ./scripts/aether_functions.sh
 
-docker network create aether_internal      2>/dev/null || true
-docker volume  create aether_database_data 2>/dev/null || true
+echo ""
+echo "========================================================================="
+echo "    Initializing Aether environment, this will take about 60 seconds."
+echo "========================================================================="
+echo ""
 
-./scripts/generate_env_vars.sh
-
-docker-compose -f docker-compose-base.yml pull
-
-docker-compose up -d db
-until docker-compose run kernel eval pg_isready -q; do
-    >&2 echo "Waiting for database..."
-    sleep 2
-done
-
-# Initialize the kong & keycloak databases in the postgres instance
-
+create_docker_assets
 source .env
 
-DB_ID=$(docker-compose ps -q db)
+docker-compose kill
 
-# THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
-docker container exec -i $DB_ID psql <<- EOSQL
-    DROP DATABASE kong;
-    DROP USER kong;
+LINE="__________________________________________________________________"
 
-    CREATE USER kong PASSWORD '${KONG_PG_PASSWORD}';
-    CREATE DATABASE kong OWNER kong;
-EOSQL
-docker container exec -i $DB_ID psql <<- EOSQL
-    DROP DATABASE keycloak;
-    DROP USER keycloak;
+echo "${LINE} Pulling docker images..."
+docker-compose -f docker-compose-base.yml pull
+echo ""
 
-    CREATE USER keycloak PASSWORD '${KEYCLOAK_PG_PASSWORD}';
-    CREATE DATABASE keycloak OWNER keycloak;
-EOSQL
-
-# build custom containers
-docker-compose build auth keycloak kong
-docker-compose run kong kong migrations bootstrap 2>/dev/null || :  # bootstrap not in all image versions?
-docker-compose run kong kong migrations up
-sleep 5
-
-# bring up to register realms & keycloak -> kong route
-docker-compose up -d kong keycloak
-docker-compose logs kong keycloak
-sleep 5  # wait for keycloak
-docker-compose run auth setup_auth
-sleep 5  # wait for keycloak
-docker-compose run auth make_realm
+start_db
 
 
+echo "${LINE} Preparing aether containers..."
 # setup container (model migration, admin user, static content...)
 CONTAINERS=( kernel ui odk )
 for container in "${CONTAINERS[@]}"
 do
-    docker-compose run $container setup
+    docker-compose run --no-deps $container setup
 done
+docker-compose run --no-deps kernel eval python /code/sql/create_readonly_user.py
+echo ""
 
-docker-compose run kernel eval python /code/sql/create_readonly_user.py
+
+# Initialize the kong & keycloak databases in the postgres instance
+
+# THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
+rebuild_database kong     kong     ${KONG_PG_PASSWORD}
+rebuild_database keycloak keycloak ${KEYCLOAK_PG_PASSWORD}
+echo ""
+
+
+echo "${LINE} Building custom docker images..."
+docker-compose build auth keycloak kong
+echo ""
+
+
+echo "${LINE} Preparing kong..."
+#
+# https://docs.konghq.com/install/docker/
+#
+# Note for Kong < 0.15: with Kong versions below 0.15 (up to 0.14),
+# use the up sub-command instead of bootstrap.
+# Also note that with Kong < 0.15, migrations should never be run concurrently;
+# only one Kong node should be performing migrations at a time.
+# This limitation is lifted for Kong 0.15, 1.0, and above.
+docker-compose run kong kong migrations bootstrap 2>/dev/null || true
+docker-compose run kong kong migrations up
+echo ""
+start_kong
+
+
+echo "${LINE} Registering keycloak in kong..."
+docker-compose run auth setup_auth
+echo ""
+
+
+echo "${LINE} Preparing keycloak..."
+start_keycloak
+connect_to_keycloak
+
+echo "${LINE} Creating initial realms in keycloak..."
+REALMS=( dev dev2 )
+for REALM in "${REALMS[@]}"; do
+    create_kc_realm          $REALM
+    create_kc_aether_clients $REALM
+    create_kc_kong_client    $REALM
+
+    create_kc_user  $REALM \
+                    $KEYCLOAK_INITIAL_USER_USERNAME \
+                    $KEYCLOAK_INITIAL_USER_PASSWORD
+
+    echo "${LINE} Adding solution in kong..."
+    docker-compose run auth add_solution aether $REALM
+done
+echo ""
+
+
 docker-compose kill
 
-echo "Done."
+echo ""
+echo "========================================================================="
+echo "                                 Done!"
+echo "========================================================================="
+echo ""

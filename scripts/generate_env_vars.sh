@@ -63,6 +63,7 @@ gen_env_file () {
 AETHER_VERSION=1.4.0-rc
 # ------------------------------------------------------------------
 
+
 # ------------------------------------------------------------------
 # Authorization & Authentication
 # ==================================================================
@@ -70,9 +71,15 @@ KEYCLOAK_GLOBAL_ADMIN=admin
 KEYCLOAK_GLOBAL_PASSWORD=password
 KEYCLOAK_PG_PASSWORD=$(gen_random_string)
 KONG_PG_PASSWORD=$(gen_random_string)
+
+KEYCLOAK_INITIAL_USER_USERNAME=user
+KEYCLOAK_INITIAL_USER_PASSWORD=password
+
+KEYCLOAK_KONG_CLIENT=kong
 JWT_COOKIE=aether-jwt
 REALM_COOKIE=aether-realm
 # ------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------
 # Routing
@@ -80,6 +87,16 @@ REALM_COOKIE=aether-realm
 BASE_HOST=http://aether.local
 KEYCLOAK_INTERNAL=http://keycloak:8080
 KONG_INTERNAL=http://kong:8001
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# Minio storage
+# ==================================================================
+MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
+MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
+# ------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------
 # Aether Kernel
@@ -93,19 +110,6 @@ KERNEL_DB_PASSWORD=$(gen_random_string)
 KERNEL_READONLY_DB_USERNAME=readonlyuser
 KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
 
-# ------------------------------------------------------------------
-# Minio storage
-# ==================================================================
-MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
-MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
-# ------------------------------------------------------------------
-
-# ------------------------------------------------------------------
-# Aether Producer
-# ==================================================================
-PRODUCER_ADMIN_USER=admin
-PRODUCER_ADMIN_PW=adminadmin
-
 # TEST Aether Kernel
 # ------------------------------------------------------------------
 TEST_KERNEL_ADMIN_USERNAME=admin-test
@@ -116,6 +120,14 @@ TEST_KERNEL_DB_PASSWORD=$(gen_random_string)
 
 TEST_KERNEL_READONLY_DB_USERNAME=readonlytest
 TEST_KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# Aether Producer
+# ==================================================================
+PRODUCER_ADMIN_USER=admin
+PRODUCER_ADMIN_PW=adminadmin
 # ------------------------------------------------------------------
 
 
@@ -146,7 +158,6 @@ UI_ADMIN_PASSWORD=adminadmin
 UI_DJANGO_SECRET_KEY=$(gen_random_string)
 UI_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
-
 EOF
 }
 

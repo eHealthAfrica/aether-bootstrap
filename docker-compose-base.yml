@@ -109,7 +109,7 @@ services:
       UWSGI_BUFFER_SIZE: 32768
       CUSTOM_UWSGI_SERVE_STATIC: "true"
       WEB_SERVER_PORT: 8000
-      
+
     volumes:
       # static folder
       - ./.persistent_data/static/kernel:/var/www/static
@@ -320,7 +320,7 @@ services:
       KONG_PLUGINS: bundled,kong-oidc-auth
 
   keycloak-base:
-    build: ./api-auth/aether-auth/keycloak
+    build: ./api-auth/keycloak
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: db
@@ -337,14 +337,7 @@ services:
     environment:
       KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
       KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
-
-      JWT_COOKIE: ${JWT_COOKIE}
-      REALM_COOKIE: ${REALM_COOKIE}
-
-      APP_NAME: auth
-      APP_PORT: 3012
-
-      APP_INTERNAL: http://auth:3012
+      KEYCLOAK_KONG_CLIENT: ${KEYCLOAK_KONG_CLIENT}
       BASE_HOST: ${BASE_HOST}
       KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
       KONG_INTERNAL: ${KONG_INTERNAL}

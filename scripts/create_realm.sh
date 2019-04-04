@@ -20,15 +20,28 @@
 #
 set -Eeuo pipefail
 
-DCA="docker-compose -f ./docker-compose.yml"
-$DCA kill
+source ./scripts/aether_functions.sh
 
-containers=( db kong keycloak auth )
-for container in "${containers[@]}"
-do
-    echo "_____________________________________________ Starting $container"
-    $DCA up -d $container
-    $DCA logs $container
-    echo "_____________________________________________ $container started!"
-    sleep 5
-done
+if [ -z "${1:-}" ]; then
+    echo "Pease, indicate realm name!"
+    exit 1
+fi
+
+start_db
+start_kong
+start_keycloak
+
+REALM=$1
+
+connect_to_keycloak
+create_kc_realm          $REALM
+create_kc_aether_clients $REALM
+create_kc_kong_client    $REALM
+
+
+USER=${2:-}
+PWD=${3:-}
+
+if [ ! -z "${USER}" ]; then
+    create_kc_user $REALM $USER $PWD
+fi
