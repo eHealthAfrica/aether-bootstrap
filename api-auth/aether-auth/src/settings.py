@@ -23,6 +23,8 @@ def get_env(name):
     return os.environ.get(name)
 
 
+DEBUG = bool(get_env('DEBUG'))
+
 HOST = get_env('BASE_HOST')  # External URL for host
 DOMAIN = HOST.replace('http://', '').replace('https://', '').strip('/')[0]
 APP_NAME = get_env('APP_NAME')

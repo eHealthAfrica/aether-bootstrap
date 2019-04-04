@@ -18,14 +18,22 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import json
 import requests
+
+from settings import DEBUG
 
 
 def request_post(url, data):
     res = requests.post(url, data=data)
     try:
         res.raise_for_status()
-        return res.json()
+        data = res.json()
+
+        if DEBUG:
+            print(json.dumps(data, indent=2))
+        return data
+
     except Exception as e:
         print(res.status_code)
         print(res.json())
@@ -36,7 +44,12 @@ def request_get(url):
     res = requests.get(url)
     try:
         res.raise_for_status()
-        return res.json()
+        data = res.json()
+
+        if DEBUG:
+            print(json.dumps(data, indent=2))
+        return data
+
     except Exception as e:
         print(res.status_code)
         print(res.json())
@@ -47,7 +60,12 @@ def request_delete(url):
     res = requests.delete(url)
     try:
         res.raise_for_status()
-        return res.text
+        data = res.text
+
+        if DEBUG:
+            print(data)
+        return data
+
     except Exception as e:
         print(res.status_code)
         print(res.text)

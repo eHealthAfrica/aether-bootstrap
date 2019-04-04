@@ -82,10 +82,8 @@ def add_service_to_realm(realm, config):
         config_well_know = keycloak_openid.well_know()
 
     except KeycloakError as ke:
-        print(ke)
         raise RuntimeError(f'Could not get info from keycloak  {str(ke)}')
     except Exception  as e:
-        print(e)
         raise RuntimeError(f'Unexpected error, do the realm and the client exist?  {str(e)}')
 
     # OIDC plugin settings (same for all)
@@ -117,29 +115,25 @@ def add_service_to_realm(realm, config):
             'strip_path': strip_path,
         }
         route_info = request_post(url=ROUTE_URL, data=route_data)
-        print(json.dumps(route_info, indent=2))
         protected_route_id = route_info['id']
 
-        confirmation = request_post(
+        request_post(
             url=f'{KONG_URL}/routes/{protected_route_id}/plugins',
             data=oidc_data
         )
-        print(json.dumps(confirmation, indent=2))
 
     public_endpoints = config.get('public_endpoints', [])
     for ep in public_endpoints:
         endpoint_name = ep['name']
         endpoint_url = ep['url']
         strip_path = json.dumps(ep['strip_path'])
-        print(f'{endpoint_name} | {endpoint_url} | {strip_path}')
         route_name = f'{service_name}_public_{endpoint_name}'
         PUBLIC_ROUTE_URL = f'{KONG_URL}/services/{route_name}/routes'
         route_data = {
             'paths': [f'/{realm}/{service_name}{endpoint_url}'],
             'strip_path': strip_path,
         }
-        confirmation = request_post(url=PUBLIC_ROUTE_URL, data=route_data)
-        print(json.dumps(confirmation, indent=2))
+        request_post(url=PUBLIC_ROUTE_URL, data=route_data)
 
 
 def remove_service_from_realm(realm, config):
@@ -155,8 +149,7 @@ def remove_service_from_realm(realm, config):
             if _realm_in_service(realm, service):
                 print(f'Removing {service["paths"]}')
                 remove_url = f'{KONG_URL}/routes/{service["id"]}'
-                res = request_delete(remove_url)
-                print(res)
+                request_delete(remove_url)
 
     public_endpoints = config.get('public_endpoints', [])
     for ep in public_endpoints:
@@ -168,8 +161,7 @@ def remove_service_from_realm(realm, config):
             if _realm_in_service(realm, service):
                 print(f'Removing {service["paths"]}')
                 remove_url = f'{KONG_URL}/routes/{service["id"]}'
-                res = request_delete(remove_url)
-                print(res)
+                request_delete(remove_url)
 
 
 def remove_service(config):
@@ -186,8 +178,7 @@ def remove_service(config):
                 print(f'Removing {service["paths"]}')
                 remove_url = f'{KONG_URL}/routes/{service["id"]}'
                 try:
-                    res = request_delete(remove_url)
-                    print(res)
+                    request_delete(remove_url)
                 except HTTPError:
                     print(f'Could not remove endpoint {endpoint_name}')
         except HTTPError:
@@ -204,8 +195,7 @@ def remove_service(config):
                 print(f'Removing {service["paths"]}')
                 remove_url = f'{KONG_URL}/routes/{service["id"]}'
                 try:
-                    res = request_delete(remove_url)
-                    print(res)
+                    request_delete(remove_url)
                 except HTTPError:
                     print(f'Could not remove endpoint {endpoint_name}')
         except HTTPError:
@@ -222,8 +212,7 @@ def remove_service(config):
                 print(f'Removing {service["paths"]}')
                 remove_url = f'{KONG_URL}/routes/{service["id"]}'
                 try:
-                    res = request_delete(remove_url)
-                    print(res)
+                    request_delete(remove_url)
                 except HTTPError:
                     print(f'Could not remove endpoint {endpoint_name}')
         except HTTPError:
@@ -290,8 +279,7 @@ def register_app(realm, config):
             'strip_path': strip_path,
         }
         try:
-            confirmation = request_post(url=PUBLIC_ROUTE_URL, data=route_data)
-            print(json.dumps(confirmation, indent=2))
+            request_post(url=PUBLIC_ROUTE_URL, data=route_data)
         except HTTPError:
             print(f'Could not add endpoint {endpoint_name}')
 
