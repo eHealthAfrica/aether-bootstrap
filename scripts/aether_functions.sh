@@ -116,11 +116,11 @@ function connect_to_keycloak {
 function create_kc_realm {
     REALM=$1
 
-    echo "${LINE} Creating realm  [${REALM}]..."
+    echo "${LINE} Creating realm [${REALM}]..."
     $KCADM \
         create realms \
         -s realm="${REALM}" \
-        -s displayName="Realm ${REALM} for the Aether Platform" \
+        -s displayName="${REALM} realm for the Aether Platform" \
         -s enabled=true
 }
 
@@ -129,11 +129,11 @@ function create_kc_realm {
 function create_kc_aether_clients {
     REALM=$1
 
-    echo "${LINE} Creating aether clients in realm  [$REALM]..."
+    echo "${LINE} Creating aether clients in realm [$REALM]..."
     for CLIENT in "${AETHER_APPS[@]}"; do
-        CLIENT_URL="${BASE_HOST}/${REALM}/${CLIENT}"
+        CLIENT_URL="${BASE_HOST}/${REALM}/${CLIENT}/"
 
-        echo "${LINE} Creating client  [${CLIENT}]  in realm  [$REALM]..."
+        echo "${LINE} Creating client [${CLIENT}] in realm [$REALM]..."
         $KCADM \
             create clients \
             -r "${REALM}" \
@@ -142,7 +142,7 @@ function create_kc_aether_clients {
             -s directAccessGrantsEnabled=true \
             -s rootUrl="${CLIENT_URL}" \
             -s baseUrl="${CLIENT_URL}" \
-            -s 'redirectUris=["/accounts/login/"]' \
+            -s 'redirectUris=["accounts/login/"]' \
             -s enabled=true
     done
 }
@@ -151,8 +151,8 @@ function create_kc_aether_clients {
 function create_kc_kong_client {
     REALM=$1
 
-    echo "${LINE} Creating client  [${KEYCLOAK_KONG_CLIENT}]  in realm  [$REALM]..."
-    CLIENT_URL="${BASE_HOST}/${REALM}"
+    echo "${LINE} Creating client [${KEYCLOAK_KONG_CLIENT}] in realm [$REALM]..."
+    CLIENT_URL="${BASE_HOST}/${REALM}/"
 
     $KCADM \
         create clients \
@@ -163,7 +163,7 @@ function create_kc_kong_client {
         -s directAccessGrantsEnabled=true \
         -s rootUrl="${CLIENT_URL}" \
         -s baseUrl="${CLIENT_URL}" \
-        -s 'redirectUris=["/*"]' \
+        -s 'redirectUris=["*"]' \
         -s enabled=true
 }
 
@@ -174,7 +174,7 @@ function create_kc_user {
     USERNAME=$2
     PASSWORD=${3:-}
 
-    echo "${LINE} Creating user  [$USERNAME]  in realm  [$REALM]..."
+    echo "${LINE} Creating user [$USERNAME] in realm [$REALM]..."
     $KCADM \
         create users \
         -r "${REALM}" \

@@ -13,6 +13,7 @@ services:
   # ---------------------------------
 
   assets:
+    image: aether-assets
     build:
       context: ./assets/generation
       dockerfile: Dockerfile
@@ -33,6 +34,7 @@ services:
   # ---------------------------------
 
   auth:
+    image: aether-auth
     build: ./api-auth/aether-auth
     environment:
       DEBUG: null

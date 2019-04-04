@@ -37,7 +37,8 @@ DC_AUTH="docker-compose -f docker-compose-generation.yml"
 LINE="__________________________________________________________________"
 
 echo "${LINE} Pulling docker images..."
-docker-compose -f docker-compose-base.yml pull
+docker-compose pull db minio kernel odk ui
+docker-compose -f docker-compose-connect.yml pull producer zookeeper kafka
 echo ""
 
 start_db
@@ -103,13 +104,14 @@ for REALM in "${REALMS[@]}"; do
                     $KEYCLOAK_INITIAL_USER_USERNAME \
                     $KEYCLOAK_INITIAL_USER_PASSWORD
 
-    echo "${LINE} Adding  [aether]  solution in kong..."
+    echo "${LINE} Adding [aether] solution in kong..."
     $DC_AUTH run auth add_solution aether $REALM
 done
 echo ""
 
-
+$DC_AUTH down
 docker-compose kill
+docker-compose down
 
 echo ""
 echo "========================================================================="

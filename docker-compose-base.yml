@@ -262,6 +262,7 @@ services:
   # ---------------------------------
 
   kong-base:
+    image: aether-kong
     build: ./api-auth/kong
     environment:
       KONG_DATABASE: postgres
@@ -281,6 +282,7 @@ services:
     command: ["kong", "start", "--v"]
 
   keycloak-base:
+    image: aether-keycloak
     build: ./api-auth/keycloak
     environment:
       DB_VENDOR: POSTGRES

@@ -117,7 +117,7 @@ def add_service_to_realm(realm, config):
 
         request_post(
             url=f'{KONG_URL}/routes/{protected_route_id}/plugins',
-            data=oidc_data
+            data=oidc_data,
         )
 
     public_endpoints = config.get('public_endpoints', [])
@@ -220,7 +220,7 @@ def remove_service(config):
 def register_app(realm, config):
     # Register Client with Kong
     # Single API Service
-    name = config['name']  # app name
+    name = config['name']        # app name
     url = config['service_url']  # service_url
 
     oidc_endpoints = config.get('oidc_endpoints', [])
@@ -245,7 +245,7 @@ def register_app(realm, config):
 
         data = {
             'name': f'{name}_public_{endpoint_name}',
-            'url': f'{url}{endpoint_url}'
+            'url': f'{url}{endpoint_url}',
         }
         try:
             request_post(url=f'{KONG_URL}/services/', data=data)
@@ -262,7 +262,7 @@ def register_app(realm, config):
         service_name = f'{name}_global_{endpoint_name}'
         data = {
             'name': service_name,
-            'url': f'{url}{endpoint_url}'
+            'url': f'{url}{endpoint_url}',
         }
         try:
             request_post(url=f'{KONG_URL}/services/', data=data)
