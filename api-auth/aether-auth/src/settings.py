@@ -42,11 +42,9 @@ KEYCLOAK_KONG_CLIENT = get_env('KEYCLOAK_KONG_CLIENT')
 
 # Kong Information
 KONG_URL = get_env('KONG_INTERNAL')
-CONSUMERS_URL = f'{KONG_URL}/consumers'
+KONG_OIDC_PLUGIN = 'kong-oidc-auth'
 
 
 REALMS_PATH = '/code/realm'
 SERVICES_PATH = '/code/service'
 SOLUTIONS_PATH = '/code/solution'
-JWT_COOKIE = get_env('JWT_COOKIE') or 'aether-jwt'
-REALM_COOKIE = get_env('REALM_COOKIE') or 'aether-realm'

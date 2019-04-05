@@ -25,48 +25,50 @@ from settings import DEBUG
 
 
 def request_post(url, data):
-    res = requests.post(url, data=data)
     try:
+        res = requests.post(url, data=data)
         res.raise_for_status()
         data = res.json()
-
-        if DEBUG:
-            print(json.dumps(data, indent=2))
+        _print(json.dumps(data, indent=2))
         return data
-
     except Exception as e:
-        print(res.status_code)
-        print(res.json())
-        raise e
+        _handle_exception(e, res)
 
 
 def request_get(url):
-    res = requests.get(url)
     try:
+        res = requests.get(url)
         res.raise_for_status()
         data = res.json()
-
-        if DEBUG:
-            print(json.dumps(data, indent=2))
+        _print(json.dumps(data, indent=2))
         return data
-
     except Exception as e:
-        print(res.status_code)
-        print(res.json())
-        raise e
+        _handle_exception(e, res)
 
 
 def request_delete(url):
-    res = requests.delete(url)
     try:
+        res = requests.delete(url)
         res.raise_for_status()
         data = res.text
-
-        if DEBUG:
-            print(data)
+        _print(data)
         return data
-
     except Exception as e:
-        print(res.status_code)
-        print(res.text)
-        raise e
+        _handle_exception(e, res)
+
+
+def _print(msg):
+    if DEBUG:
+        print(msg)
+
+
+def _handle_exception(e, res):
+    _print('---------------------------------------')
+    _print(str(e))
+    _print(res.status_code)
+    if res.status_code != 204:
+        _print(json.dumps(res.json(), indent=2))
+    else:
+        _print(res.text)
+    _print('---------------------------------------')
+    raise e

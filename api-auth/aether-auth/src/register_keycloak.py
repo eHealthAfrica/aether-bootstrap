@@ -62,6 +62,6 @@ if __name__ == '__main__':
     CLIENT_NAME = 'keycloak'
     CLIENT_URL = KEYCLOAK_INTERNAL
 
-    print(f'Exposing Service {CLIENT_NAME} @ {CLIENT_URL}')
+    print(f'Exposing service {CLIENT_NAME} @ {CLIENT_URL}')
     register_app(CLIENT_NAME, CLIENT_URL)
-    print(f'Service {CLIENT_NAME} from {CLIENT_URL} now being served by kong @ /{CLIENT_NAME}.')
+    print(f'Service {CLIENT_NAME} from {CLIENT_URL} now being served by kong @ {HOST}/{CLIENT_NAME}.')
