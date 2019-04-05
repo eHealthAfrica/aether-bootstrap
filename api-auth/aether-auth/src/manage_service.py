@@ -84,7 +84,7 @@ def add_service_to_realm(realm, config):
 
     # OIDC plugin settings (same for all)
     oidc_data = {
-        'name': f'{client_id}-oidc-auth',
+        'name': 'kong-oidc-auth',  # plugin name (DO NOT CHANGE!!!)
 
         'config.client_id': client_id,
         'config.client_secret': client_secret,
