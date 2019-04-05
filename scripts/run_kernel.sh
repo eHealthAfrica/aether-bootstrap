@@ -20,17 +20,8 @@
 #
 set -Eeuo pipefail
 
-{
-    docker network create aether_internal
-} || { # catch
-    echo "aether_internal network is ready."
-}
-
-{
-    docker volume create aether_database_data
-} || { # catch
-    echo "aether_database_data volume is ready."
-}
+source ./scripts/aether_functions.sh
+create_docker_assets
 
 scripts/generate_env_vars.sh
-docker-compose -f ./docker-compose.yml up -d
+docker-compose up -d

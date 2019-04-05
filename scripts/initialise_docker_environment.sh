@@ -28,10 +28,10 @@ echo "    Initializing Aether environment, this will take about 60 seconds."
 echo "========================================================================="
 echo ""
 
+docker-compose kill
 create_docker_assets
 source .env
 
-docker-compose kill
 
 DC_AUTH="docker-compose -f docker-compose-generation.yml"
 LINE="__________________________________________________________________"

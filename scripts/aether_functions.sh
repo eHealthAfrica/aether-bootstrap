@@ -29,10 +29,23 @@ AETHER_APPS=( kernel odk ui )
 
 
 function create_docker_assets {
-    docker network create aether_internal      2>/dev/null || true
-    docker volume  create aether_database_data 2>/dev/null || true
+    echo "${LINE} Generating docker network and database volume..."
+
+    {
+        docker network create aether_internal
+    } || { # catch
+        echo "aether_internal network is ready."
+    }
+
+    {
+        docker volume create aether_database_data
+    } || { # catch
+        echo "aether_database_data volume is ready."
+    }
 
     ./scripts/generate_env_vars.sh
+
+    echo ""
 }
 
 

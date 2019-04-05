@@ -20,7 +20,7 @@
 #
 set -Eeuo pipefail
 
-show_help () {
+function show_help {
     echo """
     Commands
     ----------------------------------------------------------------------------

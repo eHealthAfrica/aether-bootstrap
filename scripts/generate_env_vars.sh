@@ -25,15 +25,15 @@
 # Example:
 # ./scripts/generate_env_vars.sh
 
-check_openssl () {
+function check_openssl {
     which openssl > /dev/null
 }
 
-gen_random_string () {
+function gen_random_string {
     openssl rand -hex 16 | tr -d "\n"
 }
 
-gen_env_file () {
+function gen_env_file {
     cat << EOF
 #
 # USE THIS ONLY LOCALLY
