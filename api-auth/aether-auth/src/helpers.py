@@ -20,55 +20,40 @@
 
 import json
 import requests
+from requests.exceptions import HTTPError
 
 from settings import DEBUG
 
 
-def request_post(url, data):
+def request(method, url, data={}):
     try:
-        res = requests.post(url, data=data)
+        res = requests.request(method=method, url=url, data=data)
         res.raise_for_status()
-        data = res.json()
-        _print(json.dumps(data, indent=2))
-        return data
+        if res.status_code != 204:
+            data = res.json()
+            __print(json.dumps(data, indent=2))
+            return data
+
+    except HTTPError as he:
+        __handle_exception(he, res)
     except Exception as e:
-        _handle_exception(e, res)
+        __handle_exception(e)
 
 
-def request_get(url):
-    try:
-        res = requests.get(url)
-        res.raise_for_status()
-        data = res.json()
-        _print(json.dumps(data, indent=2))
-        return data
-    except Exception as e:
-        _handle_exception(e, res)
-
-
-def request_delete(url):
-    try:
-        res = requests.delete(url)
-        res.raise_for_status()
-        data = res.text
-        _print(data)
-        return data
-    except Exception as e:
-        _handle_exception(e, res)
-
-
-def _print(msg):
+def __print(msg):
     if DEBUG:
         print(msg)
 
 
-def _handle_exception(e, res):
-    _print('---------------------------------------')
-    _print(str(e))
-    _print(res.status_code)
-    if res.status_code != 204:
-        _print(json.dumps(res.json(), indent=2))
-    else:
-        _print(res.text)
-    _print('---------------------------------------')
+def __handle_exception(e, res=None):
+    __print('---------------------------------------')
+    __print(str(e))
+
+    if res:
+        __print(res.status_code)
+        if res.status_code != 204:
+            __print(json.dumps(res.json(), indent=2))
+        else:
+            __print(res.text)
+    __print('---------------------------------------')
     raise e

@@ -18,7 +18,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from helpers import request_post
+from helpers import request
 from settings import HOST, KONG_URL, KEYCLOAK_INTERNAL
 
 
@@ -29,7 +29,7 @@ def register_app(name, url):
         'name': f'{name}',
         'url': f'{url}',
     }
-    client_info = request_post(url=f'{KONG_URL}/services/', data=data)
+    client_info = request(method='post', url=f'{KONG_URL}/services/', data=data)
     client_id = client_info['id']
 
     # ADD CORS Plugin to Kong for whole domain CORS
@@ -43,7 +43,7 @@ def register_app(name, url):
         'config.methods': ['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         'config.origins': f'{HOST}/*',
     }
-    request_post(url=PLUGIN_URL, data=data)
+    request(method='post', url=PLUGIN_URL, data=data)
 
     # Routes
     # Add a route which we will NOT protect
@@ -53,7 +53,7 @@ def register_app(name, url):
         'strip_path': 'false',
         'preserve_host': 'false',  # This is keycloak specific.
     }
-    request_post(url=ROUTE_URL, data=data)
+    request(method='post', url=ROUTE_URL, data=data)
 
     return client_id
 

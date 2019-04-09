@@ -26,7 +26,7 @@ from keycloak import KeycloakAdmin
 from keycloak.exceptions import KeycloakError
 from requests.exceptions import HTTPError
 
-from helpers import request_post, request_get, request_delete
+from helpers import request
 from settings import (
     HOST,
     DOMAIN,
@@ -124,7 +124,7 @@ def add_service(config, realm):
                 'url': f'{url}{endpoint_url}',
             }
             try:
-                request_post(url=f'{KONG_URL}/services/', data=data)
+                request(method='post', url=f'{KONG_URL}/services/', data=data)
                 print(f'Added {ep_type} kong service component: '
                       f'{service_name} for service: {name}')
             except HTTPError:
@@ -137,13 +137,14 @@ def add_service(config, realm):
                 'strip_path': json.dumps(ep.get('strip_path', False)),
             }
             try:
-                route_info = request_post(url=ROUTE_URL, data=route_data)
+                route_info = request(method='post', url=ROUTE_URL, data=route_data)
 
                 # OIDC routes are protected using the "kong-oidc-auth" plugin
                 if ep_type == EPT_OIDC:
                     protected_route_id = route_info['id']
                     try:
-                        request_post(
+                        request(
+                            method='post',
                             url=f'{KONG_URL}/routes/{protected_route_id}/plugins',
                             data=oidc_data,
                         )
@@ -181,12 +182,12 @@ def remove_service(config, realm):
 
             routes_url = f'{KONG_URL}/services/{service_name}/routes'
             try:
-                res = request_get(routes_url)
+                res = request(method='get', url=routes_url)
                 for service in res['data']:
                     if purge or _realm_in_service(realm, service):
                         print(f'Removing {service["paths"]}')
                         try:
-                            request_delete(f'{KONG_URL}/routes/{service["id"]}')
+                            request(method='delete', url=f'{KONG_URL}/routes/{service["id"]}')
                         except HTTPError:
                             print(f'Could not remove endpoint {endpoint_name}')
             except HTTPError:
