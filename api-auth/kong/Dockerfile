@@ -1,4 +1,4 @@
-FROM kong:1.0.3-alpine
+FROM kong:1.1.1-alpine
 
 # Kong install dir
 ENV KONG_OIDC_HOME /usr/local/share/lua/5.1/kong/plugins/kong-oidc-auth
