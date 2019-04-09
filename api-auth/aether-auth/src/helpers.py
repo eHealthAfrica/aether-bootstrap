@@ -33,7 +33,7 @@ def request(method, url, data={}):
             data = res.json()
             __print(json.dumps(data, indent=2))
             return data
-
+        return None
     except HTTPError as he:
         __handle_exception(he, res)
     except Exception as e:

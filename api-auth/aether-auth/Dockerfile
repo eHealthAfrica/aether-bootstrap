@@ -8,7 +8,7 @@ RUN apt-get update -qq && \
         --allow-change-held-packages \
         install gcc && \
     pip install -q --upgrade pip && \
-    pip install -q python-keycloak
+    pip install -q python-keycloak pyjwt
 
 WORKDIR /code
 COPY . /code
