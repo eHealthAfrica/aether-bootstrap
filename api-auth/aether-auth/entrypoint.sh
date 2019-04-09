@@ -49,6 +49,9 @@ function show_help {
 
                        usage: remove_solution {solution} {realm}
 
+    decode_token     : decodes a JSON Web Token (JWT)
+
+                       usage: decode_token {token}
     """
 }
 
@@ -62,36 +65,27 @@ case "$1" in
     ;;
 
     setup_auth )
-        # add Keycloak to Kong
         python /code/src/register_keycloak.py
     ;;
 
     add_service )
-        # adds a service to an existing realm,
-        # using the service definition in /service
-        # usage: add_service {service} {realm}
         python /code/src/manage_service.py ADD SERVICE "${@:2}"
     ;;
 
     remove_service )
-        # removes a service from an existing realm,
-        # using the service definition in /service
-        # usage: remove_service {service} {realm}
         python /code/src/manage_service.py REMOVE SERVICE "${@:2}"
     ;;
 
     add_solution )
-        # adds a package of services to an existing realm,
-        # using the solution definition in /solution
-        # usage: add_solution {solution} {realm}
         python /code/src/manage_service.py ADD SOLUTION "${@:2}"
     ;;
 
     remove_solution )
-        # removes a package of services from an existing realm,
-        # using the solution definition in /solution
-        # usage: remove_solution {solution} {realm}
         python /code/src/manage_service.py REMOVE SOLUTION "${@:2}"
+    ;;
+
+    decode_token )
+        python /code/src/decode_token.py "${@:2}"
     ;;
 
     help )
