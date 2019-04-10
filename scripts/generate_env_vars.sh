@@ -76,7 +76,6 @@ KEYCLOAK_INITIAL_USER_USERNAME=user
 KEYCLOAK_INITIAL_USER_PASSWORD=password
 
 KEYCLOAK_KONG_CLIENT=kong
-JWT_COOKIE=aether-jwt
 REALM_COOKIE=aether-realm
 # ------------------------------------------------------------------
 
@@ -85,7 +84,10 @@ REALM_COOKIE=aether-realm
 # Routing
 # ==================================================================
 BASE_HOST=http://aether.local
+
 KEYCLOAK_INTERNAL=http://keycloak:8080
+KEYCLOAK_SERVER_URL=http://aether.local/keycloak/auth/realms
+
 KONG_INTERNAL=http://kong:8001
 # ------------------------------------------------------------------
 
@@ -95,6 +97,9 @@ KONG_INTERNAL=http://kong:8001
 # ==================================================================
 MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
 MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
+
+MINIO_INTERNAL=http://minio:9000
+MINIO_SERVER_URL=http://aether.local/minio
 # ------------------------------------------------------------------
 
 

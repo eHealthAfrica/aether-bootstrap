@@ -27,7 +27,7 @@ function show_help {
     bash             : run bash
     eval             : eval shell command
 
-    setup_auth       : register Keycloak in Kong.
+    setup_auth       : register Keycloak & Minio in Kong.
 
     add_service      : adds a service to an existing realm in Kong,
                        using the service definition in /service directory.
@@ -65,7 +65,7 @@ case "$1" in
     ;;
 
     setup_auth )
-        python /code/src/register_keycloak.py
+        python /code/src/setup_auth.py
     ;;
 
     add_service )

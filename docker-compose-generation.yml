@@ -46,6 +46,7 @@ services:
       BASE_HOST: ${BASE_HOST}
       KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
       KONG_INTERNAL: ${KONG_INTERNAL}
+      MINIO_INTERNAL: ${MINIO_INTERNAL}
     volumes:
       - ./api-auth/aether-auth:/code
     command: help

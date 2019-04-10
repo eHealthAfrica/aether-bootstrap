@@ -40,11 +40,14 @@ KC_ADMIN_PASSWORD = get_env('KEYCLOAK_GLOBAL_PASSWORD')
 KC_MASTER_REALM = 'master'
 KEYCLOAK_KONG_CLIENT = get_env('KEYCLOAK_KONG_CLIENT')
 
+
 # Kong Information
 KONG_URL = get_env('KONG_INTERNAL')
 KONG_OIDC_PLUGIN = 'kong-oidc-auth'
 
-
 REALMS_PATH = '/code/realm'
 SERVICES_PATH = '/code/service'
 SOLUTIONS_PATH = '/code/solution'
+
+# Minio
+MINIO_INTERNAL = get_env('MINIO_INTERNAL')
