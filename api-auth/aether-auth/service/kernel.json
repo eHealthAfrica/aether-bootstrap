@@ -1,6 +1,6 @@
 {
   "name": "kernel",
-  "service_url": "http://kernel:8000",
+  "host": "http://kernel:8000",
   "oidc_endpoints": [
     {
       "name": "protected",

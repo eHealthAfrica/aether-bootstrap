@@ -1,6 +1,6 @@
 {
   "name": "ui",
-  "service_url": "http://ui:8004",
+  "host": "http://ui:8004",
   "oidc_endpoints": [
     {
       "name": "protected",

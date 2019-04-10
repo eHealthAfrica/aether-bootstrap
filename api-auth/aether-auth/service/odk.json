@@ -1,6 +1,6 @@
 {
   "name": "odk",
-  "service_url": "http://odk:8002",
+  "host": "http://odk:8002",
   "oidc_endpoints": [
     {
       "name": "protected",

@@ -18,6 +18,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import fnmatch
 import json
 import os
 import sys
@@ -100,8 +101,8 @@ def _get_service_oidc_payload(service_name, realm):
 
 
 def add_service(config, realm):
-    name = config['name']        # service name
-    url = config['service_url']  # service url
+    name = config['name']  # service name
+    host = config['host']  # service host
 
     print(f'\nAdding realm "{realm}" to service "{name}"')
 
@@ -120,7 +121,7 @@ def add_service(config, realm):
 
             data = {
                 'name': service_name,
-                'url': f'{url}{ep_url}',
+                'url': f'{host}{ep_url}',
             }
             try:
                 request(method='post', url=f'{KONG_URL}/services/', data=data)
@@ -129,7 +130,7 @@ def add_service(config, realm):
                 print(f'    - Could not add service "{ep_name}"')
 
             ROUTE_URL = f'{KONG_URL}/services/{service_name}/routes'
-            path = ep.get('route_path', f'/{realm}/{name}{ep_url}')
+            path = ep.get('route_path') or f'/{realm}/{name}{ep_url}'
             route_data = {
                 'paths': [path, ],
                 'strip_path': ep.get('strip_path', 'false'),
@@ -192,7 +193,7 @@ def remove_service(config, realm):
 
 def load_definitions(def_path):
     definitions = {}
-    _files = os.listdir(def_path)
+    _files = [f for f in os.listdir(def_path) if fnmatch.fnmatch(f, '*.json')]
 
     for f in _files:
         with open(f'{def_path}/{f}') as _f:
