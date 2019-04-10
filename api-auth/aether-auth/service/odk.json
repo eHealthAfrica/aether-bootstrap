@@ -3,16 +3,35 @@
   "service_url": "http://odk:8002",
   "oidc_endpoints": [
     {
-      "name": "base",
+      "name": "protected",
       "url": "/",
-      "strip_path": false
+      "strip_path": "true"
     }
   ],
-  "global_public_endpoints": [
+  "public_endpoints": [
     {
       "name": "static",
-      "url": "/_static/odk/static/",
-      "strip_path": true
+      "url": "/~odk/static/",
+      "route_path": "/~odk/static/",
+      "strip_path": "true"
+    },
+    {
+      "name": "admin",
+      "url": "/~odk/admin/",
+      "route_path": "/~odk/admin/",
+      "strip_path": "true"
+    },
+    {
+      "name": "accounts",
+      "url": "/~odk/accounts/",
+      "route_path": "/~odk/accounts/",
+      "strip_path": "true"
+    },
+    {
+      "name": "debug_toolbar",
+      "url": "/~odk/__debug__/",
+      "route_path": "/~odk/__debug__/",
+      "strip_path": "true"
     }
   ]
 }

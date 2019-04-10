@@ -45,15 +45,13 @@ def __print(msg):
         print(msg)
 
 
-def __handle_exception(e, res=None):
+def __handle_exception(exception, res=None):
     __print('---------------------------------------')
-    __print(str(e))
+    print(' >> ', str(exception))
 
     if res:
-        __print(res.status_code)
+        print(' >>> ', res)
         if res.status_code != 204:
             __print(json.dumps(res.json(), indent=2))
-        else:
-            __print(res.text)
     __print('---------------------------------------')
-    raise e
+    raise exception

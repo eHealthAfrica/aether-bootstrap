@@ -45,7 +45,6 @@ from settings import (
 )
 
 # endpoint types
-EPT_GLOBAL = 'global_public'
 EPT_OIDC = 'oidc'
 EPT_PUBLIC = 'public'
 
@@ -68,7 +67,7 @@ def _get_service_oidc_payload(service_name, realm):
                                        password=KC_ADMIN_PASSWORD,
                                        realm_name=KC_MASTER_REALM,
                                        )
-        # 2. change to our realm
+        # 2. change to given realm
         keycloak_admin.realm_name = realm
         # 3. get kong client internal id
         client_pk = keycloak_admin.get_client_id(client_id)
@@ -104,37 +103,36 @@ def add_service(config, realm):
     name = config['name']        # service name
     url = config['service_url']  # service url
 
-    print(f'Adding realm {realm} to service: {name}')
+    print(f'\nAdding realm "{realm}" to service "{name}"')
 
     # OIDC plugin settings (same for all OIDC endpoints)
     oidc_data = _get_service_oidc_payload(name, realm)
 
-    ep_types = [EPT_OIDC, EPT_PUBLIC, EPT_GLOBAL]
+    ep_types = [EPT_PUBLIC, EPT_OIDC]
     for ep_type in ep_types:
-        print(f'Adding {ep_type} endpoints')
+        print(f'  Adding "{ep_type}" endpoints')
 
         endpoints = config.get(f'{ep_type}_endpoints', [])
         for ep in endpoints:
-            endpoint_name = ep['name']
-            endpoint_url = ep['url']
-            service_name = f'{name}_{ep_type}_{endpoint_name}'
+            ep_name = ep['name']
+            ep_url = ep['url']
+            service_name = f'{name}_{ep_type}_{ep_name}'
 
             data = {
                 'name': service_name,
-                'url': f'{url}{endpoint_url}',
+                'url': f'{url}{ep_url}',
             }
             try:
                 request(method='post', url=f'{KONG_URL}/services/', data=data)
-                print(f'Added {ep_type} kong service component: '
-                      f'{service_name} for service: {name}')
+                print(f'    + Added service "{ep_name}"')
             except HTTPError:
-                print(f'Could not add endpoint {endpoint_name}')
+                print(f'    - Could not add service "{ep_name}"')
 
             ROUTE_URL = f'{KONG_URL}/services/{service_name}/routes'
-            path = endpoint_url if ep_type == EPT_GLOBAL else f'/{realm}/{name}{endpoint_url}'
+            path = ep.get('route_path', f'/{realm}/{name}{ep_url}')
             route_data = {
                 'paths': [path, ],
-                'strip_path': json.dumps(ep.get('strip_path', False)),
+                'strip_path': ep.get('strip_path', 'false'),
             }
             try:
                 route_info = request(method='post', url=ROUTE_URL, data=route_data)
@@ -142,19 +140,17 @@ def add_service(config, realm):
                 # OIDC routes are protected using the "kong-oidc-auth" plugin
                 if ep_type == EPT_OIDC:
                     protected_route_id = route_info['id']
-                    try:
-                        request(
-                            method='post',
-                            url=f'{KONG_URL}/routes/{protected_route_id}/plugins',
-                            data=oidc_data,
-                        )
-                    except HTTPError:
-                        print(f'Could not add protected endpoint {endpoint_name}')
+                    request(
+                        method='post',
+                        url=f'{KONG_URL}/routes/{protected_route_id}/plugins',
+                        data=oidc_data,
+                    )
 
+                print(f'    + Added route {ep_url} >> {path}')
             except HTTPError:
-                print(f'Could not add {ep_type} route to endpoint {endpoint_name}')
+                print(f'    - Could not add route {ep_url} >> {path}')
 
-    print(f'Service {name} now being served by kong for realm {realm}.')
+    print(f'Service "{name}" now being served by kong for realm "{realm}"\n')
 
 
 def remove_service(config, realm):
@@ -162,36 +158,36 @@ def remove_service(config, realm):
     def _realm_in_service(realm, service):
         return any([path.strip('/').startswith(realm) for path in service['paths']])
 
-    name = config['name']          # service name
-    purge = realm in ['ALL', '*']  # remove service in ALL realms
+    name = config['name']   # service name
+    purge = realm == '*'    # remove service in ALL realms
 
     if purge:
-        print(f'Removing service {name} from ALL realms')
-        ep_types = [EPT_OIDC, EPT_PUBLIC, EPT_GLOBAL]
+        print(f'Removing service "{name}" from ALL realms')
     else:
-        print(f'Removing service {name} from realm {realm}')
-        ep_types = [EPT_OIDC, EPT_PUBLIC]
+        print(f'Removing service "{name}" from realm {realm}')
 
+    ep_types = [EPT_OIDC, EPT_PUBLIC]
     for ep_type in ep_types:
-        print(f'Removing {ep_type} endpoints')
+        print(f'  Removing "{ep_type}" endpoints')
 
         endpoints = config.get(f'{ep_type}_endpoints', [])
         for ep in endpoints:
-            endpoint_name = ep['name']
-            service_name = f'{name}_{ep_type}_{endpoint_name}'
+            ep_name = ep['name']
+            service_name = f'{name}_{ep_type}_{ep_name}'
 
             routes_url = f'{KONG_URL}/services/{service_name}/routes'
             try:
                 res = request(method='get', url=routes_url)
                 for service in res['data']:
                     if purge or _realm_in_service(realm, service):
-                        print(f'Removing {service["paths"]}')
+                        ep_des = f'"{ep_name}"  >>  {service["paths"]}'
                         try:
                             request(method='delete', url=f'{KONG_URL}/routes/{service["id"]}')
+                            print(f'    + Removed endpoint {ep_des}')
                         except HTTPError:
-                            print(f'Could not remove endpoint {endpoint_name}')
+                            print(f'    - Could not remove endpoint {ep_des}')
             except HTTPError:
-                print(f'Route not found at {routes_url}')
+                print(f'    - Route not found "{ep_name}"" at {routes_url}')
 
 
 def load_definitions(def_path):
@@ -206,22 +202,22 @@ def load_definitions(def_path):
     return definitions
 
 
-def handle_service(command, service, realm):
-    if service not in SERVICE_DEFINITIONS:
-        raise KeyError(f'No service definition for name: {service}')
+def handle_service(command, name, realm):
+    if name not in SERVICE_DEFINITIONS:
+        raise KeyError(f'No service definition for name: "{name}"')
 
-    service_config = SERVICE_DEFINITIONS[service]
+    service_config = SERVICE_DEFINITIONS[name]
     if command == 'ADD':
         add_service(service_config, realm)
     elif command == 'REMOVE':
         remove_service(service_config, realm)
 
 
-def handle_solution(command, solution, realm):
-    if solution not in SOLUTION_DEFINITIONS:
-        raise KeyError(f'No solution definition for name: {solution}')
+def handle_solution(command, name, realm):
+    if name not in SOLUTION_DEFINITIONS:
+        raise KeyError(f'No solution definition for name: "{name}"')
 
-    services = SOLUTION_DEFINITIONS[solution].get('services', [])
+    services = SOLUTION_DEFINITIONS[name].get('services', [])
     for service in services:
         handle_service(command, service, realm)
 

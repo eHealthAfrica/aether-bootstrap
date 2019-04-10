@@ -37,7 +37,7 @@ DC_AUTH="docker-compose -f docker-compose-generation.yml"
 LINE="__________________________________________________________________"
 
 echo "${LINE} Pulling docker images..."
-docker-compose pull db minio kernel odk ui
+docker-compose pull db minio
 docker-compose -f docker-compose-connect.yml pull producer zookeeper kafka
 echo ""
 
@@ -49,6 +49,7 @@ echo "${LINE} Preparing aether containers..."
 CONTAINERS=( kernel ui odk )
 for container in "${CONTAINERS[@]}"
 do
+    docker-compose pull $container
     docker-compose run --no-deps $container setup
 done
 docker-compose run --no-deps kernel eval python /code/sql/create_readonly_user.py
