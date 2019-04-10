@@ -34,9 +34,6 @@ services:
       # static folders per container
       - ./.persistent_data/static:/static
 
-      # aether favicon
-      - ./assets/aether.ico:/static/aether.ico
-
       # media folders per container
       - ./.persistent_data/media:/media
     ports:
@@ -54,7 +51,12 @@ services:
     environment:
       CSRF_COOKIE_DOMAIN: .aether.local
       DJANGO_SECRET_KEY: ${KERNEL_DJANGO_SECRET_KEY}
+
       DJANGO_STORAGE_BACKEND: filesystem
+      HOSTNAME: kernel.aether.local
+
+      APP_NAME: Aether Kernel
+
       ADMIN_USERNAME: ${KERNEL_ADMIN_USERNAME}
       ADMIN_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
       ADMIN_TOKEN: ${KERNEL_ADMIN_TOKEN}
@@ -68,12 +70,25 @@ services:
       PGPORT: 5432
       PGUSER: postgres
 
+      # Export
+      EXPORT_CSV_ESCAPE: "\\"
+      EXPORT_CSV_QUOTES: "\""
+      EXPORT_CSV_SEPARATOR: ","
+      EXPORT_DATA_FORMAT: "split"
+      EXPORT_HEADER_CONTENT: "labels"
+      EXPORT_HEADER_SEPARATOR: "/"
+      EXPORT_HEADER_SHORTEN: "no"
+
       WEB_SERVER_PORT: 8000
     volumes:
       # media folder used by nginx
       - ./.persistent_data/media/kernel:/media
       # static folder used by nginx
       - ./.persistent_data/static/kernel:/var/www/static
+      # temporary folder for Excel files
+      - ./.persistent_data/export/kernel:/tmp
+      # backups folder
+      - ./.persistent_data/backups/kernel:/backups
     ports:
       # "HOST:CONTAINER"
       - "8000:8000"
@@ -89,7 +104,11 @@ services:
     environment:
       CSRF_COOKIE_DOMAIN: .aether.local
       DJANGO_SECRET_KEY: ${ODK_DJANGO_SECRET_KEY}
+
       DJANGO_STORAGE_BACKEND: filesystem
+      HOSTNAME: odk.aether.local
+
+      APP_NAME: Aether ODK
 
       ADMIN_USERNAME: ${ODK_ADMIN_USERNAME}
       ADMIN_PASSWORD: ${ODK_ADMIN_PASSWORD}
@@ -111,6 +130,8 @@ services:
       - ./.persistent_data/media/odk:/media
       # static folder used by nginx
       - ./.persistent_data/static/odk:/var/www/static
+      # backups folder
+      - ./.persistent_data/backups/odk:/backups
     ports:
       - "8002:8002"
     command: start
@@ -125,7 +146,11 @@ services:
     environment:
       CSRF_COOKIE_DOMAIN: .aether.local
       DJANGO_SECRET_KEY: ${UI_DJANGO_SECRET_KEY}
+
       DJANGO_STORAGE_BACKEND: filesystem
+      HOSTNAME: ui.aether.local
+
+      APP_NAME: Aether
 
       ADMIN_USERNAME: ${UI_ADMIN_USERNAME}
       ADMIN_PASSWORD: ${UI_ADMIN_PASSWORD}
@@ -144,10 +169,12 @@ services:
     volumes:
       # static folder used by nginx
       - ./.persistent_data/static/ui:/var/www/static
+      # backups folder
+      - ./.persistent_data/backups/ui:/backups
     ports:
       - "8004:8004"
     command: start
-    
+
 
   # ---------------------------------
   # Kafka & Zookeeper
@@ -183,18 +210,26 @@ services:
   aether-producer-base:
     image: ehealthafrica/aether-producer:${AETHER_VERSION}
     environment:
-      # These variables will override the ones indicated in the settings file
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      PYTHONUNBUFFERED: 1
 
+      # These variables will override the ones indicated in the settings file
       KERNEL_URL: http://kernel:8000
-      KERNEL_ADMIN_USERNAME: ${KERNEL_ADMIN_USERNAME}
-      KERNEL_ADMIN_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
+      KERNEL_USERNAME: ${KERNEL_ADMIN_USERNAME}
+      KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
 
       POSTGRES_HOST: db
       POSTGRES_DBNAME: aether
       POSTGRES_USER: ${KERNEL_READONLY_DB_USERNAME}
       POSTGRES_PASSWORD: ${KERNEL_READONLY_DB_PASSWORD}
 
+      OFFSET_DB_HOST: db
+      OFFSET_DB_USER: postgres
+      OFFSET_DB_PORT: 5432
+      OFFSET_DB_PASSWORD: ${KERNEL_DB_PASSWORD}
+      OFFSET_DB_NAME: producer_offset_db
+
+      PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
+      PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PW}
       SERVER_PORT: 5005
 
       # default settings file

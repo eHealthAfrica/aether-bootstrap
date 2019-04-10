@@ -60,7 +60,7 @@ gen_env_file () {
 # ------------------------------------------------------------------
 # Aether
 # ==================================================================
-AETHER_VERSION=0.9.2
+AETHER_VERSION=1.2.0
 # ------------------------------------------------------------------
 
 
@@ -75,6 +75,12 @@ KERNEL_DB_PASSWORD=$(gen_random_string)
 
 KERNEL_READONLY_DB_USERNAME=readonlyuser
 KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
+
+# ------------------------------------------------------------------
+# Aether Producer
+# ==================================================================
+PRODUCER_ADMIN_USER=admin
+PRODUCER_ADMIN_PW=adminadmin
 
 # TEST Aether Kernel
 # ------------------------------------------------------------------
@@ -116,6 +122,7 @@ UI_ADMIN_PASSWORD=adminadmin
 UI_DJANGO_SECRET_KEY=$(gen_random_string)
 UI_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
+
 EOF
 }
 

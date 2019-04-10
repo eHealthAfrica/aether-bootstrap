@@ -112,11 +112,11 @@ services:
     links:
       - zookeeper-test
     ports:
-      - "29099:29099"
+      - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-test:32189
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-test:29099
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-test:29092
       ADVERTISED_HOST_NAME: kafka-test
     networks:
       - test
@@ -139,18 +139,21 @@ services:
       file: ./docker-compose-base.yml
       service: aether-producer-base
     environment:
-      OFFSET_DB_URL: sqlite:///test-offset.db
-
-      KAFKA_BOOTSTRAP_SERVERS: kafka-test:29099
-
+      # These variables will override the ones indicated in the settings file
+      PRODUCER_SETTINGS_FILE: /code/tests/conf/producer.json
+      KAFKA_URL: kafka-test:29092
       KERNEL_URL: http://kernel-test:9000
-      KERNEL_ADMIN_USERNAME: ${TEST_KERNEL_ADMIN_USERNAME}
-      KERNEL_ADMIN_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
-
+      KERNEL_USERNAME: ${TEST_KERNEL_ADMIN_USERNAME}
+      KERNEL_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
       POSTGRES_HOST: db-test
       POSTGRES_DBNAME: aether-kernel-test
       POSTGRES_USER: ${TEST_KERNEL_READONLY_DB_USERNAME}
       POSTGRES_PASSWORD: ${TEST_KERNEL_READONLY_DB_PASSWORD}
+      OFFSET_DB_HOST: db-test
+      OFFSET_DB_USER: postgres
+      OFFSET_DB_PORT: 5432
+      OFFSET_DB_PASSWORD: ${TEST_KERNEL_DB_PASSWORD}
+      OFFSET_DB_NAME: producer_offset_db_test
 
       SERVER_PORT: 9005
     links:
@@ -160,3 +163,23 @@ services:
       - "9005:9005"
     networks:
       - test
+    command: start
+
+  # ---------------------------------
+  # Aether Integration Tests
+  # ---------------------------------
+
+  integration-test:
+    image: ehealthafrica/aether-integration-test:${AETHER_VERSION}
+    environment:
+      KERNEL_URL: http://kernel-test:9000
+      KERNEL_USERNAME: ${TEST_KERNEL_ADMIN_USERNAME}
+      KERNEL_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
+      PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
+      PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PW}
+      PRODUCER_URL: http://producer-test:9005
+    volumes:
+      - ./VERSION:/code/VERSION
+    networks:
+      - test
+    command: test

@@ -20,29 +20,14 @@
 #
 set -Eeuo pipefail
 
-echo "Initializing Aether environment, this will take about 30 seconds."
+# just check that the script works
+./scripts/initialise_docker_environment.sh
 
-docker network create aether_internal      2>/dev/null || true
-docker volume  create aether_database_data 2>/dev/null || true
+# build assets generation container
+docker-compose -f docker-compose-generation.yml build assets
 
-./scripts/generate_env_vars.sh
+# setup integration test requirements
+./scripts/integration_test_setup.sh
 
-docker-compose -f docker-compose-base.yml pull
-
-docker-compose up -d db
-until docker-compose run kernel eval pg_isready -q; do
-    >&2 echo "Waiting for database..."
-    sleep 2
-done
-
-# setup container (model migration, admin user, static content...)
-CONTAINERS=( kernel ui odk )
-for container in "${CONTAINERS[@]}"
-do
-    docker-compose run $container setup
-done
-
-docker-compose run kernel eval python /code/sql/create_readonly_user.py
-docker-compose kill
-
-echo "Done."
+# run integration tests
+docker-compose -f docker-compose-test.yml run --no-deps integration-test test
