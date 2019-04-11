@@ -5,32 +5,14 @@
     {
       "name": "protected",
       "url": "/",
-      "strip_path": "true"
+      "strip_path": "false"
     }
   ],
   "public_endpoints": [
     {
-      "name": "static",
-      "url": "/~ui/static/",
-      "route_path": "/~ui/static/",
-      "strip_path": "true"
-    },
-    {
-      "name": "admin",
-      "url": "/~ui/admin/",
-      "route_path": "/~ui/admin/",
-      "strip_path": "true"
-    },
-    {
-      "name": "accounts",
-      "url": "/~ui/accounts/",
-      "route_path": "/~ui/accounts/",
-      "strip_path": "true"
-    },
-    {
-      "name": "debug_toolbar",
-      "url": "/~ui/__debug__/",
-      "route_path": "/~ui/__debug__/",
+      "name": "public",
+      "url": "/-/ui/",
+      "route_path": "/-/ui/",
       "strip_path": "true"
     }
   ]

@@ -10,27 +10,9 @@
   ],
   "public_endpoints": [
     {
-      "name": "static",
-      "url": "/~kernel/static/",
-      "route_path": "/~kernel/static/",
-      "strip_path": "true"
-    },
-    {
-      "name": "admin",
-      "url": "/~kernel/admin/",
-      "route_path": "/~kernel/admin/",
-      "strip_path": "true"
-    },
-    {
-      "name": "accounts",
-      "url": "/~kernel/accounts/",
-      "route_path": "/~kernel/accounts/",
-      "strip_path": "true"
-    },
-    {
-      "name": "debug_toolbar",
-      "url": "/~kernel/__debug__/",
-      "route_path": "/~kernel/__debug__/",
+      "name": "public",
+      "url": "/-/kernel/",
+      "route_path": "/-/kernel/",
       "strip_path": "true"
     }
   ]
