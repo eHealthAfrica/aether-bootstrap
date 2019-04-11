@@ -77,6 +77,9 @@ KEYCLOAK_INITIAL_USER_PASSWORD=password
 
 KEYCLOAK_KONG_CLIENT=kong
 REALM_COOKIE=aether-realm
+
+DEFAULT_REALM=aether
+PUBLIC_REALM=-
 # ------------------------------------------------------------------
 
 
@@ -86,8 +89,6 @@ REALM_COOKIE=aether-realm
 BASE_HOST=http://aether.local
 
 KEYCLOAK_INTERNAL=http://keycloak:8080
-KEYCLOAK_SERVER_URL=http://aether.local/keycloak/auth/realms
-
 KONG_INTERNAL=http://kong:8001
 # ------------------------------------------------------------------
 

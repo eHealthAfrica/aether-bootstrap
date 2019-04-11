@@ -74,9 +74,13 @@ services:
       EXPORT_HEADER_SHORTEN: "no"
 
       # Kong requirements
-      APP_URL: /<slug:realm>/<slug:service>
-      STATIC_URL: /_static/kernel/static/
+      GATEWAY_HOST: ${BASE_HOST}
+      GATEWAY_SERVICE_ID: kernel
+      GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
+
       MULTITENANCY: "true"
+      DEFAULT_REALM: ${DEFAULT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
 
       UWSGI_BUFFER_SIZE: 32768
       CUSTOM_UWSGI_SERVE_STATIC: "true"
@@ -128,10 +132,14 @@ services:
       PGPORT: 5432
       PGUSER: postgres
 
-      # Kong requirements
-      APP_URL: /<slug:realm>/<slug:service>
-      STATIC_URL: /_static/odk/static/
+      # # Kong requirements
+      GATEWAY_HOST: ${BASE_HOST}
+      GATEWAY_SERVICE_ID: odk
+      GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
+
       MULTITENANCY: "true"
+      DEFAULT_REALM: ${DEFAULT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
 
       UWSGI_BUFFER_SIZE: 32768
       CUSTOM_UWSGI_SERVE_STATIC: "true"
@@ -173,9 +181,13 @@ services:
       PGUSER: postgres
 
       # Kong requirements
-      APP_URL: /<slug:realm>/<slug:service>
-      STATIC_URL: /_static/ui/static/
+      GATEWAY_HOST: ${BASE_HOST}
+      GATEWAY_SERVICE_ID: ui
+      GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
+
       MULTITENANCY: "true"
+      DEFAULT_REALM: ${DEFAULT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
 
       UWSGI_BUFFER_SIZE: 32768
       CUSTOM_UWSGI_SERVE_STATIC: "true"
