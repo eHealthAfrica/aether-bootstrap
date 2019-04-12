@@ -26,11 +26,7 @@ def get_env(name):
 DEBUG = bool(get_env('DEBUG'))
 
 HOST = get_env('BASE_HOST')  # External URL for host
-# from  https://my-domain/my/path/?qs=true  to  my-domain
-DOMAIN = HOST.replace('http://', '').replace('https://', '').split('/')[0]
-APP_NAME = get_env('APP_NAME')
-APP_PORT = get_env('APP_PORT')
-
+DOMAIN = get_env('BASE_DOMAIN')
 
 # Keycloak Information
 KEYCLOAK_INTERNAL = get_env('KEYCLOAK_INTERNAL')

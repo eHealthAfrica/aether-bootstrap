@@ -15,13 +15,14 @@ git clone https://github.com/eHealthAfrica/aether-bootstrap.git
 cd aether-bootstrap
 ```
 
-If you are starting Aether for the first time, you will need to create some docker resources (networks and volumes) and generate credentials for all applications:
+If you are starting Aether for the first time, you will need to create some docker resources (networks and volumes) and generate credentials (check generated `.env` file) for all applications:
 
 ```bash
 ./scripts/initialise_docker_environment.sh
 ```
 
-You will also need to add `aether.local` to your `/etc/hosts` or `C:\Windows\System32\Drivers\etc\hosts` file.
+You will also need to add `aether.local` (`BASE_DOMAIN` environment variable value)
+to your `/etc/hosts` or `C:\Windows\System32\Drivers\etc\hosts` file.
 It should look something like this:
 
 ```text

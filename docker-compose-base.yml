@@ -34,7 +34,7 @@ services:
   kernel-base:
     image: ehealthafrica/aether-kernel:${AETHER_VERSION}
     environment:
-      CSRF_COOKIE_DOMAIN: aether.local
+      CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${KERNEL_DJANGO_SECRET_KEY}
       LOGGING_FORMATTER: verbose
       HTML_SELECT_CUTOFF: 10
@@ -45,7 +45,7 @@ services:
       MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
       MINIO_STORAGE_ENDPOINT: minio:9000
       MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
-      MINIO_STORAGE_MEDIA_URL: ${MINIO_SERVER_URL}/kernel
+      MINIO_STORAGE_MEDIA_URL: ${BASE_HOST}/minio/kernel
       MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: "true"
       MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: "true"
 
@@ -104,7 +104,7 @@ services:
   odk-base:
     image: ehealthafrica/aether-odk:${AETHER_VERSION}
     environment:
-      CSRF_COOKIE_DOMAIN: aether.local
+      CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${ODK_DJANGO_SECRET_KEY}
       LOGGING_FORMATTER: verbose
       HTML_SELECT_CUTOFF: 10
@@ -115,7 +115,7 @@ services:
       MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
       MINIO_STORAGE_ENDPOINT: minio:9000
       MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
-      MINIO_STORAGE_MEDIA_URL: ${MINIO_SERVER_URL}/odk
+      MINIO_STORAGE_MEDIA_URL: ${BASE_HOST}/minio/odk
       MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: "true"
       MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: "true"
 
@@ -166,7 +166,7 @@ services:
   ui-base:
     image: ehealthafrica/aether-ui:${AETHER_VERSION}
     environment:
-      CSRF_COOKIE_DOMAIN: aether.local
+      CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${UI_DJANGO_SECRET_KEY}
       LOGGING_FORMATTER: verbose
       HTML_SELECT_CUTOFF: 10

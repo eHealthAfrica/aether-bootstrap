@@ -52,7 +52,7 @@ services:
     networks:
       - aether
     extra_hosts:
-      - aether.local:${KONG_IP}
+      - ${BASE_DOMAIN}:${KONG_IP}
 
   # ---------------------------------
   # Aether UI
@@ -70,7 +70,7 @@ services:
     networks:
       - aether
     extra_hosts:
-      - aether.local:${KONG_IP}
+      - ${BASE_DOMAIN}:${KONG_IP}
 
   # ---------------------------------
   # Aether ODK Module
@@ -88,7 +88,7 @@ services:
     networks:
       - aether
     extra_hosts:
-      - aether.local:${KONG_IP}
+      - ${BASE_DOMAIN}:${KONG_IP}
 
   # ---------------------------------
   # API & Auth
@@ -105,7 +105,7 @@ services:
       aether:
         ipv4_address: ${KONG_IP}
     extra_hosts:
-      - aether.local:127.0.0.1
+      - ${BASE_DOMAIN}:127.0.0.1
 
   keycloak:
     extends:
@@ -117,4 +117,4 @@ services:
     networks:
       - aether
     extra_hosts:
-      - aether.local:${KONG_IP}
+      - ${BASE_DOMAIN}:${KONG_IP}

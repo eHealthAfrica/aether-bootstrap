@@ -33,6 +33,15 @@ function gen_random_string {
     openssl rand -hex 16 | tr -d "\n"
 }
 
+function final_warning {
+    source .env
+
+    echo "Add to your [/etc/hosts] or [C:\Windows\System32\Drivers\etc\hosts] file the following line:"
+    echo ""
+    echo "127.0.0.1  ${BASE_DOMAIN}"
+    echo ""
+}
+
 function gen_env_file {
     cat << EOF
 #
@@ -86,6 +95,7 @@ PUBLIC_REALM=-
 # ------------------------------------------------------------------
 # Routing
 # ==================================================================
+BASE_DOMAIN=aether.local
 BASE_HOST=http://aether.local
 
 KEYCLOAK_INTERNAL=http://keycloak:8080
@@ -104,7 +114,6 @@ MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
 MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
 
 MINIO_INTERNAL=http://minio:9000
-MINIO_SERVER_URL=http://aether.local/minio
 # ------------------------------------------------------------------
 
 
@@ -173,6 +182,7 @@ EOF
 
 if [ -e ".env" ]; then
     echo "[.env] file already exists! Remove it if you want to generate a new one."
+    final_warning
     exit 0
 fi
 
@@ -186,3 +196,4 @@ fi
 set -Eeo pipefail
 gen_env_file > .env
 echo "[.env] file generated!"
+final_warning
