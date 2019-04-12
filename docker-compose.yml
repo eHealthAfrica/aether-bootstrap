@@ -51,6 +51,8 @@ services:
         condition: service_started
     networks:
       - aether
+    extra_hosts:
+      - aether.local:${KONG_IP}
 
   # ---------------------------------
   # Aether UI
@@ -67,6 +69,8 @@ services:
         condition: service_started
     networks:
       - aether
+    extra_hosts:
+      - aether.local:${KONG_IP}
 
   # ---------------------------------
   # Aether ODK Module
@@ -83,6 +87,8 @@ services:
         condition: service_started
     networks:
       - aether
+    extra_hosts:
+      - aether.local:${KONG_IP}
 
   # ---------------------------------
   # API & Auth
@@ -96,9 +102,10 @@ services:
       db:
         condition: service_healthy
     networks:
-      - aether
+      aether:
+        ipv4_address: ${KONG_IP}
     extra_hosts:
-      - "aether.local:127.0.0.1"
+      - aether.local:127.0.0.1
 
   keycloak:
     extends:
@@ -109,3 +116,5 @@ services:
         condition: service_healthy
     networks:
       - aether
+    extra_hosts:
+      - aether.local:${KONG_IP}

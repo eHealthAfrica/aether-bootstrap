@@ -32,7 +32,10 @@ function create_docker_assets {
     echo "${LINE} Generating docker network and database volume..."
 
     {
-        docker network create aether_internal
+        docker network create aether_internal \
+            --attachable \
+            --subnet=${NETWORK_SUBNET} \
+            --gateway=${NETWORK_GATEWAY}
     } || { # catch
         echo "aether_internal network is ready."
     }
@@ -145,6 +148,7 @@ function create_kc_aether_clients {
     echo "${LINE} Creating aether clients in realm [$REALM]..."
     for CLIENT in "${AETHER_APPS[@]}"; do
         CLIENT_URL="${BASE_HOST}/${REALM}/${CLIENT}/"
+        REDIRECT_URI="${BASE_HOST}/${PUBLIC_REALM}/${CLIENT}/accounts/login/"
 
         echo "${LINE} Creating client [${CLIENT}] in realm [$REALM]..."
         $KCADM \
@@ -155,7 +159,7 @@ function create_kc_aether_clients {
             -s directAccessGrantsEnabled=true \
             -s rootUrl="${CLIENT_URL}" \
             -s baseUrl="${CLIENT_URL}" \
-            -s 'redirectUris=["accounts/login/"]' \
+            -s 'redirectUris=["'${REDIRECT_URI}'"]' \
             -s enabled=true
     done
 }

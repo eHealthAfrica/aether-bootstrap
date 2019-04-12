@@ -90,6 +90,10 @@ BASE_HOST=http://aether.local
 
 KEYCLOAK_INTERNAL=http://keycloak:8080
 KONG_INTERNAL=http://kong:8001
+
+NETWORK_SUBNET=192.168.2.0/24
+NETWORK_GATEWAY=192.168.2.1
+KONG_IP=192.168.2.10
 # ------------------------------------------------------------------
 
 

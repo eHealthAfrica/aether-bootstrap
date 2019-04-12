@@ -78,6 +78,9 @@ services:
       GATEWAY_SERVICE_ID: kernel
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
+      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_CLIENT_ID: kernel
+
       MULTITENANCY: "true"
       DEFAULT_REALM: ${DEFAULT_REALM}
       REALM_COOKIE: ${REALM_COOKIE}
@@ -123,7 +126,7 @@ services:
       ADMIN_TOKEN: ${ODK_ADMIN_TOKEN}
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: http://kernel:8000
+      AETHER_KERNEL_URL: ${BASE_HOST}/${PUBLIC_REALM}/kernel/
       AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: odk
@@ -136,6 +139,9 @@ services:
       GATEWAY_HOST: ${BASE_HOST}
       GATEWAY_SERVICE_ID: odk
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
+
+      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_CLIENT_ID: odk
 
       MULTITENANCY: "true"
       DEFAULT_REALM: ${DEFAULT_REALM}
@@ -171,7 +177,7 @@ services:
       ADMIN_PASSWORD: ${UI_ADMIN_PASSWORD}
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: http://kernel:8000
+      AETHER_KERNEL_URL: ${BASE_HOST}/${PUBLIC_REALM}/kernel/
       AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: ui
@@ -184,6 +190,9 @@ services:
       GATEWAY_HOST: ${BASE_HOST}
       GATEWAY_SERVICE_ID: ui
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
+
+      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_CLIENT_ID: ui
 
       MULTITENANCY: "true"
       DEFAULT_REALM: ${DEFAULT_REALM}
