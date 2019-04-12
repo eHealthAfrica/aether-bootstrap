@@ -35,7 +35,7 @@ Now you just need to tell Docker to start aether up:
 docker-compose up
 ```
 
-Once the console output has stopped, you should be able to access the Aether UI in your browser at http://aether.local/dev/ui. Use these credentials to log in:
+Once the console output has stopped, you should be able to access the Aether UI in your browser at http://aether.local/dev/ui/. Use these credentials to log in:
 
 - *Username*: **user**
 - *Password*: **password**
