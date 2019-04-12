@@ -5,7 +5,7 @@ and the route to access to them.
 
 The expected format for each service file is:
 
-```json
+```javascript
 {
   // service name (unique among rest of services)
   "name": "service-name",

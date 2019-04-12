@@ -4,7 +4,7 @@ A solution gathers a set of services.
 
 The expected format for each solution file is:
 
-```json
+```javascript
 {
   // service name (unique among rest of solutions)
   "name": "solution-name",
