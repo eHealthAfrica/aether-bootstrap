@@ -148,7 +148,9 @@ function create_kc_aether_clients {
     echo "${LINE} Creating aether clients in realm [$REALM]..."
     for CLIENT in "${AETHER_APPS[@]}"; do
         CLIENT_URL="${BASE_HOST}/${REALM}/${CLIENT}/"
-        REDIRECT_URI="${BASE_HOST}/${PUBLIC_REALM}/${CLIENT}/accounts/login/"
+
+        REDIRECT_URI_80="${BASE_HOST}/${PUBLIC_REALM}/${CLIENT}/accounts/login/"
+        REDIRECT_URI_8443="${BASE_HOST}:8443/${PUBLIC_REALM}/${CLIENT}/accounts/login/"
 
         echo "${LINE} Creating client [${CLIENT}] in realm [$REALM]..."
         $KCADM \
@@ -157,9 +159,8 @@ function create_kc_aether_clients {
             -s clientId="${CLIENT}" \
             -s publicClient=true \
             -s directAccessGrantsEnabled=true \
-            -s rootUrl="${CLIENT_URL}" \
             -s baseUrl="${CLIENT_URL}" \
-            -s 'redirectUris=["'${REDIRECT_URI}'"]' \
+            -s 'redirectUris=["'${REDIRECT_URI_80}'","'${REDIRECT_URI_8443}'"]' \
             -s enabled=true
     done
 }

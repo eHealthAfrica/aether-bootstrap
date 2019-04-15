@@ -25,13 +25,16 @@ from requests.exceptions import HTTPError
 from settings import DEBUG
 
 
-def request(method, url, data={}):
+def request(*args, **kwargs):
     try:
-        res = requests.request(method=method, url=url, data=data)
+        res = requests.request(*args, **kwargs)
         res.raise_for_status()
         if res.status_code != 204:
-            data = res.json()
-            __print(json.dumps(data, indent=2))
+            try:
+                data = res.json()
+                __print(json.dumps(data, indent=2))
+            except json.decoder.JSONDecodeError:
+                data = res.content.decode('utf-8')
             return data
         return None
     except HTTPError as he:

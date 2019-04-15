@@ -45,3 +45,5 @@ services:
       - zookeeper
     networks:
       - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
