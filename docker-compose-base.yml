@@ -74,7 +74,6 @@ services:
       EXPORT_HEADER_SHORTEN: "no"
 
       # Kong requirements
-      GATEWAY_HOST: ${BASE_HOST}
       GATEWAY_SERVICE_ID: kernel
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
@@ -136,7 +135,6 @@ services:
       PGUSER: postgres
 
       # # Kong requirements
-      GATEWAY_HOST: ${BASE_HOST}
       GATEWAY_SERVICE_ID: odk
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
@@ -187,7 +185,6 @@ services:
       PGUSER: postgres
 
       # Kong requirements
-      GATEWAY_HOST: ${BASE_HOST}
       GATEWAY_SERVICE_ID: ui
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
