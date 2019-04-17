@@ -29,25 +29,19 @@ AETHER_APPS=( kernel odk ui )
 
 
 function create_docker_assets {
-    echo "${LINE} Generating docker network and database volume..."
-
-    {
-        docker network create aether_internal \
-            --attachable \
-            --subnet=${NETWORK_SUBNET} \
-            --gateway=${NETWORK_GATEWAY}
-    } || { # catch
-        echo "aether_internal network is ready."
-    }
-
-    {
-        docker volume create aether_database_data
-    } || { # catch
-        echo "aether_database_data volume is ready."
-    }
-
     ./scripts/generate_env_vars.sh
 
+    echo "${LINE} Generating docker network and database volume..."
+
+    docker network rm aether_internal || :
+    docker network create aether_internal \
+        --attachable \
+        --subnet=${NETWORK_SUBNET} \
+        --gateway=${NETWORK_GATEWAY}
+    echo "aether_internal network is ready."
+
+    docker volume create aether_database_data || :
+    echo "aether_database_data volume is ready."
     echo ""
 }
 
@@ -141,28 +135,23 @@ function create_kc_realm {
 }
 
 
-# Usage:    create_kc_aether_clients <realm-name>
-function create_kc_aether_clients {
+# Usage:    create_kc_aether_client <realm-name>
+function create_kc_aether_client {
     REALM=$1
 
-    echo "${LINE} Creating aether clients in realm [$REALM]..."
-    for CLIENT in "${AETHER_APPS[@]}"; do
-        CLIENT_URL="${BASE_HOST}/${REALM}/${CLIENT}/"
+    echo "${LINE} Creating aether client in realm [$REALM]..."
+    REALM_URL="${BASE_HOST}/${REALM}/"
+    PUBLIC_URL="${BASE_HOST}/${PUBLIC_REALM}/*"
 
-        REDIRECT_URI_80="${BASE_HOST}/${PUBLIC_REALM}/${CLIENT}/accounts/login/"
-        REDIRECT_URI_8443="${BASE_HOST}:8443/${PUBLIC_REALM}/${CLIENT}/accounts/login/"
-
-        echo "${LINE} Creating client [${CLIENT}] in realm [$REALM]..."
-        $KCADM \
-            create clients \
-            -r "${REALM}" \
-            -s clientId="${CLIENT}" \
-            -s publicClient=true \
-            -s directAccessGrantsEnabled=true \
-            -s baseUrl="${CLIENT_URL}" \
-            -s 'redirectUris=["'${REDIRECT_URI_80}'","'${REDIRECT_URI_8443}'"]' \
-            -s enabled=true
-    done
+    $KCADM \
+        create clients \
+        -r "${REALM}" \
+        -s clientId="${KEYCLOAK_AETHER_CLIENT}" \
+        -s publicClient=true \
+        -s directAccessGrantsEnabled=true \
+        -s baseUrl="${REALM_URL}" \
+        -s 'redirectUris=["*","'${PUBLIC_URL}'"]' \
+        -s enabled=true
 }
 
 # Usage:    create_kc_kong_client <realm-name>
@@ -170,7 +159,7 @@ function create_kc_kong_client {
     REALM=$1
 
     echo "${LINE} Creating client [${KEYCLOAK_KONG_CLIENT}] in realm [$REALM]..."
-    CLIENT_URL="${BASE_HOST}/${REALM}/"
+    REALM_URL="${BASE_HOST}/${REALM}/"
 
     $KCADM \
         create clients \
@@ -179,8 +168,7 @@ function create_kc_kong_client {
         -s publicClient=false \
         -s clientAuthenticatorType=client-secret \
         -s directAccessGrantsEnabled=true \
-        -s rootUrl="${CLIENT_URL}" \
-        -s baseUrl="${CLIENT_URL}" \
+        -s baseUrl="${REALM_URL}" \
         -s 'redirectUris=["*"]' \
         -s enabled=true
 }

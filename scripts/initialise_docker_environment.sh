@@ -28,7 +28,7 @@ echo "    Initializing Aether environment, this will take about 60 seconds."
 echo "========================================================================="
 echo ""
 
-docker-compose kill
+./scripts/kill_all.sh
 create_docker_assets
 source .env
 
@@ -98,7 +98,7 @@ echo "${LINE} Creating initial realms in keycloak..."
 REALMS=( dev prod )
 for REALM in "${REALMS[@]}"; do
     create_kc_realm          $REALM
-    create_kc_aether_clients $REALM
+    create_kc_aether_client  $REALM
     create_kc_kong_client    $REALM
 
     create_kc_user  $REALM \

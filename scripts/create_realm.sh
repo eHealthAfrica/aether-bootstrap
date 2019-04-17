@@ -35,7 +35,7 @@ REALM=$1
 
 connect_to_keycloak
 create_kc_realm          $REALM
-create_kc_aether_clients $REALM
+create_kc_aether_client  $REALM
 create_kc_kong_client    $REALM
 
 
