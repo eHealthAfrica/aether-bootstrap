@@ -130,7 +130,8 @@ def add_service(config, realm):
                 print(f'    - Could not add service "{ep_name}"')
 
             ROUTE_URL = f'{KONG_URL}/services/{service_name}/routes'
-            path = ep.get('route_path') or f'/{realm}/{name}{ep_url}'
+            path = ep.get('route_path') or '/{realm}/{name}{url}'
+            path = path.format(realm=realm, name=name, url=ep_url)
             route_data = {
                 'paths': [path, ],
                 'strip_path': ep.get('strip_path', 'false'),

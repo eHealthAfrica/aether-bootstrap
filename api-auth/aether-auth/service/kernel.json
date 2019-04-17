@@ -12,7 +12,7 @@
     {
       "name": "public",
       "url": "/-/kernel/",
-      "route_path": "/-/kernel/",
+      "route_path": "{url}",
       "strip_path": "true"
     }
   ]

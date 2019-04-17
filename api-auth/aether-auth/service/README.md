@@ -24,7 +24,10 @@ The expected format for each service file is:
       // internal url
       "url": "/protect-me-please",
 
-      // [optional] external url (defaults to /any-realm-name/service-name/endpoint-url)
+      // [optional] external url, defaults to "/{realm}/{name}/{url}" where
+      // {realm} is the realm name,
+      // {name} is the service name and
+      // {url} is the endpoint url.
       // use case: if the endpoint does not depend on any realm
       "route_path": null,
 
@@ -53,7 +56,10 @@ The expected format for each service file is:
       // internal url
       "url": "/i-am-public/",
 
-      // [optional] external url (defaults to /any-realm-name/service-name/endpoint-url)
+      // [optional] external url, defaults to "/{realm}/{name}/{url}" where
+      // {realm} is the realm name,
+      // {name} is the service name and
+      // {url} is the endpoint url.
       // use case: if the endpoint does not depend on any realm
       "route_path": "/my-service/public/",
 
