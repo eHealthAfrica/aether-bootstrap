@@ -26,20 +26,8 @@ from helpers import request
 from settings import HOST
 
 
-def decode_jwt(encoded):
-    # the jwt we get from the middleware isn't encrypted or signed
-    return jwt.decode(encoded, verify=False)
-
-
-def print_json(data):
-    print(json.dumps(data, indent=2))
-    print('---------------------------------------')
-
-
-if __name__ == '__main__':
-    token = sys.argv[1]
-
-    tokeninfo = decode_jwt(token)
+def check_jwt(token):
+    tokeninfo = jwt.decode(token, verify=False)
     print_json(tokeninfo)
 
     iss_url = tokeninfo['iss']
@@ -57,3 +45,14 @@ if __name__ == '__main__':
         headers={'Authorization': '{} {}'.format(tokeninfo['typ'], token)},
     )
     print_json(userinfo)
+
+
+def print_json(data):
+    print(json.dumps(data, indent=2))
+    print('---------------------------------------')
+
+
+if __name__ == '__main__':
+    token = sys.argv[1]
+
+    check_jwt(token)

@@ -65,7 +65,8 @@ case "$1" in
     ;;
 
     setup_auth )
-        python /code/src/setup_auth.py
+        python /code/src/register_app.py  minio     $MINIO_INTERNAL
+        python /code/src/register_app.py  keycloak  $KEYCLOAK_INTERNAL
     ;;
 
     add_service )

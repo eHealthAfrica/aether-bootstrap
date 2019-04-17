@@ -18,8 +18,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import sys
+
 from helpers import request
-from settings import HOST, KONG_URL, KEYCLOAK_INTERNAL, MINIO_INTERNAL
+from settings import HOST, KONG_URL
 
 
 def register_app(name, url):
@@ -59,13 +61,10 @@ def register_app(name, url):
 
 
 if __name__ == '__main__':
-    # add keycloak and minio
-    services = [
-        ('keycloak', KEYCLOAK_INTERNAL),
-        ('minio', MINIO_INTERNAL),
-    ]
+    # add service
+    name = sys.argv[1]
+    url = sys.argv[2]
 
-    for name, url in services:
-        print(f'Exposing service "{name}" @ {url}')
-        register_app(name, url)
-        print(f'Service "{name}" @ {url} now being served by kong @ {HOST}/{name}')
+    print(f'Exposing service "{name}" @ {url}')
+    register_app(name, url)
+    print(f'Service "{name}" @ {url} now being served by kong @ {HOST}/{name}')
