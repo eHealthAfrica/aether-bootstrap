@@ -20,6 +20,10 @@
 #
 set -Eeuo pipefail
 
-docker-compose down --volumes
-docker volume rm aether_database_data -f
-sudo rm -R ./.persistent_data
+docker-compose kill
+docker-compose down
+
+docker volume  rm aether_database_data -f
+docker network rm aether_internal
+
+sudo rm -R -f ./.persistent_data

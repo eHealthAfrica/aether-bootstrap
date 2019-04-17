@@ -22,19 +22,24 @@ set -Eeuo pipefail
 
 source ./scripts/aether_functions.sh
 
+DC_AUTH="docker-compose -f docker-compose-generation.yml"
+LINE="__________________________________________________________________"
+
+
 echo ""
 echo "========================================================================="
 echo "    Initializing Aether environment, this will take about 60 seconds."
 echo "========================================================================="
 echo ""
 
-./scripts/kill_all.sh
+# stop and remove all containers or the network cannot be recreated
+$DC_AUTH kill
+$DC_AUTH down
+docker-compose kill
+docker-compose down
+
 create_docker_assets
 source .env
-
-
-DC_AUTH="docker-compose -f docker-compose-generation.yml"
-LINE="__________________________________________________________________"
 
 echo "${LINE} Pulling docker images..."
 docker-compose pull db minio

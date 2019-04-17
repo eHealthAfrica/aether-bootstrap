@@ -36,6 +36,7 @@ function gen_random_string {
 function final_warning {
     source .env
 
+    echo ""
     echo "Add to your [/etc/hosts] or [C:\Windows\System32\Drivers\etc\hosts] file the following line:"
     echo ""
     echo "127.0.0.1  ${BASE_DOMAIN}"

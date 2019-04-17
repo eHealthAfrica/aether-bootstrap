@@ -134,7 +134,7 @@ services:
       PGPORT: 5432
       PGUSER: postgres
 
-      # # Kong requirements
+      # Kong requirements
       GATEWAY_SERVICE_ID: odk
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
