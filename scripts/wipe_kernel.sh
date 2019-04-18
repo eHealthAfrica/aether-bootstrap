@@ -24,6 +24,6 @@ docker-compose kill
 docker-compose down
 
 docker volume  rm aether_database_data -f
-docker network rm aether_internal
+docker network rm aether_bootstrap_net
 
 sudo rm -R -f ./.persistent_data

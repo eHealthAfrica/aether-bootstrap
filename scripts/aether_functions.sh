@@ -33,14 +33,14 @@ function create_docker_assets {
 
     echo "${LINE} Generating docker network and database volume..."
 
-    docker network rm aether_internal || true
+    docker network rm aether_bootstrap_net || true
     {
-        docker network create aether_internal \
+        docker network create aether_bootstrap_net \
             --attachable \
             --subnet=${NETWORK_SUBNET} \
             --gateway=${NETWORK_GATEWAY}
     } || true
-    echo "aether_internal network is ready."
+    echo "aether_bootstrap_net network is ready."
 
     docker volume create aether_database_data || true
     echo "aether_database_data volume is ready."

@@ -1,10 +1,9 @@
 version: "2.1"
 
 networks:
-  # docker network create aether_internal
   aether:
     external:
-      name: aether_internal
+      name: aether_bootstrap_net
 
 volumes:
   # docker volume create aether_database_data

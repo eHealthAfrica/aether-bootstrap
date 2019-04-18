@@ -80,6 +80,6 @@ services:
 networks:
   aether:
     external:
-      name: aether_internal
+      name: aether_bootstrap_net
   ckan_net:
       driver: bridge
