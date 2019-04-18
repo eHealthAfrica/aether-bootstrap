@@ -1,4 +1,3 @@
-# Registration and Generation of Entities
 version: "2.1"
 
 networks:
@@ -20,14 +19,15 @@ services:
     volumes:
       - ./assets:/code/assets
     environment:
-      KERNEL_URL: http://kernel:8000
+      KERNEL_URL: ${BASE_HOST}/${PUBLIC_REALM}/kernel/
       KERNEL_USER: ${KERNEL_ADMIN_USERNAME}
       KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
       PROJECT_NAME: DefaultDemo
       SUBMISSION_ENDPOINT: default_mapping
     networks:
       - aether
-
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
 
   # ---------------------------------
   # Auth builder Container

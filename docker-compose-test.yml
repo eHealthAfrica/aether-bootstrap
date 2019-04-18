@@ -177,3 +177,15 @@ services:
     networks:
       - test
     command: test
+
+  assets-test:
+    extends:
+      file: ./docker-compose-base.yml
+      service: assets-base
+    environment:
+      KERNEL_URL: http://kernel-test:9000
+      KERNEL_USER: ${TEST_KERNEL_ADMIN_USERNAME}
+      KERNEL_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
+      PROJECT_NAME: DefaultTest
+    networks:
+      - test
