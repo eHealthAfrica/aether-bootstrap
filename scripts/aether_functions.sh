@@ -124,15 +124,17 @@ function connect_to_keycloak {
 }
 
 
-# Usage:    create_kc_realm <realm-name>
+# Usage:    create_kc_realm <realm-name> [<realm-description>]
 function create_kc_realm {
     REALM=$1
+    DESC="${2:-$REALM}"
 
-    echo "${LINE} Creating realm [${REALM}]..."
+    echo "${LINE} Creating realm [${REALM}] [${DESC}]..."
     $KCADM \
         create realms \
         -s realm="${REALM}" \
-        -s displayName="${REALM} realm for the Aether Platform" \
+        -s displayName="${DESC}" \
+        -s loginTheme="aether" \
         -s enabled=true
 }
 

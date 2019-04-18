@@ -300,6 +300,9 @@ services:
   keycloak-base:
     image: aether-keycloak
     build: ./api-auth/keycloak
+    volumes:
+      # custom aether theme
+      - ./api-auth/keycloak/aether-theme:/opt/jboss/keycloak/themes/aether
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: db

@@ -23,7 +23,6 @@ set -Eeuo pipefail
 source ./scripts/aether_functions.sh
 
 DC_AUTH="docker-compose -f docker-compose-generation.yml"
-LINE="__________________________________________________________________"
 
 
 echo ""
@@ -99,10 +98,11 @@ echo "${LINE} Preparing keycloak..."
 start_keycloak
 connect_to_keycloak
 
-echo "${LINE} Creating initial realms in keycloak..."
-REALMS=( dev prod )
-for REALM in "${REALMS[@]}"; do
-    create_kc_realm          $REALM
+function create_kc_tenant {
+    REALM=$1
+    DESC=${2:-$REALM}
+
+    create_kc_realm          $REALM $DESC
     create_kc_aether_client  $REALM
     create_kc_kong_client    $REALM
 
@@ -112,7 +112,12 @@ for REALM in "${REALMS[@]}"; do
 
     echo "${LINE} Adding [aether] solution in kong..."
     $DC_AUTH run auth add_solution aether $REALM
-done
+}
+
+echo "${LINE} Creating initial tenants in keycloak..."
+create_kc_tenant "dev"  "Local development"
+create_kc_tenant "prod" "Production environment"
+create_kc_tenant "test" "Testing playground"
 echo ""
 
 $DC_AUTH down
