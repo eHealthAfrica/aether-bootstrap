@@ -25,11 +25,9 @@ source ./scripts/aether_functions.sh
 DC_AUTH="docker-compose -f docker-compose-generation.yml"
 
 
-echo ""
-echo "========================================================================="
-echo "    Initializing Aether environment, this will take about 60 seconds."
-echo "========================================================================="
-echo ""
+echo_message ""
+echo_message "Initializing Aether environment, this will take about 60 seconds."
+echo_message ""
 
 # stop and remove all containers or the network cannot be recreated
 $DC_AUTH kill
@@ -41,15 +39,15 @@ docker network rm aether_bootstrap_net || true
 create_docker_assets
 source .env
 
-echo "${LINE} Pulling docker images..."
+echo_message "Pulling docker images..."
 docker-compose pull db minio
 docker-compose -f docker-compose-connect.yml pull producer zookeeper kafka
-echo ""
+echo_message ""
 
 start_db
 
 
-echo "${LINE} Preparing aether containers..."
+echo_message "Preparing aether containers..."
 # setup container (model migration, admin user, static content...)
 CONTAINERS=( kernel ui odk )
 for container in "${CONTAINERS[@]}"
@@ -58,7 +56,7 @@ do
     docker-compose run --no-deps $container setup
 done
 docker-compose run --no-deps kernel eval python /code/sql/create_readonly_user.py
-echo ""
+echo_message ""
 
 
 # Initialize the kong & keycloak databases in the postgres instance
@@ -66,16 +64,16 @@ echo ""
 # THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
 rebuild_database kong     kong     ${KONG_PG_PASSWORD}
 rebuild_database keycloak keycloak ${KEYCLOAK_PG_PASSWORD}
-echo ""
+echo_message ""
 
 
-echo "${LINE} Building custom docker images..."
+echo_message "Building custom docker images..."
 docker-compose build --no-cache --force-rm --pull keycloak kong
 $DC_AUTH       build --no-cache --force-rm --pull auth
-echo ""
+echo_message ""
 
 
-echo "${LINE} Preparing kong..."
+echo_message "Preparing kong..."
 #
 # https://docs.konghq.com/install/docker/
 #
@@ -86,16 +84,16 @@ echo "${LINE} Preparing kong..."
 # This limitation is lifted for Kong 0.15, 1.0, and above.
 docker-compose run kong kong migrations bootstrap 2>/dev/null || true
 docker-compose run kong kong migrations up
-echo ""
+echo_message ""
 start_kong
 
 
-echo "${LINE} Registering keycloak and minio in kong..."
+echo_message "Registering keycloak and minio in kong..."
 $DC_AUTH run auth setup_auth
-echo ""
+echo_message ""
 
 
-echo "${LINE} Preparing keycloak..."
+echo_message "Preparing keycloak..."
 start_keycloak
 connect_to_keycloak
 
@@ -111,22 +109,20 @@ function create_kc_tenant {
                     $KEYCLOAK_INITIAL_USER_USERNAME \
                     $KEYCLOAK_INITIAL_USER_PASSWORD
 
-    echo "${LINE} Adding [aether] solution in kong..."
+    echo_message "Adding [aether] solution in kong..."
     $DC_AUTH run auth add_solution aether $REALM
 }
 
-echo "${LINE} Creating initial tenants in keycloak..."
+echo_message "Creating initial tenants in keycloak..."
 create_kc_tenant "dev"  "Local development"
 create_kc_tenant "prod" "Production environment"
 create_kc_tenant "test" "Testing playground"
-echo ""
+echo_message ""
 
 $DC_AUTH down
 docker-compose kill
 docker-compose down
 
-echo ""
-echo "========================================================================="
-echo "                                 Done!"
-echo "========================================================================="
-echo ""
+echo_message ""
+echo_message "done!"
+echo_message ""

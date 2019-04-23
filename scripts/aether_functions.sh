@@ -24,58 +24,66 @@ source .env
 
 CHECK_URL="docker-compose run --no-deps kernel manage check_url -u"
 KC_URL="${KEYCLOAK_INTERNAL}/keycloak/auth"
-LINE="__________________________________________________________________"
+LINE=`printf -v row "%${COLUMNS:-$(tput cols)}s"; echo ${row// /=}`
 AETHER_APPS=( kernel odk ui )
+
+function echo_message {
+    if [ -z "${1:-}" ]; then
+        echo "$LINE"
+    else
+        msg=" ${1:-} "
+        echo "${LINE:${#msg}}$msg"
+    fi
+}
 
 
 function create_docker_assets {
     ./scripts/generate_env_vars.sh
 
-    echo "${LINE} Generating docker network and database volume..."
+    echo_message "Generating docker network and database volume..."
     {
         docker network create aether_bootstrap_net \
             --attachable \
             --subnet=${NETWORK_SUBNET} \
             --gateway=${NETWORK_GATEWAY}
     } || true
-    echo "${LINE} aether_bootstrap_net network is ready"
+    echo_message "aether_bootstrap_net network is ready"
 
     docker volume create aether_database_data || true
-    echo "${LINE} aether_database_data volume is ready"
-    echo ""
+    echo_message "aether_database_data volume is ready"
 }
 
 
 function start_db {
-    echo "${LINE} Starting database server..."
+    echo_message "Starting database server..."
     docker-compose up -d db
     until docker-compose run --no-deps kernel eval pg_isready -q; do
         >&2 echo "Waiting for database..."
         sleep 2
     done
-    echo "${LINE} database is ready"
+    echo_message "database is ready"
 }
 
 
 function start_kong {
-    echo "${LINE} Starting kong server..."
+    echo_message "Starting kong server..."
     docker-compose up -d kong
     until $CHECK_URL $KONG_INTERNAL >/dev/null; do
         >&2 echo "Waiting for kong..."
         sleep 2
     done
-    echo "${LINE} kong is ready"
+    echo_message "kong is ready"
 }
 
 
 function start_keycloak {
-    echo "${LINE} Starting keycloak server..."
+    echo_message "Starting keycloak server..."
     docker-compose up -d keycloak
     until $CHECK_URL "$KC_URL" >/dev/null; do
         >&2 echo "Waiting for keycloak..."
         sleep 2
     done
-    echo "${LINE} keycloak is ready"
+    echo_message "keycloak is ready"
 }
 
 
@@ -88,7 +96,7 @@ function rebuild_database {
     DB_ID=$(docker-compose ps -q db)
     PSQL="docker container exec -i $DB_ID psql"
 
-    echo "${LINE} Recreating $1 database..."
+    echo_message "Recreating $1 database..."
 
     # drops database (terminating any previous connection) and creates it again
     $PSQL <<- EOSQL
@@ -101,7 +109,7 @@ function rebuild_database {
         CREATE USER ${DB_USER} PASSWORD '${DB_PWD}';
         CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};
 EOSQL
-    echo "${LINE} $1 database is ready"
+    echo_message "$1 database is ready"
 }
 
 
@@ -113,7 +121,7 @@ function connect_to_keycloak {
     KC_ID=$(docker-compose ps -q keycloak)
     export KCADM="docker container exec -i ${KC_ID} ./keycloak/bin/kcadm.sh"
 
-    echo "${LINE} Connecting to keycloak server..."
+    echo_message "Connecting to keycloak server..."
     $KCADM \
         config credentials \
         --server ${KC_URL} \
@@ -128,7 +136,7 @@ function create_kc_realm {
     REALM=$1
     DESC="${2:-$REALM}"
 
-    echo "${LINE} Creating realm [${REALM}] [${DESC}]..."
+    echo_message "Creating realm [${REALM}] [${DESC}]..."
     $KCADM \
         create realms \
         -s realm="${REALM}" \
@@ -142,7 +150,7 @@ function create_kc_realm {
 function create_kc_aether_client {
     REALM=$1
 
-    echo "${LINE} Creating aether client in realm [$REALM]..."
+    echo_message "Creating aether client in realm [$REALM]..."
     REALM_URL="${BASE_HOST}/${REALM}/"
     PUBLIC_URL="${BASE_HOST}/${PUBLIC_REALM}/*"
 
@@ -161,7 +169,7 @@ function create_kc_aether_client {
 function create_kc_kong_client {
     REALM=$1
 
-    echo "${LINE} Creating client [${KEYCLOAK_KONG_CLIENT}] in realm [$REALM]..."
+    echo_message "Creating client [${KEYCLOAK_KONG_CLIENT}] in realm [$REALM]..."
     REALM_URL="${BASE_HOST}/${REALM}/"
 
     $KCADM \
@@ -183,7 +191,7 @@ function create_kc_user {
     USERNAME=$2
     PASSWORD=${3:-}
 
-    echo "${LINE} Creating user [$USERNAME] in realm [$REALM]..."
+    echo_message "Creating user [$USERNAME] in realm [$REALM]..."
     $KCADM \
         create users \
         -r "${REALM}" \
