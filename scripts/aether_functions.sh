@@ -28,10 +28,10 @@ LINE=`printf -v row "%${COLUMNS:-$(tput cols)}s"; echo ${row// /=}`
 AETHER_APPS=( kernel odk ui )
 
 function echo_message {
-    if [ -z "${1:-}" ]; then
+    if [ -z "$1" ]; then
         echo "$LINE"
     else
-        msg=" ${1:-} "
+        msg=" $1 "
         echo "${LINE:${#msg}}$msg"
     fi
 }
