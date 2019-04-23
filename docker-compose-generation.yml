@@ -12,46 +12,19 @@ services:
   # ---------------------------------
 
   assets:
-    image: aether-assets
-    build:
-      context: ./assets/generation
-      dockerfile: Dockerfile
-    volumes:
-      - ./assets:/code/assets
-    environment:
-      KERNEL_URL: ${BASE_HOST}/${PUBLIC_REALM}/kernel/
-      KERNEL_USER: ${KERNEL_ADMIN_USERNAME}
-      KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
-      PROJECT_NAME: DefaultDemo
-      SUBMISSION_ENDPOINT: default_mapping
+    extends:
+      file: ./docker-compose-base.yml
+      service: assets-base
     networks:
       - aether
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}
 
   # ---------------------------------
   # Auth builder Container
   # ---------------------------------
 
   auth:
-    image: aether-auth
-    build: ./api-auth/aether-auth
-    environment:
-      DEBUG: null
-
-      KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
-      KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
-      KEYCLOAK_KONG_CLIENT: ${KEYCLOAK_KONG_CLIENT}
-
-      BASE_DOMAIN: ${BASE_DOMAIN}
-      BASE_HOST: ${BASE_HOST}
-      KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
-      KONG_INTERNAL: ${KONG_INTERNAL}
-      MINIO_INTERNAL: ${MINIO_INTERNAL}
-    volumes:
-      - ./api-auth/aether-auth:/code
-    command: help
+    extends:
+      file: ./docker-compose-base.yml
+      service: auth-base
     networks:
       - aether
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}
