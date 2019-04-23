@@ -20,16 +20,18 @@
 
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
 
-body {
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
+body, a, input {
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   font-size: 15px;
   line-height: 1.3rem;
+  color: #fff;
+}
 
+body {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
   background: #50aef3;
   background-image: linear-gradient(to right, #50aef3, #7175dd);
-  color: #fff;
 }
 
 body:before {
@@ -60,6 +62,10 @@ body:after {
   border-right: 5vw solid #ffffff1a;
   border-top: 3vw solid #ffffff1a;
   z-index: -1;
+}
+
+a {
+  text-decoration: none;
 }
 
 .logo-container {
@@ -96,19 +102,18 @@ body:after {
 }
 
 .front {
-  background: url('../img/aether-white.png') no-repeat top right;
+  background: url('../img/aether-white.png') no-repeat left top;
   background-size: 100%;
   transform: rotateY(0deg);
 }
 
 .back {
-  background: url('../img/eHA-icon.svg') no-repeat top right;
+  background: url('../img/eHA-icon.svg') no-repeat left top;
   background-size: 100%;
   transform: rotateY(180deg);
 }
 
 .brand {
-  color: #fff;
   display: inline-block;
   font-size: 28px;
   font-weight: 300;
@@ -124,8 +129,7 @@ body:after {
   font-size: 2rem;
   line-height: 2rem;
   font-weight: 600;
-  margin-bottom: 1.5rem;
-  margin-top: 100px;
+  margin: 4rem 0;
   text-align: center;
 }
 
@@ -153,13 +157,8 @@ div#kc-content-wrapper {
 }
 
 .aether-input {
-  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-  font-size: 1rem;
-  color: #fff;
-
   background: #2d31461a;
   box-shadow: 1px 1px 1px #2d31461a inset, 1px 1px 0 #ffffff1a;
-
   margin-top: 0.5rem;
   padding: 0.8rem;
   border: 0;
@@ -174,19 +173,14 @@ div#kc-content-wrapper {
 }
 
 .aether-btn-primary {
-  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   font-size: 1rem;
   font-weight: 400;
   letter-spacing: 0.06rem;
   text-transform: uppercase;
-
   padding: 0.8rem;
   width: calc(320px + 0.5rem);
-
   cursor: pointer;
   border: 0;
-
-  color: #fff;
   background: #ffffff26;
   box-shadow: 1px 1px 0 #ffffff1a inset, -1px -1px 0 #2d31464d inset, 0 0 4px #2d31461a;
 }
@@ -194,5 +188,24 @@ div#kc-content-wrapper {
 .aether-btn-primary:hover {
   outline: none;
   background: #0093ff;
-  color: #fff;
+}
+
+.aether-social-list {
+  margin-top: 2rem;
+  list-style-type: none;
+}
+
+/* https://developers.google.com/identity/branding-guidelines */
+
+.google {
+  position: absolute;
+  height: 46px;
+  width: 191px;
+  margin-left: 32px;
+  background: url('../img/btn_google_signin_light_normal_web.png') no-repeat top left;
+  /* background: url('../img/btn_google_signin_dark_normal_web.png') no-repeat top left; */
+}
+
+.google span {
+  display: none;
 }
