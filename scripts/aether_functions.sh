@@ -20,8 +20,6 @@
 #
 set -Eeuo pipefail
 
-source .env
-
 CHECK_URL="docker-compose run --no-deps kernel manage check_url -u"
 KC_URL="${KEYCLOAK_INTERNAL}/keycloak/auth"
 LINE=`printf -v row "%${COLUMNS:-$(tput cols)}s"; echo ${row// /=}`

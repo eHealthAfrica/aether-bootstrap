@@ -21,6 +21,8 @@
 set -Eeuo pipefail
 
 source ./scripts/aether_functions.sh
+# bring the secrets
+source .env
 
 # ----------------------------------------
 # NOTE: change the following values
