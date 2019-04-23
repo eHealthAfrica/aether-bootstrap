@@ -36,6 +36,7 @@ $DC_AUTH kill
 $DC_AUTH down
 docker-compose kill
 docker-compose down
+docker network rm aether_bootstrap_net || true
 
 create_docker_assets
 source .env

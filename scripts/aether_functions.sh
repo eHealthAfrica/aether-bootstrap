@@ -32,18 +32,16 @@ function create_docker_assets {
     ./scripts/generate_env_vars.sh
 
     echo "${LINE} Generating docker network and database volume..."
-
-    docker network rm aether_bootstrap_net || true
     {
         docker network create aether_bootstrap_net \
             --attachable \
             --subnet=${NETWORK_SUBNET} \
             --gateway=${NETWORK_GATEWAY}
     } || true
-    echo "aether_bootstrap_net network is ready."
+    echo "${LINE} aether_bootstrap_net network is ready"
 
     docker volume create aether_database_data || true
-    echo "aether_database_data volume is ready."
+    echo "${LINE} aether_database_data volume is ready"
     echo ""
 }
 
@@ -55,7 +53,7 @@ function start_db {
         >&2 echo "Waiting for database..."
         sleep 2
     done
-    echo ""
+    echo "${LINE} database is ready"
 }
 
 
@@ -66,7 +64,7 @@ function start_kong {
         >&2 echo "Waiting for kong..."
         sleep 2
     done
-    echo ""
+    echo "${LINE} kong is ready"
 }
 
 
@@ -77,7 +75,7 @@ function start_keycloak {
         >&2 echo "Waiting for keycloak..."
         sleep 2
     done
-    echo ""
+    echo "${LINE} keycloak is ready"
 }
 
 
@@ -103,6 +101,7 @@ function rebuild_database {
         CREATE USER ${DB_USER} PASSWORD '${DB_PWD}';
         CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};
 EOSQL
+    echo "${LINE} $1 database is ready"
 }
 
 
