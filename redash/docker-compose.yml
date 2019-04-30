@@ -8,11 +8,6 @@ networks:
   redash_net:
       driver: bridge
 
-volumes:
-  redash_data:
-    external:
-      name: redash_database_data
-
 services:
   
   server:
@@ -68,7 +63,5 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     command: "postgres -c fsync=off -c full_page_writes=off -c synchronous_commit=OFF"
     restart: unless-stopped
-    volumes:
-      - redash_data:/var/lib/postgresql/data
     networks:
      - redash_net

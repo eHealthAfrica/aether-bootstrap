@@ -42,12 +42,10 @@ create_config() {
 
 echo "___________________________________________________ Creating Redash Secrets"
 if [ ! -f ./.env ]; then
-    create_config
-    cp ./.env ./.env.bak     
-
-    echo "___________________________________________________ Preparing Redash Database"
-    docker-compose run server python ./manage.py database create_tables
-    docker-compose kill
+    create_config    
 fi
 
+echo "___________________________________________________ Preparing Redash Database"
+docker-compose run server python ./manage.py database create_tables
+docker-compose kill
 echo "___________________________________________________ Done"
