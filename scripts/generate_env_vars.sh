@@ -70,7 +70,7 @@ function gen_env_file {
 # ------------------------------------------------------------------
 # Aether
 # ==================================================================
-AETHER_VERSION=1.4.0-rc
+AETHER_VERSION=1.5.0-rc
 # ------------------------------------------------------------------
 
 
@@ -103,9 +103,9 @@ BASE_HOST=http://aether.local
 KEYCLOAK_INTERNAL=http://keycloak:8080
 KONG_INTERNAL=http://kong:8001
 
-NETWORK_SUBNET=192.168.3.0/24
-NETWORK_GATEWAY=192.168.3.1
-KONG_IP=192.168.3.10
+NETWORK_SUBNET=192.168.9.0/24
+NETWORK_GATEWAY=192.168.9.1
+KONG_IP=192.168.9.10
 # ------------------------------------------------------------------
 
 

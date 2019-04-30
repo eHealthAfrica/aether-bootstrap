@@ -30,10 +30,7 @@ echo_message "Initializing Aether environment, this will take about 60 seconds."
 echo_message ""
 
 # stop and remove all containers or the network cannot be recreated
-$DC_AUTH kill
-$DC_AUTH down
-docker-compose kill
-docker-compose down
+./scripts/kill_all.sh
 docker network rm aether_bootstrap_net || true
 
 create_docker_assets
@@ -119,9 +116,7 @@ create_kc_tenant "prod" "Production environment"
 create_kc_tenant "test" "Testing playground"
 echo_message ""
 
-$DC_AUTH down
-docker-compose kill
-docker-compose down
+./scripts/kill_all.sh
 
 echo_message ""
 echo_message "done!"
