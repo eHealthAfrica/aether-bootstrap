@@ -5,6 +5,12 @@ networks:
     external:
       name: aether_internal
 
+volumes:
+  # docker volume create gather_database_data
+  elastic_data:
+    external:
+      name: elasticsearch_data
+
 services:
 
   elasticsearch:
@@ -13,6 +19,8 @@ services:
       service: elasticsearch-base
     networks:
       - aether
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
 
   kibana:
     extends:
