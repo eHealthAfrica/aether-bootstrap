@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-#
 # Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
@@ -17,10 +15,29 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
-set -Eeuo pipefail
 
-source ./scripts/aether_functions.sh
+import os
 
-create_docker_assets
-docker-compose up -d
+
+DEBUG = bool(os.environ.get('DEBUG'))
+
+HOST = os.environ.get('BASE_HOST')  # External URL for host
+DOMAIN = os.environ.get('BASE_DOMAIN')
+
+# Keycloak Information
+KEYCLOAK_INTERNAL = os.environ.get('KEYCLOAK_INTERNAL')
+
+KC_URL = f'{KEYCLOAK_INTERNAL}/keycloak/auth/'  # internal
+KC_ADMIN_USER = os.environ.get('KEYCLOAK_GLOBAL_ADMIN')
+KC_ADMIN_PASSWORD = os.environ.get('KEYCLOAK_GLOBAL_PASSWORD')
+KC_MASTER_REALM = 'master'
+KEYCLOAK_KONG_CLIENT = os.environ.get('KEYCLOAK_KONG_CLIENT')
+
+
+# Kong Information
+KONG_URL = os.environ.get('KONG_INTERNAL')
+KONG_OIDC_PLUGIN = 'kong-oidc-auth'
+
+REALMS_PATH = '/code/realm'
+SERVICES_PATH = '/code/service'
+SOLUTIONS_PATH = '/code/solution'

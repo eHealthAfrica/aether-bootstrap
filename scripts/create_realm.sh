@@ -21,6 +21,34 @@
 set -Eeuo pipefail
 
 source ./scripts/aether_functions.sh
+# bring the secrets
+source .env
 
-create_docker_assets
-docker-compose up -d
+# ----------------------------------------
+# NOTE: change the following values
+
+REALM="eHA"
+DES="eHealth Africa"
+USER="user"
+PWD="secretsecret"
+# ----------------------------------------
+
+
+if [ -z "${REALM:-}" ]; then
+    echo "Pease, indicate realm name!"
+    exit 1
+fi
+
+start_db
+start_kong
+start_keycloak
+
+connect_to_keycloak
+
+create_kc_realm          $REALM $DES
+create_kc_aether_client  $REALM
+create_kc_kong_client    $REALM
+
+if [ ! -z "${USER}" ]; then
+    create_kc_user $REALM $USER $PWD
+fi

@@ -1,0 +1,19 @@
+{
+  "name": "kernel",
+  "host": "http://kernel:8000",
+  "oidc_endpoints": [
+    {
+      "name": "protected",
+      "url": "/",
+      "strip_path": "false"
+    }
+  ],
+  "public_endpoints": [
+    {
+      "name": "public",
+      "url": "/-/kernel/",
+      "route_path": "{url}",
+      "strip_path": "true"
+    }
+  ]
+}

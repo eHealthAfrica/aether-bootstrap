@@ -25,32 +25,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
     command: minio server --quiet --address minio:9000 /data
     ports:
-      - "9000:9000"
-
-  # ---------------------------------
-  # NGINX
-  # ---------------------------------
-
-  nginx-base:
-    image: nginx:alpine
-    volumes:
-      # config file
-      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./conf/nginx/sites-enabled:/etc/nginx/sites-enabled
-
-      # nginx log files
-      - ./.persistent_data/nginx:/var/log/nginx
-
-      # static folders per container
-      - ./.persistent_data/static:/static
-
-      # media folders per container
-      - ./.persistent_data/media:/media
-    ports:
-      # "HOST:CONTAINER"
-      - "80:80"
-      - "8443:8443"
-
+      - 9000:9000
 
   # ---------------------------------
   # Aether kernel
@@ -59,11 +34,7 @@ services:
   kernel-base:
     image: ehealthafrica/aether-kernel:${AETHER_VERSION}
     environment:
-      # Uncomment these lines to enable single sign on if you use CAS
-      # CAS_SERVER_URL: https://your.cas.server
-      # HOSTNAME: kernel.aether.local
-
-      CSRF_COOKIE_DOMAIN: .aether.local
+      CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${KERNEL_DJANGO_SECRET_KEY}
       LOGGING_FORMATTER: verbose
       HTML_SELECT_CUTOFF: 10
@@ -73,9 +44,8 @@ services:
       MINIO_STORAGE_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
       MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
       MINIO_STORAGE_ENDPOINT: minio:9000
-      # Use these settings to make it accessible via browser
       MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
-      MINIO_STORAGE_MEDIA_URL: http://localhost:9000/kernel
+      MINIO_STORAGE_MEDIA_URL: ${BASE_HOST}/minio/kernel
       MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: "true"
       MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: "true"
 
@@ -103,17 +73,26 @@ services:
       EXPORT_HEADER_SEPARATOR: "/"
       EXPORT_HEADER_SHORTEN: "no"
 
+      # Kong requirements
+      GATEWAY_SERVICE_ID: kernel
+      GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
+
+      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
+
+      MULTITENANCY: "true"
+      DEFAULT_REALM: ${DEFAULT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
+
+      UWSGI_BUFFER_SIZE: 32768
+      CUSTOM_UWSGI_SERVE_STATIC: "true"
+
       WEB_SERVER_PORT: 8000
     volumes:
-      # static folder
-      - ./.persistent_data/static/kernel:/var/www/static
-      # temporary folder for Excel files
-      - ./.persistent_data/export/kernel:/tmp
       # backup folder
       - ./.persistent_data/backups/kernel:/backups
     ports:
-      # "HOST:CONTAINER"
-      - "8000:8000"
+      - 8000:8000
     command: start
 
 
@@ -124,10 +103,7 @@ services:
   odk-base:
     image: ehealthafrica/aether-odk:${AETHER_VERSION}
     environment:
-      # Uncomment these lines to enable single sign on if you use CAS
-      # CAS_SERVER_URL: https://your.cas.server
-      # HOSTNAME: odk.aether.local
-      CSRF_COOKIE_DOMAIN: .aether.local
+      CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${ODK_DJANGO_SECRET_KEY}
       LOGGING_FORMATTER: verbose
       HTML_SELECT_CUTOFF: 10
@@ -137,9 +113,8 @@ services:
       MINIO_STORAGE_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
       MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
       MINIO_STORAGE_ENDPOINT: minio:9000
-      # Use these settings to make it accessible via browser
       MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
-      MINIO_STORAGE_MEDIA_URL: http://localhost:9000/odk
+      MINIO_STORAGE_MEDIA_URL: ${BASE_HOST}/minio/odk
       MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: "true"
       MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: "true"
 
@@ -150,7 +125,7 @@ services:
       ADMIN_TOKEN: ${ODK_ADMIN_TOKEN}
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: http://kernel:8000
+      AETHER_KERNEL_URL: ${BASE_HOST}/${PUBLIC_REALM}/kernel/
       AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: odk
@@ -159,14 +134,26 @@ services:
       PGPORT: 5432
       PGUSER: postgres
 
+      # Kong requirements
+      GATEWAY_SERVICE_ID: odk
+      GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
+
+      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
+
+      MULTITENANCY: "true"
+      DEFAULT_REALM: ${DEFAULT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
+
+      UWSGI_BUFFER_SIZE: 32768
+      CUSTOM_UWSGI_SERVE_STATIC: "true"
+
       WEB_SERVER_PORT: 8002
     volumes:
-      # static folder
-      - ./.persistent_data/static/odk:/var/www/static
       # backup folder
       - ./.persistent_data/backups/odk:/backups
     ports:
-      - "8002:8002"
+      - 8002:8002
     command: start
 
 
@@ -177,18 +164,10 @@ services:
   ui-base:
     image: ehealthafrica/aether-ui:${AETHER_VERSION}
     environment:
-      # Uncomment these lines to enable single sign on if you use CAS
-      # CAS_SERVER_URL: https://your.cas.server
-      # HOSTNAME: ui.aether.local
-      CSRF_COOKIE_DOMAIN: .aether.local
+      CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${UI_DJANGO_SECRET_KEY}
       LOGGING_FORMATTER: verbose
       HTML_SELECT_CUTOFF: 10
-
-      DJANGO_STORAGE_BACKEND: filesystem
-      MINIO_STORAGE_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
-      MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
-      MINIO_STORAGE_ENDPOINT: minio:9000
 
       APP_NAME: Aether
 
@@ -196,7 +175,7 @@ services:
       ADMIN_PASSWORD: ${UI_ADMIN_PASSWORD}
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: http://kernel:8000
+      AETHER_KERNEL_URL: ${BASE_HOST}/${PUBLIC_REALM}/kernel/
       AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: ui
@@ -205,14 +184,26 @@ services:
       PGPORT: 5432
       PGUSER: postgres
 
+      # Kong requirements
+      GATEWAY_SERVICE_ID: ui
+      GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
+
+      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
+
+      MULTITENANCY: "true"
+      DEFAULT_REALM: ${DEFAULT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
+
+      UWSGI_BUFFER_SIZE: 32768
+      CUSTOM_UWSGI_SERVE_STATIC: "true"
+
       WEB_SERVER_PORT: 8004
     volumes:
-      # static folder
-      - ./.persistent_data/static/ui:/var/www/static
       # backup folder
       - ./.persistent_data/backups/ui:/backups
     ports:
-      - "8004:8004"
+      - 8004:8004
     command: start
 
 
@@ -226,13 +217,13 @@ services:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
     extra_hosts:
-      - "moby:127.0.0.1"
+      - moby:127.0.0.1
 
   kafka-base:
     image: confluentinc/cp-kafka:5.1.1
     ports:
-      - "29092:29092"
-      - "9092:9092"
+      - 29092:29092
+      - 9092:9092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
@@ -243,7 +234,7 @@ services:
       KAFKA_LOG_RETENTION_HOURS: -1
       ADVERTISED_HOST_NAME: kafka
     extra_hosts:
-      - "moby:127.0.0.1"
+      - moby:127.0.0.1
 
 
   # ---------------------------------
@@ -278,18 +269,96 @@ services:
       # default settings file
       PRODUCER_SETTINGS_FILE: /code/producer/settings.json
     ports:
-      - "5005:5005"
+      - 5005:5005
     command: start
 
+
+  # ---------------------------------
+  # API & Auth
+  # ---------------------------------
+
+  kong-base:
+    image: aether-kong
+    build: ./api-auth/kong
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: db
+      KONG_PG_DATABASE: kong
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: ${KONG_PG_PASSWORD}
+
+      KONG_NGINX_PROXY_LARGE_CLIENT_HEADER_BUFFERS: "16 128k"
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_PROXY_LISTEN: 0.0.0.0:80, 0.0.0.0:8443
+
+      KONG_PLUGINS: bundled,kong-oidc-auth
+    ports:
+      - 80:80
+      - 8443:8443  # ODK Collect requirement!!!
+    command: ["kong", "start", "--v"]
+
+  keycloak-base:
+    image: aether-keycloak
+    build: ./api-auth/keycloak
+    volumes:
+      # custom aether theme
+      - ./api-auth/keycloak/aether-theme:/opt/jboss/keycloak/themes/aether
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: db
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: ${KEYCLOAK_PG_PASSWORD}
+
+      KEYCLOAK_USER: ${KEYCLOAK_GLOBAL_ADMIN}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
+
+      PROXY_ADDRESS_FORWARDING: "true"
+      PROXY_PORT_FORWARDING: "true"
+
+      KEYCLOAK_LOGLEVEL: ERROR
+      ROOT_LOGLEVEL: ERROR
+    ports:
+      - 8080:8080
+
+
+  # ---------------------------------
+  # Data Generation
+  # ---------------------------------
+
   assets-base:
+    image: aether-assets
     build:
       context: ./assets/generation
       dockerfile: Dockerfile
     volumes:
       - ./assets:/code/assets
     environment:
-      KERNEL_URL: http://kernel:8000
+      KERNEL_URL: ${BASE_HOST}/${PUBLIC_REALM}/kernel/
       KERNEL_USER: ${KERNEL_ADMIN_USERNAME}
       KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
       PROJECT_NAME: DefaultDemo
       SUBMISSION_ENDPOINT: default_mapping
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
+
+  auth-base:
+    image: aether-auth
+    build: ./api-auth/aether-auth
+    environment:
+      DEBUG: null
+
+      KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
+      KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
+      KEYCLOAK_KONG_CLIENT: ${KEYCLOAK_KONG_CLIENT}
+
+      BASE_DOMAIN: ${BASE_DOMAIN}
+      BASE_HOST: ${BASE_HOST}
+      KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
+      KONG_INTERNAL: ${KONG_INTERNAL}
+      MINIO_INTERNAL: ${MINIO_INTERNAL}
+    volumes:
+      - ./api-auth/aether-auth:/code
+    command: help
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}

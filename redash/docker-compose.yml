@@ -4,12 +4,12 @@ version: '3'
 networks:
   aether:
     external:
-      name: aether_internal
+      name: aether_bootstrap_net
   redash_net:
       driver: bridge
 
 services:
-  
+
   server:
     image: redash/redash:latest
     command: server
@@ -29,7 +29,7 @@ services:
     networks:
      - redash_net
      - aether
-  
+
   worker:
     image: redash/redash:latest
     command: scheduler
@@ -45,13 +45,13 @@ services:
     networks:
      - redash_net
      - aether
-  
+
   redis:
     image: redis:3-alpine
     restart: unless-stopped
     networks:
      - redash_net
-  
+
   postgres:
     image: postgres:9.5-alpine
     # The following turns the DB into less durable, but gains significant performance improvements for the tests run (x3

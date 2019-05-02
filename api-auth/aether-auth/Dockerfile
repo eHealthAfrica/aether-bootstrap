@@ -1,8 +1,5 @@
 FROM python:3.7-slim-stretch
 
-WORKDIR /code
-COPY ./ /code
-
 RUN apt-get update -qq && \
     apt-get -qq \
         --yes \
@@ -10,7 +7,10 @@ RUN apt-get update -qq && \
         --allow-remove-essential \
         --allow-change-held-packages \
         install gcc && \
-    pip install --upgrade pip && \
-    pip install -q -f /code/pip/requires -r /code/pip/requirements.txt
+    pip install -q --upgrade pip && \
+    pip install -q python-keycloak pyjwt
+
+WORKDIR /code
+COPY . /code
 
 ENTRYPOINT ["/code/entrypoint.sh"]

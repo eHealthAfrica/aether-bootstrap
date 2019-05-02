@@ -25,15 +25,25 @@
 # Example:
 # ./scripts/generate_env_vars.sh
 
-check_openssl () {
+function check_openssl {
     which openssl > /dev/null
 }
 
-gen_random_string () {
+function gen_random_string {
     openssl rand -hex 16 | tr -d "\n"
 }
 
-gen_env_file () {
+function final_warning {
+    source .env
+
+    echo ""
+    echo "Add to your [/etc/hosts] or [C:\Windows\System32\Drivers\etc\hosts] file the following line:"
+    echo ""
+    echo "127.0.0.1  ${BASE_DOMAIN}"
+    echo ""
+}
+
+function gen_env_file {
     cat << EOF
 #
 # USE THIS ONLY LOCALLY
@@ -60,7 +70,52 @@ gen_env_file () {
 # ------------------------------------------------------------------
 # Aether
 # ==================================================================
-AETHER_VERSION=1.3.0
+AETHER_VERSION=1.5.0-rc
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# Authorization & Authentication
+# ==================================================================
+KEYCLOAK_GLOBAL_ADMIN=admin
+KEYCLOAK_GLOBAL_PASSWORD=password
+KEYCLOAK_PG_PASSWORD=$(gen_random_string)
+KONG_PG_PASSWORD=$(gen_random_string)
+
+KEYCLOAK_INITIAL_USER_USERNAME=user
+KEYCLOAK_INITIAL_USER_PASSWORD=password
+
+KEYCLOAK_AETHER_CLIENT=aether
+KEYCLOAK_KONG_CLIENT=kong
+REALM_COOKIE=aether-realm
+
+DEFAULT_REALM=aether
+PUBLIC_REALM=-
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# Routing
+# ==================================================================
+BASE_DOMAIN=aether.local
+BASE_HOST=http://aether.local
+
+KEYCLOAK_INTERNAL=http://keycloak:8080
+KONG_INTERNAL=http://kong:8001
+
+NETWORK_SUBNET=192.168.9.0/24
+NETWORK_GATEWAY=192.168.9.1
+KONG_IP=192.168.9.10
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# Minio storage
+# ==================================================================
+MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
+MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
+
+MINIO_INTERNAL=http://minio:9000
 # ------------------------------------------------------------------
 
 
@@ -76,19 +131,6 @@ KERNEL_DB_PASSWORD=$(gen_random_string)
 KERNEL_READONLY_DB_USERNAME=readonlyuser
 KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
 
-# ------------------------------------------------------------------
-# Minio storage
-# ==================================================================
-MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
-MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
-# ------------------------------------------------------------------
-
-# ------------------------------------------------------------------
-# Aether Producer
-# ==================================================================
-PRODUCER_ADMIN_USER=admin
-PRODUCER_ADMIN_PW=adminadmin
-
 # TEST Aether Kernel
 # ------------------------------------------------------------------
 TEST_KERNEL_ADMIN_USERNAME=admin-test
@@ -99,6 +141,14 @@ TEST_KERNEL_DB_PASSWORD=$(gen_random_string)
 
 TEST_KERNEL_READONLY_DB_USERNAME=readonlytest
 TEST_KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# Aether Producer
+# ==================================================================
+PRODUCER_ADMIN_USER=admin
+PRODUCER_ADMIN_PW=adminadmin
 # ------------------------------------------------------------------
 
 
@@ -129,12 +179,12 @@ UI_ADMIN_PASSWORD=adminadmin
 UI_DJANGO_SECRET_KEY=$(gen_random_string)
 UI_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
-
 EOF
 }
 
 if [ -e ".env" ]; then
     echo "[.env] file already exists! Remove it if you want to generate a new one."
+    final_warning
     exit 0
 fi
 
@@ -148,3 +198,4 @@ fi
 set -Eeo pipefail
 gen_env_file > .env
 echo "[.env] file generated!"
+final_warning
