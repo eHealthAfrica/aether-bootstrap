@@ -20,6 +20,8 @@
 #
 set -Eeuo pipefail
 
+scripts/generate_env_vars.sh 
+source .env
 source ./scripts/aether_functions.sh
 
 DC_AUTH="docker-compose -f docker-compose-generation.yml"
@@ -34,7 +36,6 @@ echo_message ""
 docker network rm aether_bootstrap_net || true
 
 create_docker_assets
-source .env
 
 echo_message "Pulling docker images..."
 docker-compose pull db minio
