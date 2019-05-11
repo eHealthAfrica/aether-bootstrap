@@ -12,7 +12,7 @@
     {
       "name": "public",
       "url": "/-/odk/",
-      "route_path": "{url}",
+      "route_path": "/-/odk/",
       "strip_path": "true"
     }
   ]

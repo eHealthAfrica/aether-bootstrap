@@ -12,7 +12,7 @@
     {
       "name": "public",
       "url": "/-/ui/",
-      "route_path": "{url}",
+      "route_path": "/-/ui/",
       "strip_path": "true"
     }
   ]

@@ -343,8 +343,7 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
 
   auth-base:
-    image: aether-auth
-    build: ./api-auth/aether-auth
+    image: ehealthafrica/gateway-manager:latest
     environment:
       DEBUG: null
 
@@ -358,7 +357,8 @@ services:
       KONG_INTERNAL: ${KONG_INTERNAL}
       MINIO_INTERNAL: ${MINIO_INTERNAL}
     volumes:
-      - ./api-auth/aether-auth:/code
+      - ./api-auth/service:/code/service
+      - ./api-auth/solution:/code/solution
     command: help
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
