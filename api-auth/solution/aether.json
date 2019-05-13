@@ -3,6 +3,7 @@
   "services": [
     "kernel",
     "ui",
-    "odk"
+    "odk",
+    "gather"
   ]
 }
