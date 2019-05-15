@@ -335,8 +335,9 @@ services:
       - ./assets:/code/assets
     environment:
       KERNEL_URL: ${BASE_HOST}/${PUBLIC_REALM}/kernel/
-      KERNEL_USER: ${KERNEL_ADMIN_USERNAME}
-      KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
+      KERNEL_USER: ${KEYCLOAK_INITIAL_USER_USERNAME}
+      KERNEL_PASSWORD: ${KEYCLOAK_INITIAL_USER_PASSWORD}
+      REALM: dev
       PROJECT_NAME: DefaultDemo
       SUBMISSION_ENDPOINT: default_mapping
     extra_hosts:
