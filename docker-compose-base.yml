@@ -334,7 +334,7 @@ services:
     volumes:
       - ./assets:/code/assets
     environment:
-      KERNEL_URL: ${BASE_HOST}/${PUBLIC_REALM}/kernel/
+      KERNEL_URL: ${BASE_HOST}/dev/kernel
       KERNEL_USER: ${KEYCLOAK_INITIAL_USER_USERNAME}
       KERNEL_PASSWORD: ${KEYCLOAK_INITIAL_USER_PASSWORD}
       REALM: dev

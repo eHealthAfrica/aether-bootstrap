@@ -22,10 +22,9 @@ import json
 import logging
 import os
 import random
-import requests
 import sys
 
-from mocker import MockingManager, MockFn, Generic
+from mocker import MockingManager, MockFn
 
 log = logging.getLogger("AssetGeneration:")
 
@@ -101,9 +100,10 @@ def main(seed_size=1000):
     url = env('KERNEL_URL')
     username = env('KERNEL_USER')
     password = env('KERNEL_PASSWORD')
+    realm = env('REALM')
 
     # try:
-    manager = MockingManager(url, username, password)
+    manager = MockingManager(url, username, password, realm)
     
     # except Exception as err:
     #     log.error(

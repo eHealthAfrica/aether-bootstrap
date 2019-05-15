@@ -93,7 +93,7 @@ def project_schema(project, ids):
             'transport_rule': '[]',
             'mandatory_fields': '[]'
         }
-        out[name] = client.projectschemas.create(data=project_schema_obj)
+        out[name] = client.schemadecorators.create(data=project_schema_obj)
     return out
 
 
