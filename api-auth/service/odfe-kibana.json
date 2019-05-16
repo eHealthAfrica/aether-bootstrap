@@ -1,0 +1,19 @@
+{
+  "name": "odfe-kibana",
+  "host": "http://odfe-kibana:5601",
+  "oidc_endpoints": [
+    {
+      "name": "protected",
+      "url": "/",
+      "strip_path": "false"
+    }
+  ],
+  "public_endpoints": [
+    {
+      "name": "public",
+      "url": "/-/kibana/",
+      "route_path": "/-/kibana/",
+      "strip_path": "true"
+    }
+  ]
+}
