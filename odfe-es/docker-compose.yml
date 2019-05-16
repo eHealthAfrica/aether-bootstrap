@@ -3,7 +3,7 @@ version: "2.1"
 networks:
   aether:
     external:
-      name: aether_internal
+      name: aether_bootstrap_net
 
 volumes:
   # docker volume create storage for es data	
