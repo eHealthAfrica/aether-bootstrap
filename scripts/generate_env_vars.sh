@@ -190,7 +190,6 @@ GATHER_ADMIN_USERNAME=admin
 GATHER_ADMIN_PASSWORD=adminadmin
 GATHER_DJANGO_SECRET_KEY=$(gen_random_string)
 GATHER_DB_PASSWORD=$(gen_random_string)
-KEYCLOAK_GATHER_CLIENT=gather
 # ------------------------------------------------------------------
 EOF
 }
