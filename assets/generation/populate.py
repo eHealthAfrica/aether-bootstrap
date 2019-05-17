@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -104,7 +104,7 @@ def main(seed_size=1000):
 
     # try:
     manager = MockingManager(url, username, password, realm)
-    
+
     # except Exception as err:
     #     log.error(
     #         "Kernel is not ready or not available. Check settings or try again : %s" % err)
