@@ -15,6 +15,21 @@ services:
     environment:
       kibana.index: "aether-demo-2"
 
+  elasticsearch-open-base:
+    image: amazon/opendistro-for-elasticsearch:0.9.0
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      discovery.type: single-node
+
+  kibana-open-base:
+    image: amazon/opendistro-for-elasticsearch-kibana:0.9.0
+    ports:
+      - "5601:5601"
+    environment:
+      kibana.index: "aether-demo-1"
+
   es-consumer-base:
     image: ehealthafrica/aether-elasticsearch-consumer:1.1.2
     stdin_open: true
