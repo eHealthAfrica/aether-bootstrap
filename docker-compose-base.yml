@@ -344,7 +344,7 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
 
   auth-base:
-    image: ehealthafrica/gateway-manager:latest
+    image: ehealthafrica/gateway-manager:20190522-alpha # ehealthafrica/gateway-manager:latest
     environment:
       DEBUG: null
 

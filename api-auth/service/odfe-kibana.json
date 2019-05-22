@@ -1,18 +1,22 @@
 {
-  "name": "odfe-kibana",
+  "name": "kibana",
   "host": "http://odfe-kibana:5601",
   "oidc_endpoints": [
     {
       "name": "protected",
       "url": "/",
-      "strip_path": "false"
+      "template_path": "/{realm}/kibana/",
+      "strip_path": "true",
+      "oidc_override": {
+        "config.user_keys": ["preferred_username", "email"]
+      }
     }
   ],
   "public_endpoints": [
     {
       "name": "public",
-      "url": "/-/kibana/",
-      "route_path": "/-/kibana/",
+      "url": "/-/odfe-kibana/",
+      "route_path": "/-/odfe-kibana/",
       "strip_path": "true"
     }
   ]
