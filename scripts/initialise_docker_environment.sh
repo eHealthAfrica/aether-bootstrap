@@ -66,7 +66,8 @@ echo_message ""
 
 
 echo_message "Building custom docker images..."
-docker-compose build --pull keycloak kong
+docker-compose build --pull keycloak
+docker-compose build --pull --no-cache kong
 $DC_AUTH       build --pull auth
 echo_message ""
 

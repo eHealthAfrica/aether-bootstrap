@@ -4,6 +4,7 @@
     "kernel",
     "ui",
     "odk",
-    "gather"
+    "gather",
+    "kibana"
   ]
 }
