@@ -5,10 +5,7 @@
     {
       "name": "protected",
       "url": "/",
-      "strip_path": "false",
-      "oidc_override": {
-        "config.allowed_roles": ["admin", "kernel"]
-      }
+      "strip_path": "false"
     }
   ],
   "public_endpoints": [

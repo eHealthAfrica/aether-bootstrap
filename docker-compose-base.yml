@@ -344,12 +344,13 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
 
   auth-base:
-    image: ehealthafrica/gateway-manager:20190522-alpha # ehealthafrica/gateway-manager:latest
+    image: ehealthafrica/gateway-manager:latest
     environment:
       DEBUG: null
 
       KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
       KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
+      KEYCLOAK_AETHER_CLIENT: ${KEYCLOAK_AETHER_CLIENT}
       KEYCLOAK_KONG_CLIENT: ${KEYCLOAK_KONG_CLIENT}
 
       BASE_DOMAIN: ${BASE_DOMAIN}
@@ -357,6 +358,7 @@ services:
       KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
       KONG_INTERNAL: ${KONG_INTERNAL}
       MINIO_INTERNAL: ${MINIO_INTERNAL}
+      PUBLIC_REALM: ${PUBLIC_REALM}
     volumes:
       - ./api-auth/service:/code/service
       - ./api-auth/solution:/code/solution

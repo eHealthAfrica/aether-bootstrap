@@ -25,7 +25,7 @@ source .env
 source ./scripts/aether_functions.sh
 
 DC_AUTH="docker-compose -f docker-compose-generation.yml"
-
+RUN_AUTH="${DC_AUTH} run --rm auth"
 
 echo_message ""
 echo_message "Initializing Aether environment, this will take about 60 seconds."
@@ -88,7 +88,7 @@ start_kong
 
 
 echo_message "Registering keycloak and minio in kong..."
-$DC_AUTH run auth setup_auth
+$RUN_AUTH setup_auth
 echo_message ""
 
 
@@ -100,16 +100,16 @@ function create_kc_tenant {
     REALM=$1
     DESC=${2:-$REALM}
 
-    create_kc_realm          $REALM $DESC
-    create_kc_aether_client  $REALM
-    create_kc_kong_client    $REALM
+    $RUN_AUTH add_realm         $REALM "$DESC"
+    $RUN_AUTH add_aether_client $REALM
+    $RUN_AUTH add_oidc_client   $REALM
 
-    create_kc_user  $REALM \
-                    $KEYCLOAK_INITIAL_USER_USERNAME \
-                    $KEYCLOAK_INITIAL_USER_PASSWORD
+    $RUN_AUTH add_user          $REALM \
+                                $KEYCLOAK_INITIAL_USER_USERNAME \
+                                $KEYCLOAK_INITIAL_USER_PASSWORD
 
     echo_message "Adding [aether] solution in kong..."
-    $DC_AUTH run auth add_solution aether $REALM
+    $RUN_AUTH add_solution aether $REALM
 }
 
 echo_message "Creating initial tenants in keycloak..."

@@ -103,6 +103,8 @@ services:
     networks:
       aether:
         ipv4_address: ${KONG_IP}
+    # volumes:  # uncomment to mount logs outside of docker
+    #   - ./kong/logs:/usr/local/kong/logs/
     extra_hosts:
       - ${BASE_DOMAIN}:127.0.0.1
 

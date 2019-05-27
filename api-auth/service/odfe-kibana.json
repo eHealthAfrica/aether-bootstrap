@@ -8,16 +8,9 @@
       "template_path": "/{realm}/kibana/",
       "strip_path": "true",
       "oidc_override": {
-        "config.user_keys": ["preferred_username", "email"]
+        "config.user_keys": ["preferred_username", "email", "roles"],
+        "config.allowed_roles": ["admin", "kibana"]
       }
-    }
-  ],
-  "public_endpoints": [
-    {
-      "name": "public",
-      "url": "/-/odfe-kibana/",
-      "route_path": "/-/odfe-kibana/",
-      "strip_path": "true"
     }
   ]
 }
