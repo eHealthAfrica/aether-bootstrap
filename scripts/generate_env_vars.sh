@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -190,7 +190,6 @@ GATHER_ADMIN_USERNAME=admin
 GATHER_ADMIN_PASSWORD=adminadmin
 GATHER_DJANGO_SECRET_KEY=$(gen_random_string)
 GATHER_DB_PASSWORD=$(gen_random_string)
-KEYCLOAK_GATHER_CLIENT=gather
 # ------------------------------------------------------------------
 EOF
 }

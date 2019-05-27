@@ -1,4 +1,4 @@
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -389,7 +389,7 @@ class MockingManager(object):
     def __init__(self, kernel_url, user, pw, realm):
         # connects to Aether and gets available schemas.
         # constructs a DataMocker for each type
-        
+
         self.client = Client(kernel_url, user, pw, realm=realm)
         self.types = {}
         self.alias = {}

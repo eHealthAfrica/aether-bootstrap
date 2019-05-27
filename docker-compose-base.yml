@@ -7,7 +7,7 @@ services:
   # ---------------------------------
 
   postgres-base:
-    image: postgres:9.6-alpine
+    image: postgres:10-alpine
     environment:
       PGUSER: postgres
     healthcheck:
@@ -125,7 +125,7 @@ services:
       ADMIN_TOKEN: ${ODK_ADMIN_TOKEN}
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: ${BASE_HOST}/${PUBLIC_REALM}/kernel/
+      AETHER_KERNEL_URL: ${BASE_HOST}/{realm}/kernel
       AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: odk
@@ -175,7 +175,7 @@ services:
       ADMIN_PASSWORD: ${UI_ADMIN_PASSWORD}
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: ${BASE_HOST}/${PUBLIC_REALM}/kernel/
+      AETHER_KERNEL_URL: ${BASE_HOST}/{realm}/kernel
       AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: ui
@@ -308,6 +308,7 @@ services:
       DB_ADDR: db
       DB_DATABASE: keycloak
       DB_USER: keycloak
+      DB_SCHEMA: public
       DB_PASSWORD: ${KEYCLOAK_PG_PASSWORD}
 
       KEYCLOAK_USER: ${KEYCLOAK_GLOBAL_ADMIN}

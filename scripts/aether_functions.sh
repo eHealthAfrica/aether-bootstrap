@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -126,6 +126,8 @@ function connect_to_keycloak {
         --realm master \
         --user "${KEYCLOAK_GLOBAL_ADMIN}" \
         --password "${KEYCLOAK_GLOBAL_PASSWORD}"
+
+    $KCADM update realms/master -s sslRequired=NONE
 }
 
 
@@ -140,7 +142,8 @@ function create_kc_realm {
         -s realm="${REALM}" \
         -s displayName="${DESC}" \
         -s loginTheme="aether" \
-        -s enabled=true
+        -s enabled=true \
+        -s sslRequired=NONE
 }
 
 

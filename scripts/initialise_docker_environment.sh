@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -20,7 +20,7 @@
 #
 set -Eeuo pipefail
 
-scripts/generate_env_vars.sh 
+scripts/generate_env_vars.sh
 source .env
 source ./scripts/aether_functions.sh
 
