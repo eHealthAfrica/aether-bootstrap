@@ -1,4 +1,4 @@
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -386,11 +386,11 @@ class MockFn(namedtuple("MockFn", ("fn", "args"))):
 
 class MockingManager(object):
 
-    def __init__(self, kernel_url, user, pw):
+    def __init__(self, kernel_url, user, pw, realm):
         # connects to Aether and gets available schemas.
         # constructs a DataMocker for each type
-        
-        self.client = Client(kernel_url, user, pw)
+
+        self.client = Client(kernel_url, user, pw, realm=realm)
         self.types = {}
         self.alias = {}
         self.names = {}
@@ -446,7 +446,7 @@ class MockingManager(object):
         data = {
             "id": payload['id'],
             "payload": payload,
-            "projectschema": ps_id,
+            "schemadecorator": ps_id,
             "mapping_revision": "None",
             "status": "Publishable"
         }
@@ -482,7 +482,7 @@ class MockingManager(object):
             self.schema_id[full_name] = _id
             self.schema_id[_id] = name
 
-        for ps in self.client.projectschemas.paginated('list'):
+        for ps in self.client.schemadecorators.paginated('list'):
             schema_id = ps.schema
             _id = ps.id
             self.project_schema[schema_id] = _id

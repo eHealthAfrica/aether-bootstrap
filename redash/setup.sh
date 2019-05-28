@@ -1,7 +1,7 @@
 
 #!/usr/bin/env bash
 #
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -27,7 +27,7 @@ gen_random_string () {
 }
 
 create_config() {
-    
+
     COOKIE_SECRET=$(gen_random_string)
     POSTGRES_PASSWORD=$(gen_random_string)
     REDASH_DATABASE_URL="postgresql://postgres:${POSTGRES_PASSWORD}@postgres/postgres"
@@ -42,7 +42,7 @@ create_config() {
 
 echo "___________________________________________________ Creating Redash Secrets"
 if [ ! -f ./.env ]; then
-    create_config    
+    create_config
 fi
 
 echo "___________________________________________________ Preparing Redash Database"

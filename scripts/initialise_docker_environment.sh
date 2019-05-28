@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -20,7 +20,7 @@
 #
 set -Eeuo pipefail
 
-scripts/generate_env_vars.sh 
+scripts/generate_env_vars.sh
 source .env
 source ./scripts/aether_functions.sh
 
@@ -66,8 +66,8 @@ echo_message ""
 
 
 echo_message "Building custom docker images..."
-docker-compose build --no-cache --force-rm --pull keycloak kong
-$DC_AUTH       build --no-cache --force-rm --pull auth
+docker-compose build --pull keycloak kong
+$DC_AUTH       build --pull auth
 echo_message ""
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -22,10 +22,9 @@ import json
 import logging
 import os
 import random
-import requests
 import sys
 
-from mocker import MockingManager, MockFn, Generic
+from mocker import MockingManager, MockFn
 
 log = logging.getLogger("AssetGeneration:")
 
@@ -101,10 +100,11 @@ def main(seed_size=1000):
     url = env('KERNEL_URL')
     username = env('KERNEL_USER')
     password = env('KERNEL_PASSWORD')
+    realm = env('REALM')
 
     # try:
-    manager = MockingManager(url, username, password)
-    
+    manager = MockingManager(url, username, password, realm)
+
     # except Exception as err:
     #     log.error(
     #         "Kernel is not ready or not available. Check settings or try again : %s" % err)

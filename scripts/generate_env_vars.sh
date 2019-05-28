@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -89,6 +89,7 @@ KEYCLOAK_AETHER_CLIENT=aether
 KEYCLOAK_KONG_CLIENT=kong
 REALM_COOKIE=aether-realm
 
+MULTITENANCY=true
 DEFAULT_REALM=aether
 PUBLIC_REALM=-
 # ------------------------------------------------------------------
@@ -178,6 +179,17 @@ UI_ADMIN_USERNAME=admin
 UI_ADMIN_PASSWORD=adminadmin
 UI_DJANGO_SECRET_KEY=$(gen_random_string)
 UI_DB_PASSWORD=$(gen_random_string)
+# ------------------------------------------------------------------
+
+# ------------------------------------------------------------------
+# Gather
+# ==================================================================
+GATHER_VERSION=3.2.0-rc
+
+GATHER_ADMIN_USERNAME=admin
+GATHER_ADMIN_PASSWORD=adminadmin
+GATHER_DJANGO_SECRET_KEY=$(gen_random_string)
+GATHER_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 EOF
 }

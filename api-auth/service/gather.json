@@ -1,6 +1,6 @@
 {
-  "name": "kernel",
-  "host": "http://kernel:8000",
+  "name": "gather",
+  "host": "http://gather:8105",
   "oidc_endpoints": [
     {
       "name": "protected",
@@ -11,8 +11,8 @@
   "public_endpoints": [
     {
       "name": "public",
-      "url": "/-/kernel/",
-      "route_path": "{url}",
+      "url": "/-/gather/",
+      "route_path": "/-/gather/",
       "strip_path": "true"
     }
   ]
