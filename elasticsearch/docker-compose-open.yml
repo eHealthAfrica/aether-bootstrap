@@ -13,6 +13,9 @@ services:
       service: elasticsearch-open-base
     environment:
       opendistro_security.ssl.http.enabled: "false"
+      # elasticsearch.requestHeadersWhitelist: ["Authorization", "security_tenant"]
+    volumes:
+      - ./conf/security.yml:/usr/share/elasticsearch/plugins/opendistro_security/securityconfig/config.yml
     networks:
       - aether
 
@@ -24,7 +27,15 @@ services:
       - odfe-elasticsearch
     environment:
       ELASTICSEARCH_URL: http://odfe-elasticsearch:9200
+      ELASTICSEARCH_PRESERVEHOST: "false"
+      SERVER_BASEPATH: "/kibana-app"
+      SERVER_REWRITEBASEPATH: "true"
       opendistro_security.ssl.http.enabled: "false"
+      OPENDISTRO_SECURITY_AUTH_TYPE: "proxy"
+      opendistro_security.auth.type: "proxy"
+    # volumes:
+      # - ./conf/security.yml:/usr/share/kibana/plugins/opendistro_security/securityconfig/config.yml
+      # - ./conf/security.yml:/plugins/opendistro_security/securityconfig/config.yml
     networks:
       - aether
 
