@@ -141,14 +141,8 @@ server {
                 local remaining_url = m["url"]
                 local realm = ngx.var["cookie_EOAuthRealm"]
                 ngx.log(ngx.ERR, realm .. "/" .. service .. "/" .. service .. "-app" .. remaining_url)
-                ngx.redirect("/" .. realm .. "/" .. service .. "/" .. service .. "-app" .. remaining_url)
-            else
-                ngx.log(ngx.ERR, "Ignored " .. ngx.var.uri)
-                -- local cookie_name = "cookie_" .. "EOAuthToken"
-                -- ngx.log(ngx.ERR, "Cookies " .. ngx.var[cookie_name])
-                -- if ngx.header["Set-Cookie"] ~= nil then
-                --     ngx.log(ngx.ERR, "Set-Cookies " ngx.header["Set-Cookie"])
-                -- end
+                ngx.header.location = "/" .. realm .. "/" .. service .. "/" .. service .. "-app" .. remaining_url
+                ngx.exit(308)
             end
         }
 
