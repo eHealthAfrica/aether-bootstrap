@@ -1,0 +1,7 @@
+{
+  "name": "gather",
+  "services": [
+    "gather",
+    "odk"
+  ]
+}
