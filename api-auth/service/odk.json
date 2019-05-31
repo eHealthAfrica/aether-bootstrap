@@ -22,6 +22,18 @@
       "strip_path": "true"
     },
     {
+      "name": "forms",
+      "url": "/{realm}/odk/forms",
+      "template_path": "/{realm}/odk/forms",
+      "strip_path": "true"
+    },
+    {
+      "name": "media",
+      "url": "/{realm}/odk/media-file",
+      "template_path": "/{realm}/odk/media-file",
+      "strip_path": "true"
+    },
+    {
       "name": "submission",
       "url": "/{realm}/odk/submission",
       "template_path": "/{realm}/odk/submission",
