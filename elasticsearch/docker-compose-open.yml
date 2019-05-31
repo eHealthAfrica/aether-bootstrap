@@ -15,6 +15,7 @@ services:
       opendistro_security.ssl.http.enabled: "false"
       # elasticsearch.requestHeadersWhitelist: ["Authorization", "security_tenant"]
     volumes:
+      - ./conf/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
       - ./conf/security.yml:/usr/share/elasticsearch/plugins/opendistro_security/securityconfig/config.yml
     networks:
       - aether
@@ -33,8 +34,8 @@ services:
       opendistro_security.ssl.http.enabled: "false"
       OPENDISTRO_SECURITY_AUTH_TYPE: "proxy"
       opendistro_security.auth.type: "proxy"
-    # volumes:
-      # - ./conf/security.yml:/usr/share/kibana/plugins/opendistro_security/securityconfig/config.yml
+    volumes:
+      - ./conf/security.yml:/usr/share/kibana/plugins/opendistro_security/securityconfig/config.yml
       # - ./conf/security.yml:/plugins/opendistro_security/securityconfig/config.yml
     networks:
       - aether

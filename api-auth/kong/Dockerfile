@@ -8,7 +8,6 @@ ENV KONG_OIDC_REPO https://github.com/eHealthAfrica/kong-oidc-auth.git
 RUN apk -U add --no-cache --virtual .build-deps git unzip gcc libc-dev openssl-dev 
 RUN git clone $KONG_OIDC_REPO $KONG_OIDC_HOME && \
     cd $KONG_OIDC_HOME  && \
-    git checkout feat/realm-cookie && \
     luarocks make *.rockspec && \
     apk del .build-deps
 
