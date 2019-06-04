@@ -216,23 +216,51 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SESSION_TIMEOUT_MS: 750  # may be too short for prod.
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/zookeeper/zk_server_jaas.conf
+        -DjaasLoginRenew=3600000
+        -DrequireClientAuthScheme=digest
+        -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
+        -Dzookeeper.authProvider.2=org.apache.zookeeper.server.auth.DigestAuthenticationProvider
     extra_hosts:
-      - moby:127.0.0.1
+      - "moby:127.0.0.1"
+    volumes:
+      - ./kafka/zk_server_jaas.conf:/etc/zookeeper/zk_server_jaas.conf
 
   kafka-base:
     image: confluentinc/cp-kafka:5.1.1
     ports:
-      - 29092:29092
       - 9092:9092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
+      # Listeners and Protocols
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL_SASL:SASL_PLAINTEXT,SASL_PLAINTEXT:SASL_PLAINTEXT,INTERNAL:SASL_PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL_SASL://localhost:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      # SASL Settings
+      KAFKA_SASL_ENABLED_MECHANISMS: SCRAM-SHA-256,SCRAM-SHA-512,PLAIN
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      # ACL Inclusion
+      KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.auth.SimpleAclAuthorizer
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "false"
+      # Broker topic settings
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_LOG_RETENTION_HOURS: -1
-      ADVERTISED_HOST_NAME: kafka
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      # Generic Kafka Opts
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+      # Auth debugging
+      # KAFKA_LOG4J_LOGGERS: "kafka.authorizer.logger=DEBUG"
+      # KAFKA_LOG4J_ROOT_LOGLEVEL: DEBUG
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
+
+    volumes:
+      - ./kafka/kafka_server_jaas.conf:/etc/kafka/kafka_server_jaas.conf
     extra_hosts:
       - moby:127.0.0.1
 
