@@ -386,6 +386,12 @@ services:
       KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
       KONG_INTERNAL: ${KONG_INTERNAL}
       MINIO_INTERNAL: ${MINIO_INTERNAL}
+
+      ZOOKEEPER_HOST: zookeeper:32181
+      ZOOKEEPER_USER: ${ZK_ROOT_USER}
+      ZOOKEEPER_PW: ${ZK_ROOT_PW}
+      KAFKA_SECRET: ${KAFKA_SECRET}
+
     volumes:
       - ./api-auth/service:/code/service
       - ./api-auth/solution:/code/solution

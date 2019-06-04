@@ -23,6 +23,7 @@ set -Eeuo pipefail
 scripts/generate_env_vars.sh
 source .env
 source ./scripts/aether_functions.sh
+kafka/make_credentials.sh
 
 DC_AUTH="docker-compose -f docker-compose-generation.yml"
 
@@ -40,10 +41,10 @@ create_docker_assets
 echo_message "Pulling docker images..."
 docker-compose pull db minio
 docker-compose -f docker-compose-connect.yml pull producer zookeeper kafka
+docker-compose -f docker-compose-connect.yml up -d zookeeper kafka
 echo_message ""
 
 start_db
-
 
 echo_message "Preparing aether containers..."
 # setup container (model migration, admin user, static content...)
@@ -87,7 +88,10 @@ start_kong
 
 
 echo_message "Registering keycloak and minio in kong..."
-$DC_AUTH run auth setup_auth
+$DC_AUTH run --rm auth setup_auth
+echo_message ""
+echo_message "Creating Kafka Superuser..."
+$DC_AUTH run --rm auth add_kafka_su $KAFKA_SU_USER $KAFKA_SU_PW
 echo_message ""
 
 
@@ -108,7 +112,8 @@ function create_kc_tenant {
                     $KEYCLOAK_INITIAL_USER_PASSWORD
 
     echo_message "Adding [aether] solution in kong..."
-    $DC_AUTH run auth add_solution aether $REALM
+    $DC_AUTH run --rm auth add_solution aether $REALM
+    $DC_AUTH run --rm auth add_kafka_tenant $REALM
 }
 
 echo_message "Creating initial tenants in keycloak..."
