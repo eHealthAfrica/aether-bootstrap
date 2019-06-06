@@ -36,8 +36,6 @@ function echo_message {
 
 
 function create_docker_assets {
-    ./scripts/generate_env_vars.sh
-
     echo_message "Generating docker network and database volume..."
     {
         docker network create aether_bootstrap_net \

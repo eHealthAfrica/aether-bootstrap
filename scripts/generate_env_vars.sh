@@ -184,7 +184,7 @@ UI_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 # Gather
 # ==================================================================
-GATHER_VERSION=3.2.0-rc
+GATHER_VERSION=3.2.0
 
 GATHER_ADMIN_USERNAME=admin
 GATHER_ADMIN_PASSWORD=adminadmin
