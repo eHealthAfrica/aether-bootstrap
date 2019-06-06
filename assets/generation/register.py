@@ -74,10 +74,10 @@ def schema():
     return out
 
 
-def project_schema(project, ids):
+def schema_decorator(project, ids):
     out = {}
     for name in ids.keys():
-        project_schema_obj = {
+        schema_decorator_obj = {
             "revision": "1",
             "name": name,
             "schema": ids[name],
@@ -86,7 +86,7 @@ def project_schema(project, ids):
             "transport_rule": "[]",
             "mandatory_fields": "[]"
         }
-        out[name] = client.projectschemas.create(data=project_schema_obj)
+        out[name] = client.schemadecorators.create(data=schema_decorator_obj)
     return out
 
 def mappingset(project):
@@ -117,9 +117,9 @@ def register():
     pprint(schema_info)
     schema_ids = {obj.name : obj.id for obj in schema_info}
     pprint(schema_ids)
-    project_schemas = project_schema(project_id, schema_ids)
-    pprint(project_schemas)
-    ps_ids = {ps.name : ps.id for ps in project_schemas.values()}
+    schema_decorators = schema_decorator(project_id, schema_ids)
+    pprint(schema_decorators)
+    ps_ids = {ps.name : ps.id for ps in schema_decorators.values()}
     ms = mappingset(project_id)
     sub_id = mapping(project_id, ms.id, ps_ids)
     pprint(sub_id)

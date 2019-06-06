@@ -394,7 +394,7 @@ class MockingManager(object):
         self.types = {}
         self.alias = {}
         self.names = {}
-        self.project_schema = {}
+        self.schema_decorator = {}
         self.schema_id = {}
         self.type_count = {}
         signal.signal(signal.SIGTERM, self.kill)
@@ -431,7 +431,7 @@ class MockingManager(object):
             payload = self.types[name].get()
         type_name = self.alias.get(name)
         type_id = self.schema_id.get(name)
-        ps_id = self.project_schema.get(type_id)
+        ps_id = self.schema_decorator.get(type_id)
         data = self.payload_to_data(ps_id, payload)
         try:
             res = self.client.entities.create(data=data)
@@ -482,8 +482,8 @@ class MockingManager(object):
             self.schema_id[full_name] = _id
             self.schema_id[_id] = name
 
-        for ps in self.client.projectschemas.paginated('list'):
+        for ps in self.client.schemadecorators.paginated('list'):
             schema_id = ps.schema
             _id = ps.id
-            self.project_schema[schema_id] = _id
-            self.project_schema[_id] = schema_id
+            self.schema_decorator[schema_id] = _id
+            self.schema_decorator[_id] = schema_id
