@@ -82,6 +82,7 @@ REALM_COOKIE=aether-realm
 MULTITENANCY=true
 DEFAULT_REALM=aether
 PUBLIC_REALM=-
+LOGIN_THEME=aether
 # ------------------------------------------------------------------
 
 
