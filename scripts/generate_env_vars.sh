@@ -185,6 +185,37 @@ GATHER_DB_PASSWORD=$(gen_random_string)
 EOF
 }
 
+function gen_local_cert {
+    CERT_FOLDER=".persistent_data/certs"
+    mkdir -p ${CERT_FOLDER}
+
+    CERT_NAME="${CERT_FOLDER}/${LOCAL_HOST}"
+    rm -Rf ${CERT_NAME}*
+
+    openssl genrsa -out ${CERT_NAME}.key 4096
+
+    openssl req -new \
+        -key ${CERT_NAME}.key \
+        -out ${CERT_NAME}.csr \
+        -subj "/O=eHealth Africa/OU=Aether Team/CN=${LOCAL_HOST}"
+
+    openssl x509 -req \
+        -days 365 \
+        -in ${CERT_NAME}.csr \
+        -signkey ${CERT_NAME}.key \
+        -out ${CERT_NAME}.crt
+
+    # --------------------------------------------------------------------------
+    # workaround for self signed certificates
+    # include our certificate in the official certificate authority (CA) bundle
+    pip3 install -q --upgrade --target=${CERT_FOLDER} certifi
+    PY_CERT="${CERT_FOLDER}/certifi/cacert.pem"
+    mv ${PY_CERT} ${PY_CERT}.original
+    cat ${CERT_NAME}.crt ${PY_CERT}.original > ${PY_CERT}
+    # --------------------------------------------------------------------------
+}
+
+
 check_openssl
 RET=$?
 if [ $RET -eq 1 ]; then
@@ -215,6 +246,8 @@ if [[ $generate_new = "yes" ]]; then
     gen_env_file > .env
     echo "[.env] file generated!"
 fi
+
+gen_local_cert
 
 echo ""
 echo "Add to your [/etc/hosts] or [C:\Windows\System32\Drivers\etc\hosts] file the following line:"

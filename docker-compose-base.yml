@@ -91,6 +91,10 @@ services:
     volumes:
       # backup folder
       - ./.persistent_data/backups/kernel:/backups
+      # -------------------------------------------------------------
+      # DO NOT USE THIS WORKAROUND IN ANY PRODUCTION ENVIRONMENT!!!
+      - ./.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
+      # -------------------------------------------------------------
     ports:
       - 8000:8000
     command: start
@@ -152,6 +156,10 @@ services:
     volumes:
       # backup folder
       - ./.persistent_data/backups/odk:/backups
+      # -------------------------------------------------------------
+      # DO NOT USE THIS WORKAROUND IN ANY PRODUCTION ENVIRONMENT!!!
+      - ./.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
+      # -------------------------------------------------------------
     ports:
       - 8002:8002
     command: start
@@ -202,6 +210,10 @@ services:
     volumes:
       # backup folder
       - ./.persistent_data/backups/ui:/backups
+      # -------------------------------------------------------------
+      # DO NOT USE THIS WORKAROUND IN ANY PRODUCTION ENVIRONMENT!!!
+      - ./.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
+      # -------------------------------------------------------------
     ports:
       - 8004:8004
     command: start
@@ -335,6 +347,10 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./assets:/code/assets
+      # -------------------------------------------------------------
+      # DO NOT USE THIS WORKAROUND IN ANY PRODUCTION ENVIRONMENT!!!
+      - ./.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
+      # -------------------------------------------------------------
     environment:
       KERNEL_URL: ${BASE_HOST}/dev/kernel
       KERNEL_USER: ${KEYCLOAK_INITIAL_USER_USERNAME}
@@ -362,6 +378,10 @@ services:
     volumes:
       - ./api-auth/service:/code/service
       - ./api-auth/solution:/code/solution
+      # -------------------------------------------------------------
+      # DO NOT USE THIS WORKAROUND IN ANY PRODUCTION ENVIRONMENT!!!
+      - ./.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
+      # -------------------------------------------------------------
     command: help
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
