@@ -36,8 +36,6 @@ function echo_message {
 
 
 function create_docker_assets {
-    ./scripts/generate_env_vars.sh
-
     echo_message "Generating docker network and database volume..."
     {
         docker network create aether_bootstrap_net \
@@ -108,6 +106,33 @@ function rebuild_database {
         CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};
 EOSQL
     echo_message "$1 database is ready"
+}
+
+
+function add_certificate_to_kong {
+    echo_message "Registering local certificate in Kong"
+
+    CERT_NAME="./.${BASE_DOMAIN}"
+    mkdir -p ${CERT_NAME}
+
+    openssl genrsa -out ${CERT_NAME}/.key 4096
+
+    openssl req -new \
+        -key ${CERT_NAME}/.key \
+        -out ${CERT_NAME}/.csr \
+        -subj "/O=eHealth Africa/OU=Aether Team/CN=${BASE_DOMAIN}"
+
+    openssl x509 -req \
+        -days 365 \
+        -in ${CERT_NAME}/.csr \
+        -signkey ${CERT_NAME}/.key \
+        -out ${CERT_NAME}/.crt
+
+    curl -i -X POST http://localhost:8001/certificates/ \
+        -H 'Content-Type: application/json' \
+        -d "{\"cert\":\"$(cat ${CERT_NAME}/.crt)\",\"key\":\"$(cat ${CERT_NAME}/.key)\",\"snis\":[\"${BASE_DOMAIN}\"]}"
+
+    rm -Rf ${CERT_NAME}
 }
 
 

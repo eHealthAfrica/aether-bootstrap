@@ -33,16 +33,6 @@ function gen_random_string {
     openssl rand -hex 16 | tr -d "\n"
 }
 
-function final_warning {
-    source .env
-
-    echo ""
-    echo "Add to your [/etc/hosts] or [C:\Windows\System32\Drivers\etc\hosts] file the following line:"
-    echo ""
-    echo "127.0.0.1  ${BASE_DOMAIN}"
-    echo ""
-}
-
 function gen_env_file {
     cat << EOF
 #
@@ -99,8 +89,8 @@ LOGIN_THEME=aether
 # ------------------------------------------------------------------
 # Routing
 # ==================================================================
-BASE_DOMAIN=aether.local
-BASE_HOST=http://aether.local
+BASE_DOMAIN=${LOCAL_HOST}
+BASE_HOST=https://${LOCAL_HOST}
 
 KEYCLOAK_INTERNAL=http://keycloak:8080
 KONG_INTERNAL=http://kong:8001
@@ -185,7 +175,7 @@ UI_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 # Gather
 # ==================================================================
-GATHER_VERSION=3.2.0-rc
+GATHER_VERSION=3.2.0
 
 GATHER_ADMIN_USERNAME=admin
 GATHER_ADMIN_PASSWORD=adminadmin
@@ -195,20 +185,39 @@ GATHER_DB_PASSWORD=$(gen_random_string)
 EOF
 }
 
-if [ -e ".env" ]; then
-    echo "[.env] file already exists! Remove it if you want to generate a new one."
-    final_warning
-    exit 0
-fi
-
 check_openssl
 RET=$?
 if [ $RET -eq 1 ]; then
-    echo "Please install 'openssl'"
+    echo "Please install 'openssl'  https://www.openssl.org/"
     exit 1
 fi
 
 set -Eeo pipefail
-gen_env_file > .env
-echo "[.env] file generated!"
-final_warning
+
+LOCAL_HOST=${LOCAL_HOST:-aether.local}
+
+generate_new=yes
+if [ -e ".env" ]; then
+    echo "[.env] file already exists!"
+    source .env
+
+    # check localhost vs base domain
+    if [ "$LOCAL_HOST" = "$BASE_DOMAIN" ]; then
+        generate_new=no
+        echo "- Remove it if you want to generate new local credentials."
+    else
+        echo "- Current domain [$LOCAL_HOST] differs from saved one [$BASE_DOMAIN], generating new credentials"
+        mv ".env" ".env.${BASE_DOMAIN}"
+    fi
+fi
+
+if [[ $generate_new = "yes" ]]; then
+    gen_env_file > .env
+    echo "[.env] file generated!"
+fi
+
+echo ""
+echo "Add to your [/etc/hosts] or [C:\Windows\System32\Drivers\etc\hosts] file the following line:"
+echo ""
+echo "127.0.0.1  ${LOCAL_HOST}"
+echo ""

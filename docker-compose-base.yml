@@ -212,7 +212,7 @@ services:
   # ---------------------------------
 
   zookeeper-base:
-    image: confluentinc/cp-zookeeper:5.1.1
+    image: confluentinc/cp-zookeeper:5.2.1
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
@@ -220,7 +220,7 @@ services:
       - moby:127.0.0.1
 
   kafka-base:
-    image: confluentinc/cp-kafka:5.1.1
+    image: confluentinc/cp-kafka:5.2.1
     ports:
       - 29092:29092
       - 9092:9092
@@ -289,12 +289,13 @@ services:
 
       KONG_NGINX_PROXY_LARGE_CLIENT_HEADER_BUFFERS: "16 128k"
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
-      KONG_PROXY_LISTEN: 0.0.0.0:80, 0.0.0.0:8443
+      KONG_PROXY_LISTEN: 0.0.0.0:80, ssl 0.0.0.0:443
 
       KONG_PLUGINS: bundled,kong-oidc-auth
     ports:
       - 80:80
-      - 8443:8443  # ODK Collect requirement!!!
+      - 443:443    # ODK Collect requirement!!!
+      - 8001:8001  # open this port to install the local certificates (kong admin)
     command: ["kong", "start", "--v"]
 
   keycloak-base:

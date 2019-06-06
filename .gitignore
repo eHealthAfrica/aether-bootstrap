@@ -32,11 +32,18 @@ Session.vim
 # Persistent volumes
 .persistent_data
 
+# secrets
+*.crt
+*.csr
+*.key
+*.pem
+*.p12
+*.keystore
+*.truststore
+
 # Environment variables
 .env
-
-# extra containers configuration
-conf/nginx/sites-enabled/*.extra.conf
+.env.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

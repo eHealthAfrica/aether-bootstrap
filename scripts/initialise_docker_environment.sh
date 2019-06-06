@@ -20,7 +20,16 @@
 #
 set -Eeuo pipefail
 
-scripts/generate_env_vars.sh
+# ------------------------------------------------------------------------------
+# CHANGE THIS VALUE if you want to serve using a different host name
+export LOCAL_HOST=aether.local
+# ------------------------------------------------------------------------------
+
+echo "-------------------------------------------------------"
+echo "  Initialising installation for host: ${LOCAL_HOST}"
+echo "-------------------------------------------------------"
+
+./scripts/generate_env_vars.sh
 source .env
 source ./scripts/aether_functions.sh
 
@@ -67,7 +76,7 @@ echo_message ""
 
 echo_message "Building custom docker images..."
 docker-compose build --pull keycloak kong
-$DC_AUTH       build --pull auth
+$DC_AUTH pull auth
 echo_message ""
 
 
@@ -84,7 +93,7 @@ docker-compose run kong kong migrations bootstrap 2>/dev/null || true
 docker-compose run kong kong migrations up
 echo_message ""
 start_kong
-
+add_certificate_to_kong
 
 echo_message "Registering keycloak and minio in kong..."
 $DC_AUTH run auth setup_auth
