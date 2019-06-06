@@ -23,7 +23,7 @@ services:
     extends:
       file: ./docker-compose-base.yml
       service: kafka-base
-    restart: on-failure
+    restart: always
     depends_on:
       - zookeeper
     links:
