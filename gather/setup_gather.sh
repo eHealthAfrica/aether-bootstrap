@@ -45,4 +45,3 @@ function add_gather_tenant {
 add_gather_tenant "dev"
 add_gather_tenant "prod"
 add_gather_tenant "test"
-

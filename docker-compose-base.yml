@@ -289,12 +289,13 @@ services:
 
       KONG_NGINX_PROXY_LARGE_CLIENT_HEADER_BUFFERS: "16 128k"
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
-      KONG_PROXY_LISTEN: 0.0.0.0:80, 0.0.0.0:8443
+      KONG_PROXY_LISTEN: 0.0.0.0:80, ssl 0.0.0.0:443
 
       KONG_PLUGINS: bundled,kong-oidc-auth
     ports:
       - 80:80
-      - 8443:8443  # ODK Collect requirement!!!
+      - 443:443    # ODK Collect requirement!!!
+      - 8001:8001  # open this port to install the local certificates (kong admin)
     command: ["kong", "start", "--v"]
 
   keycloak-base:
