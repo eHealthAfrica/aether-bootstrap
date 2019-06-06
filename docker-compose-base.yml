@@ -375,6 +375,7 @@ services:
       KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
       KONG_INTERNAL: ${KONG_INTERNAL}
       MINIO_INTERNAL: ${MINIO_INTERNAL}
+      LOGIN_THEME: ${LOGIN_THEME}
     volumes:
       - ./api-auth/service:/code/service
       - ./api-auth/solution:/code/solution
