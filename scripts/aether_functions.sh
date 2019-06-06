@@ -53,7 +53,7 @@ function create_docker_assets {
 function start_db {
     echo_message "Starting database server..."
     docker-compose up -d db
-    until docker-compose run --no-deps kernel eval pg_isready -q; do
+    until docker-compose run --rm --no-deps kernel eval pg_isready -q; do
         >&2 echo "Waiting for database..."
         sleep 2
     done

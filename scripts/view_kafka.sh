@@ -20,4 +20,4 @@
 #
 set -Euo pipefail
 
-docker-compose -f kafka-viewer/docker-compose.yml run kafka-viewer
+docker-compose -f kafka-viewer/docker-compose.yml run --rm kafka-viewer

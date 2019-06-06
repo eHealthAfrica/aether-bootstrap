@@ -21,4 +21,4 @@
 set -Eeuo pipefail
 
 docker-compose -f ./docker-compose-generation.yml build
-docker-compose -f ./docker-compose-generation.yml run assets register --build
+docker-compose -f ./docker-compose-generation.yml run --rm assets register --build

@@ -21,4 +21,4 @@
 set -Eeuo pipefail
 
 docker-compose -f ./docker-compose-generation.yml build
-docker-compose -f ./docker-compose-generation.yml run assets generate ${@:1}
+docker-compose -f ./docker-compose-generation.yml run --rm assets generate ${@:1}

@@ -60,9 +60,9 @@ CONTAINERS=( kernel ui odk )
 for container in "${CONTAINERS[@]}"
 do
     docker-compose pull $container
-    docker-compose run --no-deps $container setup
+    docker-compose run --rm --no-deps $container setup
 done
-docker-compose run --no-deps kernel eval python /code/sql/create_readonly_user.py
+docker-compose run --rm --no-deps kernel eval python /code/sql/create_readonly_user.py
 echo_message ""
 
 
@@ -89,14 +89,14 @@ echo_message "Preparing kong..."
 # Also note that with Kong < 0.15, migrations should never be run concurrently;
 # only one Kong node should be performing migrations at a time.
 # This limitation is lifted for Kong 0.15, 1.0, and above.
-docker-compose run kong kong migrations bootstrap 2>/dev/null || true
-docker-compose run kong kong migrations up
+docker-compose run --rm kong kong migrations bootstrap 2>/dev/null || true
+docker-compose run --rm kong kong migrations up
 echo_message ""
 start_kong
 add_certificate_to_kong
 
 echo_message "Registering keycloak and minio in kong..."
-$DC_AUTH run auth setup_auth
+$DC_AUTH run --rm auth setup_auth
 echo_message ""
 
 
@@ -117,7 +117,7 @@ function create_kc_tenant {
                     $KEYCLOAK_INITIAL_USER_PASSWORD
 
     echo_message "Adding [aether] solution in kong..."
-    $DC_AUTH run auth add_solution aether $REALM
+    $DC_AUTH run --rm auth add_solution aether $REALM
 }
 
 echo_message "Creating initial tenants in keycloak..."
