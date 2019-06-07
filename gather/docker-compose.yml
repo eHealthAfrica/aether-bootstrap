@@ -57,7 +57,7 @@ services:
     volumes:
       # -------------------------------------------------------------
       # DO NOT USE THIS WORKAROUND IN ANY PRODUCTION ENVIRONMENT!!!
-      - ./.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
+      - ../.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
       # -------------------------------------------------------------
     ports:
       - 8105:8105
