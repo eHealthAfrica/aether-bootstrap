@@ -32,7 +32,7 @@ services:
   # ---------------------------------
 
   kernel-base:
-    image: ehealthafrica/aether-kernel:${AETHER_VERSION}
+    image: ehealthafrica/aether-kernel:${AETHER_VERSION:-alpha}
     environment:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${KERNEL_DJANGO_SECRET_KEY}
@@ -105,7 +105,7 @@ services:
   # ---------------------------------
 
   odk-base:
-    image: ehealthafrica/aether-odk:${AETHER_VERSION}
+    image: ehealthafrica/aether-odk:${AETHER_VERSION:-alpha}
     environment:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${ODK_DJANGO_SECRET_KEY}
@@ -170,7 +170,7 @@ services:
   # ---------------------------------
 
   ui-base:
-    image: ehealthafrica/aether-ui:${AETHER_VERSION}
+    image: ehealthafrica/aether-ui:${AETHER_VERSION:-alpha}
     environment:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${UI_DJANGO_SECRET_KEY}
@@ -224,7 +224,7 @@ services:
   # ---------------------------------
 
   zookeeper-base:
-    image: confluentinc/cp-zookeeper:5.2.1
+    image: confluentinc/cp-zookeeper:${CONFLUENTINC_VERSION:-5.2.1}
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
@@ -232,7 +232,7 @@ services:
       - moby:127.0.0.1
 
   kafka-base:
-    image: confluentinc/cp-kafka:5.2.1
+    image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-5.2.1}
     ports:
       - 29092:29092
       - 9092:9092
@@ -254,7 +254,7 @@ services:
   # ---------------------------------
 
   aether-producer-base:
-    image: ehealthafrica/aether-producer:${AETHER_VERSION}
+    image: ehealthafrica/aether-producer:${AETHER_VERSION:-alpha}
     environment:
       PYTHONUNBUFFERED: 1
 
@@ -362,7 +362,7 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
 
   auth-base:
-    image: ehealthafrica/gateway-manager:latest
+    image: ehealthafrica/gateway-manager:${GATEWAY_VERSION:-latest}
     environment:
       DEBUG: null
 

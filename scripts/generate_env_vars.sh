@@ -58,9 +58,13 @@ function gen_env_file {
 #
 
 # ------------------------------------------------------------------
-# Aether
+# Releases
 # ==================================================================
 AETHER_VERSION=1.5.0-rc
+GATHER_VERSION=3.2.0
+GATEWAY_VERSION=latest
+KEYCLOAK_VERSION=latest
+CONFLUENTINC_VERSION=5.2.1
 # ------------------------------------------------------------------
 
 
@@ -175,8 +179,6 @@ UI_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 # Gather
 # ==================================================================
-GATHER_VERSION=3.2.0
-
 GATHER_ADMIN_USERNAME=admin
 GATHER_ADMIN_PASSWORD=adminadmin
 GATHER_DJANGO_SECRET_KEY=$(gen_random_string)
@@ -186,10 +188,7 @@ EOF
 }
 
 function gen_local_cert {
-    CERT_FOLDER=".persistent_data/certs"
     mkdir -p ${CERT_FOLDER}
-
-    CERT_NAME="${CERT_FOLDER}/${LOCAL_HOST}"
     rm -Rf ${CERT_NAME}*
 
     openssl genrsa -out ${CERT_NAME}.key 4096
@@ -226,6 +225,8 @@ fi
 set -Eeo pipefail
 
 LOCAL_HOST=${LOCAL_HOST:-aether.local}
+CERT_FOLDER=".persistent_data/certs"
+CERT_NAME="${CERT_FOLDER}/${LOCAL_HOST}"
 
 generate_new=yes
 if [ -e ".env" ]; then
@@ -244,13 +245,17 @@ fi
 
 if [[ $generate_new = "yes" ]]; then
     gen_env_file > .env
+    gen_local_cert
     echo "[.env] file generated!"
 fi
 
-gen_local_cert
 
 echo ""
 echo "Add to your [/etc/hosts] or [C:\Windows\System32\Drivers\etc\hosts] file the following line:"
 echo ""
 echo "127.0.0.1  ${LOCAL_HOST}"
+echo ""
+echo "Install [${CERT_NAME}.crt] file in your Android device certificates list"
+echo "Follow this link instructions: https://support.google.com/nexus/answer/2844832"
+echo "Maybe you need to reboot the device after this"
 echo ""
