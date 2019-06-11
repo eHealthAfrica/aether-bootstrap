@@ -20,9 +20,9 @@
 #
 set -Eeuo pipefail
 
-source ./scripts/aether_functions.sh
-# bring the secrets
 source .env
+source ./scripts/aether_functions.sh
+source ./scripts/keycloak_admin_functions.sh
 
 # ----------------------------------------
 # NOTE: change the following values
@@ -35,20 +35,27 @@ PWD="secretsecret"
 
 
 if [ -z "${REALM:-}" ]; then
-    echo "Pease, indicate realm name!"
+    echo "Please, indicate realm name!"
     exit 1
 fi
 
 start_db
-start_kong
-start_keycloak
+start_container kong     $KONG_INTERNAL
+start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
 
+echo_message "Connecting to keycloak server..."
 connect_to_keycloak
 
-create_kc_realm          $REALM $DES
-create_kc_aether_client  $REALM
-create_kc_kong_client    $REALM
+echo_message "Creating realm [$REALM] [$DESC]..."
+create_kc_realm $REALM $DES
+
+echo_message "Creating public client [$KEYCLOAK_AETHER_CLIENT] in realm [$REALM]..."
+create_kc_public_client $REALM $KEYCLOAK_AETHER_CLIENT
+
+echo_message "Creating non-public client [$KEYCLOAK_KONG_CLIENT] in realm [$REALM]..."
+create_kc_non_public_client $REALM $KEYCLOAK_KONG_CLIENT
 
 if [ ! -z "${USER}" ]; then
+    echo_message "Creating user [$USER] in realm [$REALM]..."
     create_kc_user $REALM $USER $PWD
 fi

@@ -24,7 +24,7 @@ docker-compose \
     -f docker-compose-generation.yml \
     run --rm \
     auth \
-    add_solution "solution-name" "realm-name"
+    add_solution "solution-name" "realm-name" "kong-client-name-in-keycloak"
 ```
 
 ## To remove a solution from an existing realm in Kong

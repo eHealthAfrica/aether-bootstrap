@@ -77,7 +77,7 @@ services:
       GATEWAY_SERVICE_ID: kernel
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
-      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
 
       MULTITENANCY: "true"
@@ -142,7 +142,7 @@ services:
       GATEWAY_SERVICE_ID: odk
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
-      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
 
       MULTITENANCY: "true"
@@ -196,7 +196,7 @@ services:
       GATEWAY_SERVICE_ID: ui
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
-      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
 
       MULTITENANCY: "true"
@@ -290,8 +290,7 @@ services:
   # ---------------------------------
 
   kong-base:
-    image: aether-kong
-    build: ./api-auth/kong
+    image: ehealthafrica/gateway-kong:${GATEWAY_VERSION:-latest}
     environment:
       KONG_DATABASE: postgres
       KONG_PG_HOST: db
@@ -311,8 +310,7 @@ services:
     command: ["kong", "start", "--v"]
 
   keycloak-base:
-    image: aether-keycloak
-    build: ./api-auth/keycloak
+    image: jboss/keycloak:latest
     volumes:
       # custom aether theme
       - ./api-auth/keycloak/aether-theme:/opt/jboss/keycloak/themes/aether
@@ -366,16 +364,14 @@ services:
     environment:
       DEBUG: null
 
-      KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
-      KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
-      KEYCLOAK_KONG_CLIENT: ${KEYCLOAK_KONG_CLIENT}
-
       BASE_DOMAIN: ${BASE_DOMAIN}
       BASE_HOST: ${BASE_HOST}
+
+      KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
+      KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
+
       KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
       KONG_INTERNAL: ${KONG_INTERNAL}
-      MINIO_INTERNAL: ${MINIO_INTERNAL}
-      LOGIN_THEME: ${LOGIN_THEME}
     volumes:
       - ./api-auth/service:/code/service
       - ./api-auth/solution:/code/solution

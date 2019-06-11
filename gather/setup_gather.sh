@@ -27,11 +27,11 @@ source ./.env || \
 source ./scripts/aether_functions.sh
 
 
-DC_AUTH="docker-compose -f ./docker-compose-generation.yml"
+AUTH_RUN="docker-compose -f ./docker-compose-generation.yml run --rm auth"
 DCG="docker-compose -f ./gather/docker-compose.yml"
 
-start_kong
-start_keycloak
+start_container kong     $KONG_INTERNAL
+start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
 
 $DCG pull gather
 $DCG run --rm --no-deps gather setup
@@ -39,7 +39,7 @@ $DCG run --rm --no-deps gather setup
 function add_gather_tenant {
     REALM=$1
     echo_message "Adding [gather] solution in kong..."
-    $DC_AUTH run --rm auth add_solution gather $REALM
+    $AUTH_RUN add_solution gather $REALM $KEYCLOAK_KONG_CLIENT
 }
 
 add_gather_tenant "dev"

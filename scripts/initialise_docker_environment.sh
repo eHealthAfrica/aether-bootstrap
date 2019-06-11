@@ -21,7 +21,7 @@
 set -Eeuo pipefail
 
 # ------------------------------------------------------------------------------
-# CHANGE THIS VALUE if you want to serve using a different host name
+# CHANGE THIS VALUE if you want a different host name
 export LOCAL_HOST=aether.local
 # ------------------------------------------------------------------------------
 
@@ -34,6 +34,7 @@ source .env
 source ./scripts/aether_functions.sh
 
 DC_AUTH="docker-compose -f docker-compose-generation.yml"
+AUTH_RUN="$DC_AUTH run --rm auth"
 
 
 echo_message ""
@@ -47,8 +48,9 @@ docker network rm aether_bootstrap_net || true
 create_docker_assets
 
 echo_message "Pulling docker images..."
-docker-compose pull db minio
+docker-compose pull db minio keycloak kong
 docker-compose -f docker-compose-connect.yml pull producer zookeeper kafka
+$DC_AUTH pull auth
 echo_message ""
 
 start_db
@@ -74,12 +76,6 @@ rebuild_database keycloak keycloak ${KEYCLOAK_PG_PASSWORD}
 echo_message ""
 
 
-echo_message "Building custom docker images..."
-docker-compose build --pull keycloak kong
-$DC_AUTH pull auth
-echo_message ""
-
-
 echo_message "Preparing kong..."
 #
 # https://docs.konghq.com/install/docker/
@@ -92,32 +88,53 @@ echo_message "Preparing kong..."
 docker-compose run --rm kong kong migrations bootstrap 2>/dev/null || true
 docker-compose run --rm kong kong migrations up
 echo_message ""
-start_kong
-add_certificate_to_kong
+start_container kong $KONG_INTERNAL
+
+CERT_FOLDER=".persistent_data/certs"
+CERT_NAME="${CERT_FOLDER}/${BASE_DOMAIN}"
+
+echo_message "Registering local certificate in Kong"
+curl -i -X POST http://localhost:8001/certificates/ \
+    -H 'Content-Type: application/json' \
+    -d "{\"cert\":\"$(cat ${CERT_NAME}.crt)\",\"key\":\"$(cat ${CERT_NAME}.key)\",\"snis\":[\"${BASE_DOMAIN}\"]}"
 
 echo_message "Registering keycloak and minio in kong..."
-$DC_AUTH run --rm auth setup_auth
+$AUTH_RUN setup_auth
+$AUTH_RUN register_app minio $MINIO_INTERNAL
 echo_message ""
 
 
 echo_message "Preparing keycloak..."
-start_keycloak
-connect_to_keycloak
+start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
 
 function create_kc_tenant {
     REALM=$1
     DESC=${2:-$REALM}
 
-    create_kc_realm          $REALM $DESC
-    create_kc_aether_client  $REALM
-    create_kc_kong_client    $REALM
+    echo_message "Adding [$REALM] realm in keycloak..."
+    $AUTH_RUN add_realm \
+        $REALM \
+        "$DESC" \
+        $LOGIN_THEME
 
-    create_kc_user  $REALM \
-                    $KEYCLOAK_INITIAL_USER_USERNAME \
-                    $KEYCLOAK_INITIAL_USER_PASSWORD
+    echo_message "Adding [$KEYCLOAK_AETHER_CLIENT] public client in keycloak realm [$REALM] ..."
+    $AUTH_RUN add_public_client \
+        $REALM \
+        $KEYCLOAK_AETHER_CLIENT
+
+    echo_message "Adding [$KEYCLOAK_KONG_CLIENT] confidential client in keycloak realm [$REALM] ..."
+    $AUTH_RUN add_confidential_client \
+        $REALM \
+        $KEYCLOAK_KONG_CLIENT
+
+    echo_message "Adding [$KEYCLOAK_INITIAL_USER_USERNAME] user in keycloak realm [$REALM] ..."
+    $AUTH_RUN add_user \
+        $REALM \
+        $KEYCLOAK_INITIAL_USER_USERNAME \
+        $KEYCLOAK_INITIAL_USER_PASSWORD
 
     echo_message "Adding [aether] solution in kong..."
-    $DC_AUTH run --rm auth add_solution aether $REALM
+    $AUTH_RUN add_solution aether $REALM $KEYCLOAK_KONG_CLIENT
 }
 
 echo_message "Creating initial tenants in keycloak..."

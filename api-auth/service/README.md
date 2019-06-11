@@ -107,7 +107,7 @@ docker-compose \
     -f docker-compose-generation.yml \
     run --rm \
     auth \
-    add_service "service-name" "realm-name"
+    add_service "service-name" "realm-name" "kong-client-name-in-keycloak"
 ```
 
 ## To remove a service from an existing realm in Kong

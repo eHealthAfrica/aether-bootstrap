@@ -96,6 +96,9 @@ LOGIN_THEME=aether
 BASE_DOMAIN=${LOCAL_HOST}
 BASE_HOST=https://${LOCAL_HOST}
 
+# to be used in the aether containers
+KEYCLOAK_SERVER_URL=https://${LOCAL_HOST}/auth/realms
+
 KEYCLOAK_INTERNAL=http://keycloak:8080
 KONG_INTERNAL=http://kong:8001
 
