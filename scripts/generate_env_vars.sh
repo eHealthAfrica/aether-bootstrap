@@ -250,12 +250,26 @@ if [[ $generate_new = "yes" ]]; then
 fi
 
 
-echo ""
-echo "Add to your [/etc/hosts] or [C:\Windows\System32\Drivers\etc\hosts] file the following line:"
-echo ""
-echo "127.0.0.1  ${LOCAL_HOST}"
-echo ""
-echo "Install [${CERT_NAME}.crt] file in your Android device certificates list"
-echo "Follow this link instructions: https://support.google.com/nexus/answer/2844832"
-echo "Maybe you need to reboot the device after this"
-echo ""
+cat << EOF
+------------------------------------------------
+
+Add to your
+
+    /etc/hosts file (Linux / MacOS)
+
+or
+
+    C:\Windows\System32\Drivers\etc\hosts file (Windows)
+
+the following line:
+
+127.0.0.1  ${LOCAL_HOST}
+
+------------------------------------------------
+
+Install the [${CERT_NAME}.crt] file in your Android device certificates list
+Follow this link instructions: https://support.google.com/nexus/answer/2844832
+Maybe you'll need to reboot the device afterwards.
+
+------------------------------------------------
+EOF
