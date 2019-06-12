@@ -96,7 +96,7 @@ def mappingset(project):
 
 
 def mapping(project, mapping_set_id, ids):
-    mapping_def = file_to_json(f'{RESOURCES_DIR}/schemas/mapping.json')
+    mapping_def = file_to_json(f'{RESOURCES_DIR}/mappings/mapping.json')
     mapping_obj = {
         'name': MAPPING_NAME,
         'definition': {
