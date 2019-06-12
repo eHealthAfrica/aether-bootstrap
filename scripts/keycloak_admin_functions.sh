@@ -60,8 +60,8 @@ function create_kc_public_client {
     REALM=$1
     CLIENT=$2
 
-    REALM_URL="${BASE_HOST}/${REALM}/"
-    PUBLIC_URL="${BASE_HOST}/${PUBLIC_REALM}/*"
+    REALM_URL="${BASE_PROTOCOL}://${BASE_DOMAIN}/${REALM}/"
+    PUBLIC_URL="${BASE_PROTOCOL}://${BASE_DOMAIN}/${PUBLIC_REALM}/*"
 
     $KCADM \
         create clients \
@@ -79,7 +79,7 @@ function create_kc_non_public_client {
     REALM=$1
     CLIENT=$2
 
-    REALM_URL="${BASE_HOST}/${REALM}/"
+    REALM_URL="${BASE_PROTOCOL}://${BASE_DOMAIN}/${REALM}/"
 
     $KCADM \
         create clients \

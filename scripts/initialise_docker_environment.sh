@@ -90,16 +90,9 @@ docker-compose run --rm kong kong migrations up
 echo_message ""
 start_container kong $KONG_INTERNAL
 
-CERT_FOLDER=".persistent_data/certs"
-CERT_NAME="${CERT_FOLDER}/${BASE_DOMAIN}"
-
-echo_message "Registering local certificate in Kong"
-curl -i -X POST http://localhost:8001/certificates/ \
-    -H 'Content-Type: application/json' \
-    -d "{\"cert\":\"$(cat ${CERT_NAME}.crt)\",\"key\":\"$(cat ${CERT_NAME}.key)\",\"snis\":[\"${BASE_DOMAIN}\"]}"
-
-echo_message "Registering keycloak and minio in kong..."
+echo_message "Registering keycloak [$KEYCLOAK_INTERNAL] in kong..."
 $AUTH_RUN setup_auth
+echo_message "Registering minio [$MINIO_INTERNAL] in kong..."
 $AUTH_RUN register_app minio $MINIO_INTERNAL
 echo_message ""
 

@@ -26,10 +26,10 @@ services:
       EXTERNAL_APPS: aether-kernel,aether-odk
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: ${BASE_HOST}/{realm}/kernel
+      AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/kernel
 
       AETHER_ODK_TOKEN: ${ODK_ADMIN_TOKEN}
-      AETHER_ODK_URL: ${BASE_HOST}/{realm}/odk
+      AETHER_ODK_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/odk
 
       DB_NAME: gather
       PGHOST: db # This matches the DB service name
@@ -54,11 +54,6 @@ services:
       CUSTOM_UWSGI_SERVE_STATIC: "true"
 
       WEB_SERVER_PORT: 8105
-    volumes:
-      # -------------------------------------------------------------
-      # DO NOT USE THIS WORKAROUND IN ANY PRODUCTION ENVIRONMENT!!!
-      - ../.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
-      # -------------------------------------------------------------
     ports:
       - 8105:8105
     command: start

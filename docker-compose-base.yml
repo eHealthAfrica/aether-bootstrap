@@ -45,7 +45,7 @@ services:
       MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
       MINIO_STORAGE_ENDPOINT: minio:9000
       MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
-      MINIO_STORAGE_MEDIA_URL: ${BASE_HOST}/minio/kernel
+      MINIO_STORAGE_MEDIA_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/minio/kernel
       MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: "true"
       MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: "true"
 
@@ -91,10 +91,6 @@ services:
     volumes:
       # backup folder
       - ./.persistent_data/backups/kernel:/backups
-      # -------------------------------------------------------------
-      # DO NOT USE THIS WORKAROUND IN ANY PRODUCTION ENVIRONMENT!!!
-      - ./.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
-      # -------------------------------------------------------------
     ports:
       - 8000:8000
     command: start
@@ -118,7 +114,7 @@ services:
       MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
       MINIO_STORAGE_ENDPOINT: minio:9000
       MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
-      MINIO_STORAGE_MEDIA_URL: ${BASE_HOST}/minio/odk
+      MINIO_STORAGE_MEDIA_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/minio/odk
       MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: "true"
       MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: "true"
 
@@ -129,7 +125,7 @@ services:
       ADMIN_TOKEN: ${ODK_ADMIN_TOKEN}
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: ${BASE_HOST}/{realm}/kernel
+      AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/kernel
       AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: odk
@@ -156,10 +152,6 @@ services:
     volumes:
       # backup folder
       - ./.persistent_data/backups/odk:/backups
-      # -------------------------------------------------------------
-      # DO NOT USE THIS WORKAROUND IN ANY PRODUCTION ENVIRONMENT!!!
-      - ./.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
-      # -------------------------------------------------------------
     ports:
       - 8002:8002
     command: start
@@ -183,7 +175,7 @@ services:
       ADMIN_PASSWORD: ${UI_ADMIN_PASSWORD}
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: ${BASE_HOST}/{realm}/kernel
+      AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/kernel
       AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: ui
@@ -210,10 +202,6 @@ services:
     volumes:
       # backup folder
       - ./.persistent_data/backups/ui:/backups
-      # -------------------------------------------------------------
-      # DO NOT USE THIS WORKAROUND IN ANY PRODUCTION ENVIRONMENT!!!
-      - ./.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
-      # -------------------------------------------------------------
     ports:
       - 8004:8004
     command: start
@@ -290,7 +278,7 @@ services:
   # ---------------------------------
 
   kong-base:
-    image: ehealthafrica/gateway-kong:${GATEWAY_VERSION:-latest}
+    image: ehealthafrica/kong:${KONG_VERSION:-1.1}
     environment:
       KONG_DATABASE: postgres
       KONG_PG_HOST: db
@@ -300,13 +288,13 @@ services:
 
       KONG_NGINX_PROXY_LARGE_CLIENT_HEADER_BUFFERS: "16 128k"
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
-      KONG_PROXY_LISTEN: 0.0.0.0:80, ssl 0.0.0.0:443
+      KONG_PROXY_LISTEN: 0.0.0.0:80, 0.0.0.0:8443
 
       KONG_PLUGINS: bundled,kong-oidc-auth
     ports:
       - 80:80
-      - 443:443    # ODK Collect requirement!!!
-      - 8001:8001  # open this port to install the local certificates (kong admin)
+      - 8443:8443  # ODK Collect requirement!!!
+      - 8001:8001  # open this port to access to kong admin
     command: ["kong", "start", "--v"]
 
   keycloak-base:
@@ -365,7 +353,7 @@ services:
       DEBUG: null
 
       BASE_DOMAIN: ${BASE_DOMAIN}
-      BASE_HOST: ${BASE_HOST}
+      BASE_HOST: ${BASE_PROTOCOL}://${BASE_DOMAIN}
 
       KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
       KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
@@ -375,10 +363,6 @@ services:
     volumes:
       - ./api-auth/service:/code/service
       - ./api-auth/solution:/code/solution
-      # -------------------------------------------------------------
-      # DO NOT USE THIS WORKAROUND IN ANY PRODUCTION ENVIRONMENT!!!
-      - ./.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
-      # -------------------------------------------------------------
     command: help
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}

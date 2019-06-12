@@ -63,6 +63,7 @@ function gen_env_file {
 AETHER_VERSION=1.5.0-rc
 GATHER_VERSION=3.2.0
 GATEWAY_VERSION=latest
+KONG_VERSION=1.1
 KEYCLOAK_VERSION=latest
 CONFLUENTINC_VERSION=5.2.1
 # ------------------------------------------------------------------
@@ -94,10 +95,10 @@ LOGIN_THEME=aether
 # Routing
 # ==================================================================
 BASE_DOMAIN=${LOCAL_HOST}
-BASE_HOST=https://${LOCAL_HOST}
+BASE_PROTOCOL=http
 
 # to be used in the aether containers
-KEYCLOAK_SERVER_URL=https://${LOCAL_HOST}/auth/realms
+KEYCLOAK_SERVER_URL=http://${LOCAL_HOST}/auth/realms
 
 KEYCLOAK_INTERNAL=http://keycloak:8080
 KONG_INTERNAL=http://kong:8001
@@ -190,34 +191,6 @@ GATHER_DB_PASSWORD=$(gen_random_string)
 EOF
 }
 
-function gen_local_cert {
-    mkdir -p ${CERT_FOLDER}
-    rm -Rf ${CERT_NAME}*
-
-    openssl genrsa -out ${CERT_NAME}.key 4096
-
-    openssl req -new \
-        -key ${CERT_NAME}.key \
-        -out ${CERT_NAME}.csr \
-        -subj "/O=eHealth Africa/OU=Aether Team/CN=${LOCAL_HOST}"
-
-    openssl x509 -req \
-        -days 365 \
-        -in ${CERT_NAME}.csr \
-        -signkey ${CERT_NAME}.key \
-        -out ${CERT_NAME}.crt
-
-    # --------------------------------------------------------------------------
-    # workaround for self signed certificates
-    # include our certificate in the official certificate authority (CA) bundle
-    pip3 install -q --upgrade --target=${CERT_FOLDER} certifi
-    PY_CERT="${CERT_FOLDER}/certifi/cacert.pem"
-    mv ${PY_CERT} ${PY_CERT}.original
-    cat ${CERT_NAME}.crt ${PY_CERT}.original > ${PY_CERT}
-    # --------------------------------------------------------------------------
-}
-
-
 check_openssl
 RET=$?
 if [ $RET -eq 1 ]; then
@@ -228,8 +201,6 @@ fi
 set -Eeo pipefail
 
 LOCAL_HOST=${LOCAL_HOST:-aether.local}
-CERT_FOLDER=".persistent_data/certs"
-CERT_NAME="${CERT_FOLDER}/${LOCAL_HOST}"
 
 generate_new=yes
 if [ -e ".env" ]; then
@@ -239,22 +210,20 @@ if [ -e ".env" ]; then
     # check localhost vs base domain
     if [ "$LOCAL_HOST" = "$BASE_DOMAIN" ]; then
         generate_new=no
-        echo "- Remove it if you want to generate new local credentials."
+        echo "  - Remove it if you want to generate new local credentials."
     else
-        echo "- Current domain [$LOCAL_HOST] differs from saved one [$BASE_DOMAIN], generating new credentials"
+        echo "  - Current domain [$LOCAL_HOST] differs from saved one [$BASE_DOMAIN], generating new credentials"
         mv ".env" ".env.${BASE_DOMAIN}"
     fi
 fi
 
 if [[ $generate_new = "yes" ]]; then
     gen_env_file > .env
-    gen_local_cert
     echo "[.env] file generated!"
 fi
 
 
 cat << EOF
-------------------------------------------------
 
 Add to your
 
@@ -266,13 +235,10 @@ or
 
 the following line:
 
+--------------------------------------------------------------------------------
+
 127.0.0.1  ${LOCAL_HOST}
 
-------------------------------------------------
+--------------------------------------------------------------------------------
 
-Install the [${CERT_NAME}.crt] file in your Android device certificates list
-Follow this link instructions: https://support.google.com/nexus/answer/2844832
-Maybe you'll need to reboot the device afterwards.
-
-------------------------------------------------
 EOF
