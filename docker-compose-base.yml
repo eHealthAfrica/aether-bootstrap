@@ -328,22 +328,23 @@ services:
 
   assets-base:
     image: aether-assets
-    build:
-      context: ./assets/generation
-      dockerfile: Dockerfile
+    build: ./assets/generation
     volumes:
-      - ./assets:/code/assets
-      # -------------------------------------------------------------
-      # DO NOT USE THIS WORKAROUND IN ANY PRODUCTION ENVIRONMENT!!!
-      - ./.persistent_data/certs/certifi:/usr/local/lib/python3.7/site-packages/certifi
-      # -------------------------------------------------------------
+      - ./assets/generation:/code
+      - ./assets/resources:/code/resources
     environment:
-      KERNEL_URL: ${BASE_HOST}/dev/kernel
+      KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/dev/kernel
       KERNEL_USER: ${KEYCLOAK_INITIAL_USER_USERNAME}
       KERNEL_PASSWORD: ${KEYCLOAK_INITIAL_USER_PASSWORD}
+
       REALM: dev
+      KEYCLOAK_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/auth
+
+      CLIENT_LOGLEVEL: DEBUG
+      ROOT_LOGLEVEL: DEBUG
+
       PROJECT_NAME: DefaultDemo
-      SUBMISSION_ENDPOINT: default_mapping
+      MAPPING_NAME: default_mapping
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
 
