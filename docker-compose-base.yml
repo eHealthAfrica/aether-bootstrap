@@ -32,7 +32,7 @@ services:
   # ---------------------------------
 
   kernel-base:
-    image: ehealthafrica/aether-kernel:${AETHER_VERSION:-alpha}
+    image: ehealthafrica/aether-kernel:${AETHER_VERSION}
     environment:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${KERNEL_DJANGO_SECRET_KEY}
@@ -101,7 +101,7 @@ services:
   # ---------------------------------
 
   odk-base:
-    image: ehealthafrica/aether-odk:${AETHER_VERSION:-alpha}
+    image: ehealthafrica/aether-odk:${AETHER_VERSION}
     environment:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${ODK_DJANGO_SECRET_KEY}
@@ -162,7 +162,7 @@ services:
   # ---------------------------------
 
   ui-base:
-    image: ehealthafrica/aether-ui:${AETHER_VERSION:-alpha}
+    image: ehealthafrica/aether-ui:${AETHER_VERSION}
     environment:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${UI_DJANGO_SECRET_KEY}
@@ -242,7 +242,7 @@ services:
   # ---------------------------------
 
   aether-producer-base:
-    image: ehealthafrica/aether-producer:${AETHER_VERSION:-alpha}
+    image: ehealthafrica/aether-producer:${AETHER_VERSION}
     environment:
       PYTHONUNBUFFERED: 1
 

@@ -12,7 +12,7 @@ services:
   # ---------------------------------
 
   gather:
-    image: ehealthafrica/gather:${GATHER_VERSION:-alpha}
+    image: ehealthafrica/gather:${GATHER_VERSION:-3.2.0}
     environment:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${GATHER_DJANGO_SECRET_KEY}
