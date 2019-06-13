@@ -90,9 +90,9 @@ docker-compose run --rm kong kong migrations up
 echo_message ""
 start_container kong $KONG_INTERNAL
 
-echo_message "Registering keycloak [$KEYCLOAK_INTERNAL] in kong..."
+echo_message "Registering keycloak @ [$KEYCLOAK_INTERNAL] in kong..."
 $AUTH_RUN setup_auth
-echo_message "Registering minio [$MINIO_INTERNAL] in kong..."
+echo_message "Registering minio @ [$MINIO_INTERNAL] in kong..."
 $AUTH_RUN register_app minio $MINIO_INTERNAL
 echo_message ""
 
@@ -104,33 +104,33 @@ function create_kc_tenant {
     REALM=$1
     DESC=${2:-$REALM}
 
-    echo_message "Adding [$REALM] realm in keycloak..."
+    echo_message "Adding realm [$REALM] in keycloak..."
     $AUTH_RUN add_realm \
         $REALM \
         "$DESC" \
         $LOGIN_THEME
 
-    echo_message "Adding [$KEYCLOAK_AETHER_CLIENT] public client in keycloak realm [$REALM] ..."
+    echo_message "Adding public client [$KEYCLOAK_AETHER_CLIENT] in keycloak realm [$REALM] ..."
     $AUTH_RUN add_public_client \
         $REALM \
         $KEYCLOAK_AETHER_CLIENT
 
-    echo_message "Adding [$KEYCLOAK_KONG_CLIENT] confidential client in keycloak realm [$REALM] ..."
+    echo_message "Adding confidential client [$KEYCLOAK_KONG_CLIENT] in keycloak realm [$REALM] ..."
     $AUTH_RUN add_confidential_client \
         $REALM \
         $KEYCLOAK_KONG_CLIENT
 
-    echo_message "Adding [$KEYCLOAK_INITIAL_USER_USERNAME] user in keycloak realm [$REALM] ..."
+    echo_message "Adding user [$KEYCLOAK_INITIAL_USER_USERNAME] in keycloak realm [$REALM] ..."
     $AUTH_RUN add_user \
         $REALM \
         $KEYCLOAK_INITIAL_USER_USERNAME \
         $KEYCLOAK_INITIAL_USER_PASSWORD
 
-    echo_message "Adding [aether] solution in kong..."
+    echo_message "Adding solution [aether] in kong..."
     $AUTH_RUN add_solution aether $REALM $KEYCLOAK_KONG_CLIENT
 }
 
-echo_message "Creating initial tenants in keycloak..."
+echo_message "Creating initial tenants/realms in keycloak..."
 create_kc_tenant "dev"  "Local development"
 create_kc_tenant "prod" "Production environment"
 create_kc_tenant "test" "Testing playground"
@@ -139,5 +139,5 @@ echo_message ""
 ./scripts/kill_all.sh
 
 echo_message ""
-echo_message "done!"
+echo_message "Done!"
 echo_message ""
