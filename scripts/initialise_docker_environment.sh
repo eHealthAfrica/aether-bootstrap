@@ -90,9 +90,7 @@ docker-compose run --rm kong kong migrations up
 echo_message ""
 start_container kong $KONG_INTERNAL
 
-echo_message "Registering keycloak @ [$KEYCLOAK_INTERNAL] in kong..."
 $AUTH_RUN setup_auth
-echo_message "Registering minio @ [$MINIO_INTERNAL] in kong..."
 $AUTH_RUN register_app minio $MINIO_INTERNAL
 echo_message ""
 
@@ -104,29 +102,24 @@ function create_kc_tenant {
     REALM=$1
     DESC=${2:-$REALM}
 
-    echo_message "Adding realm [$REALM] in keycloak..."
     $AUTH_RUN add_realm \
         $REALM \
         "$DESC" \
         $LOGIN_THEME
 
-    echo_message "Adding public client [$KEYCLOAK_AETHER_CLIENT] in keycloak realm [$REALM] ..."
     $AUTH_RUN add_public_client \
         $REALM \
         $KEYCLOAK_AETHER_CLIENT
 
-    echo_message "Adding confidential client [$KEYCLOAK_KONG_CLIENT] in keycloak realm [$REALM] ..."
-    $AUTH_RUN add_confidential_client \
+    $AUTH_RUN add_oidc_client \
         $REALM \
         $KEYCLOAK_KONG_CLIENT
 
-    echo_message "Adding user [$KEYCLOAK_INITIAL_USER_USERNAME] in keycloak realm [$REALM] ..."
     $AUTH_RUN add_user \
         $REALM \
         $KEYCLOAK_INITIAL_USER_USERNAME \
         $KEYCLOAK_INITIAL_USER_PASSWORD
 
-    echo_message "Adding solution [aether] in kong..."
     $AUTH_RUN add_solution aether $REALM $KEYCLOAK_KONG_CLIENT
 }
 
