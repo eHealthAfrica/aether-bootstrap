@@ -45,7 +45,7 @@ services:
       MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
       MINIO_STORAGE_ENDPOINT: minio:9000
       MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
-      MINIO_STORAGE_MEDIA_URL: ${BASE_HOST}/minio/kernel
+      MINIO_STORAGE_MEDIA_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/minio/kernel
       MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: "true"
       MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: "true"
 
@@ -77,7 +77,7 @@ services:
       GATEWAY_SERVICE_ID: kernel
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
-      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
 
       MULTITENANCY: "true"
@@ -114,7 +114,7 @@ services:
       MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
       MINIO_STORAGE_ENDPOINT: minio:9000
       MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
-      MINIO_STORAGE_MEDIA_URL: ${BASE_HOST}/minio/odk
+      MINIO_STORAGE_MEDIA_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/minio/odk
       MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: "true"
       MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: "true"
 
@@ -125,7 +125,7 @@ services:
       ADMIN_TOKEN: ${ODK_ADMIN_TOKEN}
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: ${BASE_HOST}/{realm}/kernel
+      AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/kernel
       AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: odk
@@ -138,7 +138,7 @@ services:
       GATEWAY_SERVICE_ID: odk
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
-      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
 
       MULTITENANCY: "true"
@@ -175,7 +175,7 @@ services:
       ADMIN_PASSWORD: ${UI_ADMIN_PASSWORD}
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: ${BASE_HOST}/{realm}/kernel
+      AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/kernel
       AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: ui
@@ -188,7 +188,7 @@ services:
       GATEWAY_SERVICE_ID: ui
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
-      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
 
       MULTITENANCY: "true"
@@ -212,7 +212,7 @@ services:
   # ---------------------------------
 
   zookeeper-base:
-    image: confluentinc/cp-zookeeper:5.1.1
+    image: confluentinc/cp-zookeeper:${CONFLUENTINC_VERSION:-5.2.1}
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
@@ -230,7 +230,7 @@ services:
       - ./kafka/zk_server_jaas.conf:/etc/zookeeper/zk_server_jaas.conf
 
   kafka-base:
-    image: confluentinc/cp-kafka:5.1.1
+    image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-5.2.1}
     ports:
       - 9092:9092
     environment:
@@ -310,8 +310,7 @@ services:
   # ---------------------------------
 
   kong-base:
-    image: aether-kong
-    build: ./api-auth/kong
+    image: ehealthafrica/kong:${KONG_VERSION:-1.1}
     environment:
       KONG_DATABASE: postgres
       KONG_PG_HOST: db
@@ -327,11 +326,11 @@ services:
     ports:
       - 80:80
       - 8443:8443  # ODK Collect requirement!!!
+      - 8001:8001  # open this port to access to kong admin
     command: ["kong", "start", "--v"]
 
   keycloak-base:
-    image: aether-keycloak
-    build: ./api-auth/keycloak
+    image: jboss/keycloak:latest
     volumes:
       # custom aether theme
       - ./api-auth/keycloak/aether-theme:/opt/jboss/keycloak/themes/aether
@@ -361,32 +360,37 @@ services:
 
   assets-base:
     image: aether-assets
-    build:
-      context: ./assets/generation
-      dockerfile: Dockerfile
+    build: ./assets/generation
     volumes:
-      - ./assets:/code/assets
+      - ./assets/generation:/code
+      - ./assets/resources:/code/resources
     environment:
-      KERNEL_URL: ${BASE_HOST}/dev/kernel
+      KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/dev/kernel
       KERNEL_USER: ${KEYCLOAK_INITIAL_USER_USERNAME}
       KERNEL_PASSWORD: ${KEYCLOAK_INITIAL_USER_PASSWORD}
+
       REALM: dev
+      KEYCLOAK_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/auth
+
+      CLIENT_LOGLEVEL: DEBUG
+      ROOT_LOGLEVEL: DEBUG
+
       PROJECT_NAME: DefaultDemo
-      SUBMISSION_ENDPOINT: default_mapping
+      MAPPING_NAME: default_mapping
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
 
   auth-base:
-    image: ehealthafrica/gateway-manager:latest
+    image: ehealthafrica/gateway-manager:${GATEWAY_VERSION:-latest}
     environment:
       DEBUG: null
 
+      BASE_DOMAIN: ${BASE_DOMAIN}
+      BASE_HOST: ${BASE_PROTOCOL}://${BASE_DOMAIN}
+
       KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
       KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
-      KEYCLOAK_KONG_CLIENT: ${KEYCLOAK_KONG_CLIENT}
 
-      BASE_DOMAIN: ${BASE_DOMAIN}
-      BASE_HOST: ${BASE_HOST}
       KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
       KONG_INTERNAL: ${KONG_INTERNAL}
       MINIO_INTERNAL: ${MINIO_INTERNAL}

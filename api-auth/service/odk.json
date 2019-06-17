@@ -29,8 +29,8 @@
     },
     {
       "name": "media",
-      "url": "/{realm}/odk/media-file",
-      "template_path": "/{realm}/odk/media-file",
+      "url": "/{realm}/odk/media-file/",
+      "template_path": "/{realm}/odk/media-file/",
       "strip_path": "true"
     },
     {

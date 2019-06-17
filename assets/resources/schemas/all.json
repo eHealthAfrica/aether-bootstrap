@@ -1,0 +1,182 @@
+[
+  {
+    "doc": "A Survey",
+    "name": "Survey",
+    "type": "record",
+    "fields": [
+      {
+        "doc": "xForm ID",
+        "name": "xform_id",
+        "type": ["null", "string"],
+        "default": "aether-walkthrough-microcensus"
+      },
+      {
+        "doc": "xForm version",
+        "name": "xform_version",
+        "type": ["null", "string"],
+        "default": "vpkhiFfVvdndDQeusEcAF9"
+      },
+      {
+        "name": "start",
+        "type": ["null", "string"]
+      },
+      {
+        "name": "end",
+        "type": ["null", "string"]
+      },
+      {
+        "doc": "Which surveyor is entering this data?",
+        "name": "surveyor",
+        "type": ["null", "string"]
+      },
+      {
+        "name": "version",
+        "type": ["null", "string"]
+      },
+      {
+        "doc": "ID",
+        "name": "id",
+        "type": ["null", "string"],
+        "jsonldPredicate": "@id"
+      },
+      {
+        "doc": "REV",
+        "name": "rev",
+        "type": ["null", "string"]
+      }
+    ],
+    "namespace": "eha.aether.clusterdemo"
+  },
+  {
+    "doc": "A Building",
+    "name": "Building",
+    "type": "record",
+    "fields": [
+      {
+        "doc": "ID of the Survey this data comes from",
+        "name": "survey_id",
+        "type": ["null", "string"],
+        "jsonldPredicate": {
+          "_id": "eha.aether.clusterdemo.Survey",
+          "_type": "@id"
+        }
+      },
+      {
+        "doc": "latitude",
+        "name": "latitude",
+        "type": "float"
+      },
+      {
+        "doc": "longitude",
+        "name": "longitude",
+        "type": "float"
+      },
+      {
+        "doc": "altitude",
+        "name": "altitude",
+        "type": ["null", "float"]
+      },
+      {
+        "doc": "accuracy",
+        "name": "accuracy",
+        "type": ["null", "float"]
+      },
+      {
+        "doc": "What kind of building is this?",
+        "name": "building_type",
+        "type": ["null", "string"]
+      },
+      {
+        "doc": "ID",
+        "name": "id",
+        "type": ["null", "string"],
+        "jsonldPredicate": "@id"
+      },
+      {
+        "doc": "REV",
+        "name": "rev",
+        "type": ["null", "string"]
+      }
+    ],
+    "namespace": "eha.aether.clusterdemo"
+  },
+  {
+    "doc": "A Household",
+    "name": "Household",
+    "type": "record",
+    "fields": [
+      {
+        "doc": "ID",
+        "name": "id",
+        "type": ["null", "string"],
+        "jsonldPredicate": "@id"
+      },
+      {
+        "doc": "REV",
+        "name": "rev",
+        "type": ["null", "string"]
+      },
+      {
+        "doc": "Someone in the household is present.",
+        "name": "person_present",
+        "type": ["null", "string"]
+      },
+      {
+        "doc": "ID of Parent Building",
+        "name": "location_id",
+        "type": ["null", "string"],
+        "jsonldPredicate": {
+          "_id": "eha.aether.clusterdemo.Building",
+          "_type": "@id"
+        }
+      }
+    ],
+    "namespace": "eha.aether.clusterdemo"
+  },
+  {
+    "doc": "A Person in a household",
+    "name": "Person",
+    "type": "record",
+    "fields": [
+      {
+        "doc": "ID",
+        "name": "id",
+        "type": ["null", "string"],
+        "jsonldPredicate": "@id"
+      },
+      {
+        "doc": "REV",
+        "name": "rev",
+        "type": ["null", "string"]
+      },
+      {
+        "doc": "ID of Parent Household",
+        "name": "household_id",
+        "type": ["null", "string"],
+        "jsonldPredicate": {
+          "_id": "eha.aether.clusterdemo.Household",
+          "_type": "@id"
+        }
+      },
+      {
+        "aetherMaskingLevel": "false",
+        "doc": "What is the age of this occupant?",
+        "name": "occupant_age",
+        "type": ["null", "int"]
+      },
+      {
+        "aetherMaskingLevel": "false",
+        "doc": "What is the gender of this occupant?",
+        "name": "occupant_gender",
+        "type": ["null", "string"]
+      },
+      {
+        "aetherMaskingLevel": "true",
+        "doc": "What is the name of this occupant?",
+        "name": "occupant_name",
+        "type": ["null", "string"]
+      }
+    ],
+    "namespace": "eha.aether.clusterdemo"
+  }
+]

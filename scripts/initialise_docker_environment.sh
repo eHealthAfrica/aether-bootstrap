@@ -20,12 +20,22 @@
 #
 set -Eeuo pipefail
 
-scripts/generate_env_vars.sh
+# ------------------------------------------------------------------------------
+# CHANGE THIS VALUE if you want a different host name
+export LOCAL_HOST=aether.local
+# ------------------------------------------------------------------------------
+
+echo "-------------------------------------------------------"
+echo "  Initialising installation for host: ${LOCAL_HOST}"
+echo "-------------------------------------------------------"
+
+./scripts/generate_env_vars.sh
 source .env
 source ./scripts/aether_functions.sh
 kafka/make_credentials.sh
 
 DC_AUTH="docker-compose -f docker-compose-generation.yml"
+AUTH_RUN="$DC_AUTH run --rm auth"
 
 
 echo_message ""
@@ -39,9 +49,10 @@ docker network rm aether_bootstrap_net || true
 create_docker_assets
 
 echo_message "Pulling docker images..."
-docker-compose pull db minio
+docker-compose pull db minio keycloak kong
 docker-compose -f docker-compose-connect.yml pull producer zookeeper kafka
 docker-compose -f docker-compose-connect.yml up -d zookeeper kafka
+$DC_AUTH pull auth
 echo_message ""
 
 start_db
@@ -52,9 +63,9 @@ CONTAINERS=( kernel ui odk )
 for container in "${CONTAINERS[@]}"
 do
     docker-compose pull $container
-    docker-compose run --no-deps $container setup
+    docker-compose run --rm --no-deps $container setup
 done
-docker-compose run --no-deps kernel eval python /code/sql/create_readonly_user.py
+docker-compose run --rm --no-deps kernel eval python /code/sql/create_readonly_user.py
 echo_message ""
 
 
@@ -63,12 +74,6 @@ echo_message ""
 # THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
 rebuild_database kong     kong     ${KONG_PG_PASSWORD}
 rebuild_database keycloak keycloak ${KEYCLOAK_PG_PASSWORD}
-echo_message ""
-
-
-echo_message "Building custom docker images..."
-docker-compose build --pull keycloak kong
-$DC_AUTH       build --pull auth
 echo_message ""
 
 
@@ -81,42 +86,51 @@ echo_message "Preparing kong..."
 # Also note that with Kong < 0.15, migrations should never be run concurrently;
 # only one Kong node should be performing migrations at a time.
 # This limitation is lifted for Kong 0.15, 1.0, and above.
-docker-compose run kong kong migrations bootstrap 2>/dev/null || true
-docker-compose run kong kong migrations up
+docker-compose run --rm kong kong migrations bootstrap 2>/dev/null || true
+docker-compose run --rm kong kong migrations up
 echo_message ""
-start_kong
-
+start_container kong $KONG_INTERNAL
 
 echo_message "Registering keycloak and minio in kong..."
-$DC_AUTH run --rm auth setup_auth
+$AUTH_RUN setup_auth
+$AUTH_RUN register_app minio $MINIO_INTERNAL
 echo_message ""
 echo_message "Creating Kafka Superuser..."
-$DC_AUTH run --rm auth add_kafka_su $KAFKA_SU_USER $KAFKA_SU_PW
+$AUTH_RUN add_kafka_su $KAFKA_SU_USER $KAFKA_SU_PW
 echo_message ""
 
 
 echo_message "Preparing keycloak..."
-start_keycloak
-connect_to_keycloak
+start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
 
 function create_kc_tenant {
     REALM=$1
     DESC=${2:-$REALM}
 
-    create_kc_realm          $REALM $DESC
-    create_kc_aether_client  $REALM
-    create_kc_kong_client    $REALM
+    $AUTH_RUN add_realm \
+        $REALM \
+        "$DESC" \
+        $LOGIN_THEME
 
-    create_kc_user  $REALM \
-                    $KEYCLOAK_INITIAL_USER_USERNAME \
-                    $KEYCLOAK_INITIAL_USER_PASSWORD
+    $AUTH_RUN add_public_client \
+        $REALM \
+        $KEYCLOAK_AETHER_CLIENT
+
+    $AUTH_RUN add_oidc_client \
+        $REALM \
+        $KEYCLOAK_KONG_CLIENT
+
+    $AUTH_RUN add_user \
+        $REALM \
+        $KEYCLOAK_INITIAL_USER_USERNAME \
+        $KEYCLOAK_INITIAL_USER_PASSWORD
 
     echo_message "Adding [aether] solution in kong..."
-    $DC_AUTH run --rm auth add_solution aether $REALM
-    $DC_AUTH run --rm auth add_kafka_tenant $REALM
+    $AUTH_RUN add_solution aether $REALM $KEYCLOAK_KONG_CLIENT
+    $AUTH_RUN add_kafka_tenant $REALM
 }
 
-echo_message "Creating initial tenants in keycloak..."
+echo_message "Creating initial tenants/realms in keycloak..."
 create_kc_tenant "dev"  "Local development"
 create_kc_tenant "prod" "Production environment"
 create_kc_tenant "test" "Testing playground"
@@ -125,5 +139,5 @@ echo_message ""
 ./scripts/kill_all.sh
 
 echo_message ""
-echo_message "done!"
+echo_message "Done!"
 echo_message ""

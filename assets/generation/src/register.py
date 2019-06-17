@@ -18,38 +18,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from aether.client import Client
-import json
-import os
 import sys
 
+from aether.client import Client
 
-def env(key):
-    return os.environ.get(key, None)
+from utils import (
+    RESOURCES_DIR,
+    LOGGER,
 
+    KERNEL_URL,
+    KERNEL_USER,
+    KERNEL_PASSWORD,
+    CLIENT_LOGLEVEL,
+    REALM,
+    KEYCLOAK_URL,
 
-PROJECT_NAME = env('PROJECT_NAME')
-SUBMISSION_ENDPOINT = env('SUBMISSION_ENDPOINT')
-kernel_url = env('KERNEL_URL')
-user = env('KERNEL_USER')
-pw = env('KERNEL_PASSWORD')
-REALM = env('REALM')
+    PROJECT_NAME,
+    MAPPING_NAME,
 
-try:
-    client = Client(kernel_url, user, pw, log_level='DEBUG', realm=REALM)
-except Exception as err:
-    print(f'Kernel is not ready. Please check '
-          f'''it's status or wait a moment and try again : {err}''')
-    sys.exit(1)
-
-
-def file_to_json(path):
-    with open(path) as f:
-        return json.load(f)
-
-
-def pprint(obj):
-    print(obj)
+    check_reqs,
+    file_to_json,
+)
 
 
 def register_project():
@@ -60,7 +49,7 @@ def register_project():
 def schema():
     schema_names = []
     schemas = []
-    defs = file_to_json('/code/assets/schemas/all.json')
+    defs = file_to_json(f'{RESOURCES_DIR}/schemas/all.json')
     for obj in defs:
         name = obj.get('name')
         schema_names.append(name)
@@ -71,13 +60,15 @@ def schema():
             'definition': obj
         }
         schemas.append(schema_obj)
+
     out = []
     for obj in schemas:
         try:
             out.append(client.schemas.create(data=obj))
         except Exception as err:
-            print(err)
-            print(obj)
+            LOGGER.error(err)
+            LOGGER.error(obj)
+
     return out
 
 
@@ -85,13 +76,10 @@ def schema_decorator(project, ids):
     out = {}
     for name in ids.keys():
         schema_decorator_obj = {
-            "revision": "1",
-            "name": name,
-            "schema": ids[name],
-            "project": project,
-            "masked_fields": "[]",
-            "transport_rule": "[]",
-            "mandatory_fields": "[]"
+            'revision': '1',
+            'name': name,
+            'schema': ids[name],
+            'project': project,
         }
         out[name] = client.schemadecorators.create(data=schema_decorator_obj)
     return out
@@ -101,20 +89,23 @@ def mappingset(project):
     return client.mappingsets.create(
         data={
             'project': project,
-            'name': 'default_set'}
+            'name': 'default_set'
+        }
     )
 
 
 def mapping(project, mapping_set_id, ids):
-    mapping_def = file_to_json('/code/assets/schemas/mapping.json')
+    mapping_def = file_to_json(f'{RESOURCES_DIR}/mappings/mapping.json')
     mapping_obj = {
-        'name': SUBMISSION_ENDPOINT,
-        'definition': {'mapping': mapping_def},
-        'revision': '1'
+        'name': MAPPING_NAME,
+        'definition': {
+            'mapping': mapping_def,
+            'entities': ids,
+        },
+        'revision': '1',
+        'mappingset': mapping_set_id,
+        'project': project,
     }
-    mapping_obj['definition']['entities'] = ids
-    mapping_obj['mappingset'] = mapping_set_id
-    mapping_obj['project'] = project
     return client.mappings.create(data=mapping_obj)
 
 
@@ -122,31 +113,43 @@ def register():
     project = register_project()
     project_id = project.id
     if not project_id:
-        print('project could not be registerd, does it already exist?')
+        LOGGER.error('project could not be registerd, does it already exist?')
         sys.exit(0)
+
     schema_info = schema()
-    pprint(schema_info)
+    LOGGER.debug(schema_info)
+
     schema_ids = {obj.name: obj.id for obj in schema_info}
-    pprint(schema_ids)
+    LOGGER.debug(schema_ids)
+
     schema_decorators = schema_decorator(project_id, schema_ids)
-    pprint(schema_decorators)
+    LOGGER.debug(schema_decorators)
+
     ps_ids = {ps.name: ps.id for ps in schema_decorators.values()}
     ms = mappingset(project_id)
     sub_id = mapping(project_id, ms.id, ps_ids)
-    pprint(sub_id)
-    # entity_references = sub_id.definition.get('entities')
+    LOGGER.debug(sub_id)
 
 
 if __name__ == '__main__':
-    reqs = [
+
+    check_reqs(reqs=[
         'KERNEL_URL',
         'KERNEL_USER',
         'KERNEL_PASSWORD',
-        'SUBMISSION_ENDPOINT',
-        'PROJECT_NAME'
-    ]
-    if False in [env(r) for r in reqs]:
-        print('Required Environment Variable is missing.')
-        print('Required: %s' % (reqs,))
+        'PROJECT_NAME',
+        'MAPPING_NAME',
+    ])
+
+    try:
+        client = Client(KERNEL_URL, KERNEL_USER, KERNEL_PASSWORD,
+                        log_level=CLIENT_LOGLEVEL,
+                        realm=REALM,
+                        keycloak_url=KEYCLOAK_URL)
+    except Exception as err:
+        LOGGER.error(
+            f'Kernel is not ready. Please check '
+            f'''it's status or wait a moment and try again : {err}''')
         sys.exit(1)
+
     register()

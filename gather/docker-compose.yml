@@ -12,7 +12,7 @@ services:
   # ---------------------------------
 
   gather:
-    image: ehealthafrica/gather:${GATHER_VERSION:-alpha}
+    image: ehealthafrica/gather:${GATHER_VERSION:-3.2.0}
     environment:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${GATHER_DJANGO_SECRET_KEY}
@@ -26,10 +26,10 @@ services:
       EXTERNAL_APPS: aether-kernel,aether-odk
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: ${BASE_HOST}/{realm}/kernel
+      AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/kernel
 
       AETHER_ODK_TOKEN: ${ODK_ADMIN_TOKEN}
-      AETHER_ODK_URL: ${BASE_HOST}/{realm}/odk
+      AETHER_ODK_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/odk
 
       DB_NAME: gather
       PGHOST: db # This matches the DB service name
@@ -43,7 +43,7 @@ services:
       GATEWAY_SERVICE_ID: gather
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
-      KEYCLOAK_SERVER_URL: ${BASE_HOST}/keycloak/auth/realms
+      KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
 
       MULTITENANCY: "true"
