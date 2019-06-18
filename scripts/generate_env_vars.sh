@@ -60,7 +60,7 @@ function gen_env_file {
 # ------------------------------------------------------------------
 # Releases
 # ==================================================================
-AETHER_VERSION=1.5.0-rc
+AETHER_VERSION=1.5.0
 GATHER_VERSION=3.2.0
 GATEWAY_VERSION=latest
 KONG_VERSION=1.1
@@ -149,24 +149,6 @@ TEST_KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
 # ==================================================================
 PRODUCER_ADMIN_USER=admin
 PRODUCER_ADMIN_PW=adminadmin
-# ------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------
-# Kafka & Zookeeper
-# ==================================================================
-# internal users
-KAFKA_ROOT_USER=root
-KAFKA_ROOT_PW=$(gen_random_string)
-ZK_ROOT_USER=zk-admin
-ZK_ROOT_PW=$(gen_random_string)
-
-# kafka all-tenant Superuser
-KAFKA_SU_USER=master
-KAFKA_SU_PW=adminadmin
-# kafka password seed to generate all tenant passwords
-KAFKA_SECRET=$(gen_random_string)
-
 # ------------------------------------------------------------------
 
 

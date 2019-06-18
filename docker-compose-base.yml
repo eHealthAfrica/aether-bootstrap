@@ -225,13 +225,12 @@ services:
         -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
         -Dzookeeper.authProvider.2=org.apache.zookeeper.server.auth.DigestAuthenticationProvider
     extra_hosts:
-      - "moby:127.0.0.1"
-    volumes:
-      - ./kafka/zk_server_jaas.conf:/etc/zookeeper/zk_server_jaas.conf
+      - moby:127.0.0.1
 
   kafka-base:
     image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-5.2.1}
     ports:
+      - 29092:29092
       - 9092:9092
     environment:
       KAFKA_BROKER_ID: 1
@@ -372,7 +371,7 @@ services:
       REALM: dev
       KEYCLOAK_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/auth
 
-      CLIENT_LOGLEVEL: DEBUG
+      CLIENT_LOGLEVEL: INFO
       ROOT_LOGLEVEL: DEBUG
 
       PROJECT_NAME: DefaultDemo
@@ -393,13 +392,6 @@ services:
 
       KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
       KONG_INTERNAL: ${KONG_INTERNAL}
-      MINIO_INTERNAL: ${MINIO_INTERNAL}
-
-      ZOOKEEPER_HOST: zookeeper:32181
-      ZOOKEEPER_USER: ${ZK_ROOT_USER}
-      ZOOKEEPER_PW: ${ZK_ROOT_PW}
-      KAFKA_SECRET: ${KAFKA_SECRET}
-
     volumes:
       - ./api-auth/service:/code/service
       - ./api-auth/solution:/code/solution

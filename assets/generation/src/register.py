@@ -82,6 +82,7 @@ def schema_decorator(project, ids):
             'project': project,
         }
         out[name] = client.schemadecorators.create(data=schema_decorator_obj)
+
     return out
 
 
@@ -117,6 +118,8 @@ def register():
         sys.exit(0)
 
     schema_info = schema()
+    if not schema_info:
+        raise ValueError('No schemas registered')
     LOGGER.debug(schema_info)
 
     schema_ids = {obj.name: obj.id for obj in schema_info}
@@ -124,7 +127,7 @@ def register():
 
     schema_decorators = schema_decorator(project_id, schema_ids)
     LOGGER.debug(schema_decorators)
-
+    
     ps_ids = {ps.name: ps.id for ps in schema_decorators.values()}
     ms = mappingset(project_id)
     sub_id = mapping(project_id, ms.id, ps_ids)
