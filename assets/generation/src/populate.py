@@ -68,7 +68,8 @@ class Location(SimpleResource):
     std_dev = .5  # std_dev of dist in lat/lng degrees
 
     def _gen(self):
-        self.center = random.choice(POP_CENTERS.values())
+        locations = [i for i in POP_CENTERS.values()]
+        self.center = random.choice(locations)
         self.lat = random.gauss(self.center[0], Location.std_dev)
         self.lng = random.gauss(self.center[1], Location.std_dev)
         self.alt = 1.0 * self.center[2]

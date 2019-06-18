@@ -340,7 +340,7 @@ services:
       REALM: dev
       KEYCLOAK_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/auth
 
-      CLIENT_LOGLEVEL: DEBUG
+      CLIENT_LOGLEVEL: INFO
       ROOT_LOGLEVEL: DEBUG
 
       PROJECT_NAME: DefaultDemo
