@@ -98,6 +98,7 @@ echo_message ""
 
 echo_message "Creating Kafka Superuser..."
 $AUTH_RUN add_kafka_su $KAFKA_SU_USER $KAFKA_SU_PW
+$AUTH_RUN grant_kafka_su $KAFKA_ROOT_USER
 echo_message ""
 
 

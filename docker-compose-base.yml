@@ -232,7 +232,6 @@ services:
   kafka-base:
     image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-5.2.1}
     ports:
-      - 29092:29092
       - 9092:9092
     environment:
       KAFKA_BROKER_ID: 1
@@ -256,8 +255,8 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 1000
       # Auth debugging
-      KAFKA_LOG4J_LOGGERS: "kafka.authorizer.logger=DEBUG"
-      KAFKA_LOG4J_ROOT_LOGLEVEL: DEBUG
+      KAFKA_LOG4J_LOGGERS: "kafka.authorizer.logger=ERROR"
+      KAFKA_LOG4J_ROOT_LOGLEVEL: ERROR
       KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
 
     volumes:
@@ -298,6 +297,7 @@ services:
       PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PW}
       SERVER_PORT: 5005
+      LOG_LEVEL: DEBUG
 
       # default settings file
       PRODUCER_SETTINGS_FILE: /code/producer/settings.json
