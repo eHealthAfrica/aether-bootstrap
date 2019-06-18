@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -21,12 +21,14 @@
 set -Euo pipefail
 
 pushd ckan
-docker-compose -f docker-compose.yml kill
-docker-compose -f docker-compose.yml down
+docker-compose kill
+docker-compose down
 popd
+
 pushd ckan-consumer
-docker-compose -f docker-compose.yml kill
-docker-compose -f docker-compose.yml down
+docker-compose kill
+docker-compose down
+
 pushd db
 sudo rm consumer.db
 popd

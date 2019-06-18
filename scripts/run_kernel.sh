@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -20,17 +20,7 @@
 #
 set -Eeuo pipefail
 
-{
-    docker network create aether_internal
-} || { # catch
-    echo "aether_internal network is ready."
-}
+source ./scripts/aether_functions.sh
 
-{
-    docker volume create aether_database_data
-} || { # catch
-    echo "aether_database_data volume is ready."
-}
-
-scripts/generate_env_vars.sh
-docker-compose -f ./docker-compose.yml up -d
+create_docker_assets
+docker-compose up -d

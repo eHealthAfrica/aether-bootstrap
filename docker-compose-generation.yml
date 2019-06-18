@@ -1,19 +1,30 @@
-# Registration and Generation of Entities
 version: "2.1"
 
 networks:
   aether:
     external:
-      name: aether_internal
+      name: aether_bootstrap_net
 
 services:
 
   # ---------------------------------
   # Mock Data Container
   # ---------------------------------
+
   assets:
     extends:
       file: ./docker-compose-base.yml
       service: assets-base
+    networks:
+      - aether
+
+  # ---------------------------------
+  # Auth builder Container
+  # ---------------------------------
+
+  auth:
+    extends:
+      file: ./docker-compose-base.yml
+      service: auth-base
     networks:
       - aether

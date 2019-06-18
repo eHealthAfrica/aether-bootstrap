@@ -3,7 +3,7 @@ version: "2.1"
 networks:
   aether:
     external:
-      name: aether_internal
+      name: aether_bootstrap_net
 
 services:
 
@@ -45,3 +45,5 @@ services:
       - zookeeper
     networks:
       - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}

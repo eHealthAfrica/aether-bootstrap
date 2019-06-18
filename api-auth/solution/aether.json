@@ -1,0 +1,7 @@
+{
+  "name": "aether",
+  "services": [
+    "kernel",
+    "ui"
+  ]
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -20,5 +20,7 @@
 #
 set -Eeuo pipefail
 
-docker-compose -f ./docker-compose-generation.yml build
-docker-compose -f ./docker-compose-generation.yml run assets register --build
+DC="docker-compose -f ./docker-compose-generation.yml"
+
+$DC build assets
+$DC run --rm assets register --build

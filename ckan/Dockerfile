@@ -1,5 +1,9 @@
+# ----------------------------------------------------
+# https://github.com/ckan/ckan/blob/master/Dockerfile
+# ----------------------------------------------------
+
 # See CKAN docs on installation from Docker Compose on usage
-FROM debian:jessie
+FROM debian:stretch
 MAINTAINER Open Knowledge
 
 # Install required system packages

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2018 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -25,15 +25,15 @@
 # Example:
 # ./scripts/generate_env_vars.sh
 
-check_openssl () {
+function check_openssl {
     which openssl > /dev/null
 }
 
-gen_random_string () {
+function gen_random_string {
     openssl rand -hex 16 | tr -d "\n"
 }
 
-gen_env_file () {
+function gen_env_file {
     cat << EOF
 #
 # USE THIS ONLY LOCALLY
@@ -58,9 +58,64 @@ gen_env_file () {
 #
 
 # ------------------------------------------------------------------
-# Aether
+# Releases
 # ==================================================================
-AETHER_VERSION=1.4.0
+AETHER_VERSION=1.5.0
+GATHER_VERSION=3.2.0
+GATEWAY_VERSION=latest
+KONG_VERSION=1.1
+KEYCLOAK_VERSION=latest
+CONFLUENTINC_VERSION=5.2.1
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# Authorization & Authentication
+# ==================================================================
+KEYCLOAK_GLOBAL_ADMIN=admin
+KEYCLOAK_GLOBAL_PASSWORD=password
+KEYCLOAK_PG_PASSWORD=$(gen_random_string)
+KONG_PG_PASSWORD=$(gen_random_string)
+
+KEYCLOAK_INITIAL_USER_USERNAME=user
+KEYCLOAK_INITIAL_USER_PASSWORD=password
+
+KEYCLOAK_AETHER_CLIENT=aether
+KEYCLOAK_KONG_CLIENT=kong
+REALM_COOKIE=aether-realm
+
+MULTITENANCY=true
+DEFAULT_REALM=aether
+PUBLIC_REALM=-
+LOGIN_THEME=aether
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# Routing
+# ==================================================================
+BASE_DOMAIN=${LOCAL_HOST}
+BASE_PROTOCOL=http
+
+# to be used in the aether containers
+KEYCLOAK_SERVER_URL=http://${LOCAL_HOST}/auth/realms
+
+KEYCLOAK_INTERNAL=http://keycloak:8080
+KONG_INTERNAL=http://kong:8001
+
+NETWORK_SUBNET=192.168.9.0/24
+NETWORK_GATEWAY=192.168.9.1
+KONG_IP=192.168.9.10
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# Minio storage
+# ==================================================================
+MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
+MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
+
+MINIO_INTERNAL=http://minio:9000
 # ------------------------------------------------------------------
 
 
@@ -76,19 +131,6 @@ KERNEL_DB_PASSWORD=$(gen_random_string)
 KERNEL_READONLY_DB_USERNAME=readonlyuser
 KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
 
-# ------------------------------------------------------------------
-# Minio storage
-# ==================================================================
-MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
-MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
-# ------------------------------------------------------------------
-
-# ------------------------------------------------------------------
-# Aether Producer
-# ==================================================================
-PRODUCER_ADMIN_USER=admin
-PRODUCER_ADMIN_PW=adminadmin
-
 # TEST Aether Kernel
 # ------------------------------------------------------------------
 TEST_KERNEL_ADMIN_USERNAME=admin-test
@@ -99,6 +141,14 @@ TEST_KERNEL_DB_PASSWORD=$(gen_random_string)
 
 TEST_KERNEL_READONLY_DB_USERNAME=readonlytest
 TEST_KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# Aether Producer
+# ==================================================================
+PRODUCER_ADMIN_USER=admin
+PRODUCER_ADMIN_PW=adminadmin
 # ------------------------------------------------------------------
 
 
@@ -130,21 +180,65 @@ UI_DJANGO_SECRET_KEY=$(gen_random_string)
 UI_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 
+# ------------------------------------------------------------------
+# Gather
+# ==================================================================
+GATHER_ADMIN_USERNAME=admin
+GATHER_ADMIN_PASSWORD=adminadmin
+GATHER_DJANGO_SECRET_KEY=$(gen_random_string)
+GATHER_DB_PASSWORD=$(gen_random_string)
+# ------------------------------------------------------------------
 EOF
 }
-
-if [ -e ".env" ]; then
-    echo "[.env] file already exists! Remove it if you want to generate a new one."
-    exit 0
-fi
 
 check_openssl
 RET=$?
 if [ $RET -eq 1 ]; then
-    echo "Please install 'openssl'"
+    echo "Please install 'openssl'  https://www.openssl.org/"
     exit 1
 fi
 
 set -Eeo pipefail
-gen_env_file > .env
-echo "[.env] file generated!"
+
+LOCAL_HOST=${LOCAL_HOST:-aether.local}
+
+generate_new=yes
+if [ -e ".env" ]; then
+    echo "[.env] file already exists!"
+    source .env
+
+    # check localhost vs base domain
+    if [ "$LOCAL_HOST" = "$BASE_DOMAIN" ]; then
+        generate_new=no
+        echo "  - Remove it if you want to generate new local credentials."
+    else
+        echo "  - Current domain [$LOCAL_HOST] differs from saved one [$BASE_DOMAIN], generating new credentials"
+        mv ".env" ".env.${BASE_DOMAIN}"
+    fi
+fi
+
+if [[ $generate_new = "yes" ]]; then
+    gen_env_file > .env
+    echo "[.env] file generated!"
+fi
+
+
+cat << EOF
+
+Add to your
+
+    /etc/hosts file (Linux / MacOS)
+
+or
+
+    C:\Windows\System32\Drivers\etc\hosts file (Windows)
+
+the following line:
+
+--------------------------------------------------------------------------------
+
+127.0.0.1  ${LOCAL_HOST}
+
+--------------------------------------------------------------------------------
+
+EOF

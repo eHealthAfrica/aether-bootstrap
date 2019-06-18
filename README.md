@@ -9,27 +9,33 @@ For more information on Aether, take a look at the [microsite](https://aether.eh
 ## Set-up instructions
 
 First clone this repo:
-```
+
+```bash
 git clone https://github.com/eHealthAfrica/aether-bootstrap.git
 cd aether-bootstrap
 ```
 
-If you are starting Aether for the first time, you will need to create some docker resources (networks and volumes) and generate credentials for all applications:
-```
+If you are starting Aether for the first time, you will need to create some docker resources (networks and volumes) and generate credentials (check generated `.env` file) for all applications:
+
+```bash
 ./scripts/initialise_docker_environment.sh
 ```
 
-You will also need to  add `kernel.aether.local` and `ui.aether.local` to  your `/etc/hosts`. It should look something like this:
-```
-127.0.0.1    localhost ui.aether.local kernel.aether.local
+You will also need to add `aether.local` (`BASE_DOMAIN` environment variable value)
+to your `/etc/hosts` or `C:\Windows\System32\Drivers\etc\hosts` file.
+It should look something like this:
+
+```text
+127.0.0.1  aether.local
 ```
 
-Now you just need to tell Docker to download the images and start them up:
-```
+Now you just need to tell Docker to start aether up:
+
+```bash
 docker-compose up
 ```
 
-Once the console output has stopped, you should be able to access the Aether UI in your browser at http://ui.aether.local/. Use these credentials to log in:
+Once the console output has stopped, you should be able to access the Aether UI in your browser at http://aether.local/dev/ui/. Use these credentials to log in:
 
-- *Username*: **admin**
-- *Password*: **adminadmin**
+- *Username*: **user**
+- *Password*: **password**

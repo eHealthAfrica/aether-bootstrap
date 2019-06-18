@@ -1,0 +1,19 @@
+{
+  "name": "gather",
+  "host": "http://gather:8105",
+  "oidc_endpoints": [
+    {
+      "name": "protected",
+      "url": "/",
+      "strip_path": "false"
+    }
+  ],
+  "public_endpoints": [
+    {
+      "name": "public",
+      "url": "/-/gather/",
+      "route_path": "/-/gather/",
+      "strip_path": "true"
+    }
+  ]
+}
