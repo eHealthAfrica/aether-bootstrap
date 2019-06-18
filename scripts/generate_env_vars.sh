@@ -163,6 +163,8 @@ ZK_ROOT_PW=$(gen_random_string)
 # kafka all-tenant Superuser
 KAFKA_SU_USER=master
 KAFKA_SU_PW=adminadmin
+# secret to generate tenant specific passwords
+KAFKA_SECRET=$(gen_random_string)
 # ------------------------------------------------------------------
 
 

@@ -226,6 +226,8 @@ services:
         -Dzookeeper.authProvider.2=org.apache.zookeeper.server.auth.DigestAuthenticationProvider
     extra_hosts:
       - moby:127.0.0.1
+    volumes:
+      - ./kafka/zk_server_jaas.conf:/etc/zookeeper/zk_server_jaas.conf
 
   kafka-base:
     image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-5.2.1}

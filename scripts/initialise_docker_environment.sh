@@ -50,7 +50,8 @@ create_docker_assets
 
 echo_message "Pulling docker images..."
 docker-compose pull db minio keycloak kong
-docker-compose -f docker-compose-connect.yml pull producer zookeeper kafka
+docker-compose -f docker-compose-connect.yml pull zookeeper kafka # producer
+docker-compose -f docker-compose-connect.yml up -d zookeeper kafka
 $DC_AUTH pull auth
 echo_message ""
 
