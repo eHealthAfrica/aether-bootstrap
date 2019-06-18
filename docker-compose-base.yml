@@ -270,7 +270,7 @@ services:
   # ---------------------------------
 
   aether-producer-base:
-    image: aether-producer:latest # ehealthafrica/aether-producer:${AETHER_VERSION}
+    image: ehealthafrica/aether-producer:${AETHER_VERSION}
     environment:
       PYTHONUNBUFFERED: 1
 
