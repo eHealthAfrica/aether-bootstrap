@@ -216,8 +216,6 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SESSION_TIMEOUT_MS: 750  # may be too short for prod.
       KAFKA_OPTS: -Djava.security.auth.login.config=/etc/zookeeper/zk_server_jaas.conf
         -DjaasLoginRenew=3600000
