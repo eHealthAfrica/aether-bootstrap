@@ -164,7 +164,7 @@ services:
   # ---------------------------------
 
   integration-test:
-    image: ehealthafrica/aether-integration-test:${AETHER_VERSION}
+    image: ehealthafrica/aether-integration-test:${AETHER_VERSION:-alpha}
     environment:
       KERNEL_URL: http://kernel-test:9000
       KERNEL_USERNAME: ${TEST_KERNEL_ADMIN_USERNAME}
@@ -172,8 +172,6 @@ services:
       PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PW}
       PRODUCER_URL: http://producer-test:9005
-    volumes:
-      - ./VERSION:/code/VERSION
     networks:
       - test
     command: test

@@ -21,7 +21,7 @@
 set -Eeuo pipefail
 
 function wait_for_db {
-    until $DC_TEST run --no-deps kernel-test eval pg_isready -q; do
+    until $DC_TEST run --rm --no-deps kernel-test eval pg_isready -q; do
         >&2 echo "Waiting for database..."
         sleep 2
     done
@@ -43,8 +43,8 @@ DC_TEST="docker-compose -f docker-compose-test.yml"
 $DC_TEST up -d db-test
 wait_for_db
 
-$DC_TEST run --no-deps kernel-test setup
-$DC_TEST run --no-deps kernel-test eval python /code/sql/create_readonly_user.py
+$DC_TEST run --rm --no-deps kernel-test setup
+$DC_TEST run --rm --no-deps kernel-test eval python /code/sql/create_readonly_user.py
 $DC_TEST kill kernel-test
 
 $DC_TEST up -d kernel-test

@@ -44,11 +44,11 @@ case "$1" in
     ;;
 
     register )
-        python register.py "${@:2}"
+        python3 /code/src/register.py "${@:2}"
     ;;
 
     generate )
-        python populate.py "${@:2}"
+        python3 /code/src/populate.py "${@:2}"
     ;;
 
     help)

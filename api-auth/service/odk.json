@@ -14,6 +14,30 @@
       "url": "/-/odk/",
       "route_path": "/-/odk/",
       "strip_path": "true"
+    },
+    {
+      "name": "formlist",
+      "url": "/{realm}/odk/formList",
+      "template_path": "/{realm}/odk/formList",
+      "strip_path": "true"
+    },
+    {
+      "name": "forms",
+      "url": "/{realm}/odk/forms",
+      "template_path": "/{realm}/odk/forms",
+      "strip_path": "true"
+    },
+    {
+      "name": "media",
+      "url": "/{realm}/odk/media-file/",
+      "template_path": "/{realm}/odk/media-file/",
+      "strip_path": "true"
+    },
+    {
+      "name": "submission",
+      "url": "/{realm}/odk/submission",
+      "template_path": "/{realm}/odk/submission",
+      "strip_path": "true"
     }
   ]
 }

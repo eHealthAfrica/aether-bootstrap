@@ -18,16 +18,30 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+
 set -Eeuo pipefail
 
-# just check that the script works
-./scripts/initialise_docker_environment.sh
+source ./.env || \
+    ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/gather" && \
+      exit 1 )
+source ./scripts/aether_functions.sh
 
-# build assets generation container
-docker-compose -f docker-compose-generation.yml build assets
 
-# setup integration test requirements
-./scripts/integration_test_setup.sh
+AUTH_RUN="docker-compose -f ./docker-compose-generation.yml run --rm auth"
+DCG="docker-compose -f ./gather/docker-compose.yml"
 
-# run integration tests
-docker-compose -f docker-compose-test.yml run --rm --no-deps integration-test test
+start_container kong     $KONG_INTERNAL
+start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
+
+$DCG pull gather
+$DCG run --rm --no-deps gather setup
+
+function add_gather_tenant {
+    REALM=$1
+    echo_message "Adding [gather] solution in kong..."
+    $AUTH_RUN add_solution gather $REALM $KEYCLOAK_KONG_CLIENT
+}
+
+add_gather_tenant "dev"
+add_gather_tenant "prod"
+add_gather_tenant "test"

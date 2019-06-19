@@ -18,16 +18,10 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+
 set -Eeuo pipefail
 
-# just check that the script works
-./scripts/initialise_docker_environment.sh
+DCG="docker-compose -f ./gather/docker-compose.yml"
 
-# build assets generation container
-docker-compose -f docker-compose-generation.yml build assets
-
-# setup integration test requirements
-./scripts/integration_test_setup.sh
-
-# run integration tests
-docker-compose -f docker-compose-test.yml run --rm --no-deps integration-test test
+docker-compose up -d
+$DCG up -d

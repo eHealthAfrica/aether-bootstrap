@@ -2,9 +2,6 @@
   "name": "aether",
   "services": [
     "kernel",
-    "ui",
-    "odk",
-    "gather",
-    "kibana"
+    "ui"
   ]
 }
