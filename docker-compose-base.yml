@@ -382,7 +382,7 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
 
   auth-base:
-    image: ehealthafrica/gateway-manager:alpha #ehealthafrica/gateway-manager:${GATEWAY_VERSION:-latest}
+    image: ehealthafrica/gateway-manager:alpha # ehealthafrica/gateway-manager:${GATEWAY_VERSION:-latest}
     environment:
       DEBUG: null
 

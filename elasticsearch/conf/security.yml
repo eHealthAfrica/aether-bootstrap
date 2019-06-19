@@ -6,19 +6,19 @@ opendistro_security:
       anonymous_auth_enabled: false
       xff:
         enabled: true
-        internalProxies: '.*'
+        # internalProxies: '.*'
         trustedProxies: '.*'
-        # remoteIpHeader:  'x-forwarded-for'
-        # proxiesHeader:   'x-forwarded-by'
+        remoteIpHeader:  'x-forwarded-for'
+        proxiesHeader:   'x-forwarded-by'
         # internalProxies: '192\.168\.0\.10|192\.168\.0\.11' # regex pattern
-        #internalProxies: '.*' # trust all internal proxies, regex pattern
+        internalProxies: '.*' # trust all internal proxies, regex pattern
         # remoteIpHeader:  'x-forwarded-for'
         # proxiesHeader:   'x-forwarded-by'
     authc:
       basic_internal_auth_domain:
         http_enabled: true
         transport_enabled: true
-        order: 
+        order: 1
         http_authenticator:
           type: basic
           challenge: false
@@ -34,7 +34,7 @@ opendistro_security:
           challenge: false
           config:
             user_header: "x-oauth-preferred_username"
-            # roles_header: "X-Oauth-realm"
+            roles_header: "x-oauth-groups"
         authentication_backend:
           type: noop
 
