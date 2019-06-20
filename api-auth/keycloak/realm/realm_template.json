@@ -1,3 +1,4 @@
 {
-    "sslRequired": "NONE"
+    "sslRequired": "NONE",
+    "enabled": true
 }
