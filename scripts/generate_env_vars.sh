@@ -153,6 +153,22 @@ PRODUCER_ADMIN_PW=adminadmin
 
 
 # ------------------------------------------------------------------
+# Kafka & Zookeeper
+# ==================================================================
+# internal users
+KAFKA_ROOT_USER=root
+KAFKA_ROOT_PW=$(gen_random_string)
+ZK_ROOT_USER=zk-admin
+ZK_ROOT_PW=$(gen_random_string)
+# kafka all-tenant Superuser
+KAFKA_SU_USER=master
+KAFKA_SU_PW=adminadmin
+# secret to generate tenant specific passwords
+KAFKA_SECRET=$(gen_random_string)
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
 # Aether ODK Module
 # ==================================================================
 ODK_ADMIN_USERNAME=admin

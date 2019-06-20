@@ -23,10 +23,8 @@ services:
     extends:
       file: ./docker-compose-base.yml
       service: kafka-base
-    restart: on-failure
+    restart: always
     depends_on:
-      - zookeeper
-    links:
       - zookeeper
     networks:
       - aether
@@ -40,9 +38,6 @@ services:
       file: ./docker-compose-base.yml
       service: aether-producer-base
     restart: on-failure
-    links:
-      - kafka
-      - zookeeper
     networks:
       - aether
     extra_hosts:
