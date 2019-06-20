@@ -6,19 +6,16 @@ opendistro_security:
       anonymous_auth_enabled: false
       xff:
         enabled: true
-        # internalProxies: '.*'
         trustedProxies: '.*'
         remoteIpHeader:  'x-forwarded-for'
         proxiesHeader:   'x-forwarded-by'
-        # internalProxies: '192\.168\.0\.10|192\.168\.0\.11' # regex pattern
         internalProxies: '.*' # trust all internal proxies, regex pattern
-        # remoteIpHeader:  'x-forwarded-for'
-        # proxiesHeader:   'x-forwarded-by'
+
     authc:
       basic_internal_auth_domain:
         http_enabled: true
         transport_enabled: true
-        order: 1
+        order: 0
         http_authenticator:
           type: basic
           challenge: false
@@ -28,7 +25,7 @@ opendistro_security:
       proxy_auth_domain:
         http_enabled: true
         transport_enabled: true
-        order: 0
+        order: 1
         http_authenticator:
           type: proxy
           challenge: false
@@ -37,31 +34,3 @@ opendistro_security:
             roles_header: "x-oauth-realm"
         authentication_backend:
           type: noop
-
-      # jwt_auth_domain:
-      #   enabled: true
-      #   http_enabled: true
-      #   transport_enabled: true
-      #   order: 0
-      #   http_authenticator:
-      #     type: jwt
-      #     challenge: false
-      #     config:
-      #       # jwt_header: "Authorization: Bearer <token>"
-      #       signing_key: null
-      #       jwt_header: "X-Oauth-Token"
-      #       jwt_url_parameter: null
-      #       roles_key: "roles"
-      #       subject_key: "sub"
-      #   authentication_backend:
-      #     type: noop
-    # authz:
-    #   roles_from_myldap:
-    #     http_enabled: false
-    #     transport_enabled: false
-    #     authorization_backend:
-    #       type: noop
-    #   roles_from_another_ldap:
-    #     enabled: false
-    #     authorization_backend:
-    #       type: noop
