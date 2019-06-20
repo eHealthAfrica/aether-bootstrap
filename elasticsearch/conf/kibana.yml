@@ -9,8 +9,9 @@ opendistro_security.multitenancy.enabled: true
 opendistro_security.multitenancy.tenants.preferred: ["Private", "Global"]
 opendistro_security.readonly_mode.roles: ["kibana_read_only"]
 
-elasticsearch.requestHeadersWhitelist: ["securitytenant","Authorization", "x-forwarded-for", "x-forwarded-by", "x-oauth-preferred_username", "x-oauth-groups"]
+elasticsearch.requestHeadersWhitelist: ["securitytenant","Authorization", "x-forwarded-for", "x-forwarded-by", "x-oauth-preferred_username", "x-oauth-realm"] #, "x-oauth-groups"
 opendistro_security.multitenancy.tenants.enable_private: false
+opendistro_security.multitenancy.tenants.enable_global: false
 opendistro_security.auth.type: "proxy"
 
 # Kibana is served by a back end server. This setting specifies the port to use.

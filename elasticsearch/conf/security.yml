@@ -34,7 +34,7 @@ opendistro_security:
           challenge: false
           config:
             user_header: "x-oauth-preferred_username"
-            roles_header: "x-oauth-groups"
+            roles_header: "x-oauth-realm"
         authentication_backend:
           type: noop
 
