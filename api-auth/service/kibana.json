@@ -1,6 +1,6 @@
 {
   "name": "kibana",
-  "host": "http://odfe-kibana:5601",
+  "host": "http://kibana:5601",
   "oidc_endpoints": [
     {
       "name": "protected",
