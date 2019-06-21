@@ -309,7 +309,7 @@ services:
   # ---------------------------------
 
   kong-base:
-    image: ehealthafrica/kong:alpha # ehealthafrica/kong:${KONG_VERSION:-1.1}
+    image: ehealthafrica/kong:${KONG_VERSION:-1.1}
     environment:
       KONG_DATABASE: postgres
       KONG_PG_HOST: db
@@ -380,7 +380,7 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
 
   auth-base:
-    image: ehealthafrica/gateway-manager:alpha # ehealthafrica/gateway-manager:${GATEWAY_VERSION:-latest}
+    image: ehealthafrica/gateway-manager:${GATEWAY_VERSION:-latest}
     environment:
       DEBUG: null
 
