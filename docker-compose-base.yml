@@ -216,8 +216,6 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SESSION_TIMEOUT_MS: 750  # may be too short for prod.
       KAFKA_OPTS: -Djava.security.auth.login.config=/etc/zookeeper/zk_server_jaas.conf
         -DjaasLoginRenew=3600000
@@ -407,6 +405,7 @@ services:
     volumes:
       - ./api-auth/service:/code/service
       - ./api-auth/solution:/code/solution
+      - ./api-auth/keycloak/realm/realm_template.json:/code/templates/realm_template.json
     command: help
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
