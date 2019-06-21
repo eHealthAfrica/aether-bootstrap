@@ -401,6 +401,7 @@ services:
     volumes:
       - ./api-auth/service:/code/service
       - ./api-auth/solution:/code/solution
+      - ./api-auth/keycloak/realm/realm_template.json:/code/templates/realm_template.json
     command: help
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
