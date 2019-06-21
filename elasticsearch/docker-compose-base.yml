@@ -6,7 +6,7 @@ services:
     #   - "9200:9200"
     #   - "9300:9300"
     environment:
-      ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       discovery.type: single-node
       opendistro_security.ssl.http.enabled: "false"
     volumes:

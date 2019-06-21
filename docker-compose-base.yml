@@ -400,6 +400,10 @@ services:
       ZOOKEEPER_PW: ${ZK_ROOT_PW}
       KAFKA_SECRET: ${KAFKA_SECRET}
 
+      ELASTICSEARCH_HOST: http://elasticsearch:9200
+      ELASTICSEARCH_USER: admin
+      ELASTICSEARCH_PW: ${ELASTIC_PASSWORD}
+
     volumes:
       - ./api-auth/service:/code/service
       - ./api-auth/solution:/code/solution
