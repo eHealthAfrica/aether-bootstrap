@@ -12,3 +12,6 @@ elasticsearch.requestHeadersWhitelist: ["securitytenant","Authorization", "x-for
 opendistro_security.multitenancy.tenants.enable_private: false
 opendistro_security.multitenancy.tenants.enable_global: false
 opendistro_security.auth.type: "proxy"
+
+timelion.enabled: false
+console.enabled: false

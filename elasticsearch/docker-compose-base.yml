@@ -2,11 +2,10 @@ version: "2.1"
 services:
   elasticsearch-base:
     image: amazon/opendistro-for-elasticsearch:0.9.0
+    # this is private to the cluster, only open for debugging
     # ports:
     #   - "9200:9200"
-    #   - "9300:9300"
     environment:
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       discovery.type: single-node
       opendistro_security.ssl.http.enabled: "false"
     volumes:
@@ -15,6 +14,7 @@ services:
 
   kibana-base:
     image: amazon/opendistro-for-elasticsearch-kibana:0.9.0
+    # this is private to the cluster, only open for debugging
     # ports:
     #   - "5601:5601"
     environment:
@@ -28,6 +28,7 @@ services:
       - ./conf/kibana.yml:/usr/share/kibana/config/kibana.yml
 
 
+  # DISABLED until multi-tenancy patch is completed.
   # es-consumer-base:
   #   image: ehealthafrica/aether-elasticsearch-consumer:1.1.2
   #   stdin_open: true

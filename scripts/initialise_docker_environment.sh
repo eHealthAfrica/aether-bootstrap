@@ -39,7 +39,7 @@ AUTH_RUN="$DC_AUTH run --rm auth"
 
 
 echo_message ""
-echo_message "Initializing Aether environment, this will take about 60 seconds."
+echo_message "Initializing Aether environment, this may take 15 minutes depending on bandwidth."
 echo_message ""
 
 # stop and remove all containers or the network cannot be recreated

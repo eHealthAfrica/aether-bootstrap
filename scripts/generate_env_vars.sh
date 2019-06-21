@@ -167,6 +167,14 @@ KAFKA_SU_PW=adminadmin
 KAFKA_SECRET=$(gen_random_string)
 # ------------------------------------------------------------------
 
+# ------------------------------------------------------------------
+# ElasticSearch
+# ==================================================================
+# this is a pain to set dynamically, so we're using the default for dev
+# https://aws.amazon.com/blogs/opensource/change-passwords-open-distro-for-elasticsearch/
+ELASTIC_PASSWORD=admin
+# ------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------
 # Aether ODK Module
