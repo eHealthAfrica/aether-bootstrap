@@ -105,7 +105,7 @@ services:
         ipv4_address: ${KONG_IP}
     volumes:
     # uncomment to mount logs outside of docker
-      - ./kong/logs:/usr/local/kong/logs/  
+    # - ./kong/logs:/usr/local/kong/logs/  
     
     
     extra_hosts:
