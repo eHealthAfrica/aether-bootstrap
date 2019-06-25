@@ -97,7 +97,7 @@ $AUTH_RUN register_app minio $MINIO_INTERNAL
 echo_message ""
 
 echo_message "Creating Kafka Superuser..."
-$AUTH_RUN add_kafka_su $KAFKA_SU_USER $KAFKA_SU_PW
+$AUTH_RUN add_kafka_su $KAFKA_SU_USER $KAFKA_SU_PASSWORD
 $AUTH_RUN grant_kafka_su $KAFKA_ROOT_USER
 echo_message ""
 
