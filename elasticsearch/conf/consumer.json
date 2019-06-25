@@ -14,7 +14,7 @@
     "kibana_url": "http://kibana:5601",
     "kibana_auto_timestamp": "aet_ts",
     "elasticsearch_url": ["elasticsearch"],
-    "elasticsearch_http_auth" : null,
+    "elasticsearch_http_auth" : ["admin", "admin"],
     "elasticsearch_port": 9200,
     "consumer_port" : 9009,
     "connect_retry_wait": 30,
@@ -22,7 +22,7 @@
     "latitude_fields": ["lat", "latitude"],
     "longitude_fields": ["lon", "lng", "long", "longitude"],
     "index_path": "/code/es_index/null",
-    "log_level": "INFO",
+    "log_level": "DEBUG",
     "log_name": "ES_Consumer",
-    "kafka_topic_template": "elastic_{es_index_name}_{data_type}_1"
+    "kafka_topic_template": "es_{es_index_name}_{data_type}"
 }

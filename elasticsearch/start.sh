@@ -22,4 +22,4 @@ set -Eeuo pipefail
 
 DCES="docker-compose -f ./elasticsearch/docker-compose.yml"
 
-$DCES up -d
+$DCES up -d elasticsearch kibana

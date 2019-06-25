@@ -3,8 +3,8 @@ services:
   elasticsearch-base:
     image: amazon/opendistro-for-elasticsearch:0.9.0
     # this is private to the cluster, only open for debugging
-    # ports:
-    #   - "9200:9200"
+    ports:
+      - "9200:9200"
     environment:
       discovery.type: single-node
       opendistro_security.ssl.http.enabled: "false"
@@ -29,15 +29,15 @@ services:
 
 
   # DISABLED until multi-tenancy patch is completed.
-  # es-consumer-base:
-  #   image: ehealthafrica/aether-elasticsearch-consumer:1.1.2
-  #   stdin_open: true
-  #   ports:
-  #     - "9009:9009"
-  #   volumes:
-  #    - ./conf:/code/conf/consumer
-  #    - ./es_index:/code/es_index
+  es-consumer-base:
+    image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190625-01
+    stdin_open: true
+    ports:
+      - "9009:9009"
+    volumes:
+     - ./conf:/code/conf/consumer
+     - ./es_index:/code/es_index
 
-  #   environment:
-  #    - PYTHONUNBUFFERED=0
-  #   command: start
+    environment:
+     - PYTHONUNBUFFERED=0
+    command: start

@@ -1,5 +1,9 @@
 {
     "kafka_url" : ["kafka:29092"], 
+    "security_protocol": "SASL_PLAINTEXT",
+    "sasl_mechanism": "PLAIN",
+    "sasl_plain_username": "root",
+    "sasl_plain_password": "3f94331ac5f749cf587c8458e034efd9",
     "auto_offset_reset" : "earliest",
     "aether_emit_flag_required" : false,
     "aether_masking_schema_levels" : ["false", "true"],
