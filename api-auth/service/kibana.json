@@ -1,0 +1,15 @@
+{
+  "name": "kibana",
+  "host": "http://kibana:5601",
+  "oidc_endpoints": [
+    {
+      "name": "protected",
+      "url": "/",
+      "template_path": "/{realm}/kibana",
+      "strip_path": "true",
+      "oidc_override": {
+        "config.user_keys": ["preferred_username", "email", "groups"]
+      }
+    }
+  ]
+}

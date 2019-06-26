@@ -6,13 +6,13 @@ KafkaServer {
    org.apache.kafka.common.security.scram.ScramLoginModule required;
    org.apache.kafka.common.security.plain.PlainLoginModule required
    username="$KAFKA_ROOT_USER"
-   password="$KAFKA_ROOT_PW"
-   user_$KAFKA_ROOT_USER="$KAFKA_ROOT_PW";
+   password="$KAFKA_ROOT_PASSWORD"
+   user_$KAFKA_ROOT_USER="$KAFKA_ROOT_PASSWORD";
 };
 Client {
     org.apache.zookeeper.server.auth.DigestLoginModule required
-    username="$ZK_ROOT_USER"
-    password="$ZK_ROOT_PW";
+    username="$ZOOKEEPER_ROOT_USER"
+    password="$ZOOKEEPER_ROOT_PASSWORD";
 };
 EOF
 }
@@ -21,7 +21,7 @@ function gen_zookeeper_creds {
     cat << EOF
 Server {
   org.apache.zookeeper.server.auth.DigestLoginModule required
-  user_$ZK_ROOT_USER="$ZK_ROOT_PW";
+  user_$ZOOKEEPER_ROOT_USER="$ZOOKEEPER_ROOT_PASSWORD";
 };
 EOF
 }

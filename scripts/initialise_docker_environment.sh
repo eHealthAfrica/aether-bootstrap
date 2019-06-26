@@ -39,7 +39,7 @@ AUTH_RUN="$DC_AUTH run --rm auth"
 
 
 echo_message ""
-echo_message "Initializing Aether environment, this will take about 60 seconds."
+echo_message "Initializing Aether environment, this may take 15 minutes depending on bandwidth."
 echo_message ""
 
 # stop and remove all containers or the network cannot be recreated
@@ -97,7 +97,7 @@ $AUTH_RUN register_app minio $MINIO_INTERNAL
 echo_message ""
 
 echo_message "Creating Kafka Superuser..."
-$AUTH_RUN add_kafka_su $KAFKA_SU_USER $KAFKA_SU_PW
+$AUTH_RUN add_kafka_su $KAFKA_SU_USER $KAFKA_SU_PASSWORD
 $AUTH_RUN grant_kafka_su $KAFKA_ROOT_USER
 echo_message ""
 

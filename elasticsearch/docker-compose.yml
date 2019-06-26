@@ -5,6 +5,9 @@ networks:
     external:
       name: aether_bootstrap_net
 
+volumes:
+  elasticsearch-data:
+
 services:
 
   elasticsearch:
@@ -23,17 +26,9 @@ services:
     networks:
       - aether
 
-  elasticsearch-consumer:
+  consumer:
     extends:
       file: docker-compose-base.yml
       service: es-consumer-base
-    environment:
-      ELASTICSEARCH_INSTANCE_URLS: "elasticsearch"
-      BOOTSTRAP_SERVERS: "kafka:29092"
-      CONSUMER_PORT: 9099
-      ES_CONSUMER_CONFIG_PATH: "/code/conf/consumer/consumer.json"
-      ES_CONSUMER_KAFKA_CONFIG_PATH: "/code/conf/consumer/kafka.json"
-    links:
-      - elasticsearch
     networks:
       - aether

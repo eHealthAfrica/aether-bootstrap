@@ -148,7 +148,7 @@ TEST_KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
 # Aether Producer
 # ==================================================================
 PRODUCER_ADMIN_USER=admin
-PRODUCER_ADMIN_PW=adminadmin
+PRODUCER_ADMIN_PASSWORD=adminadmin
 # ------------------------------------------------------------------
 
 
@@ -157,14 +157,23 @@ PRODUCER_ADMIN_PW=adminadmin
 # ==================================================================
 # internal users
 KAFKA_ROOT_USER=root
-KAFKA_ROOT_PW=$(gen_random_string)
-ZK_ROOT_USER=zk-admin
-ZK_ROOT_PW=$(gen_random_string)
+KAFKA_ROOT_PASSWORD=$(gen_random_string)
+ZOOKEEPER_ROOT_USER=zk-admin
+ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
 # kafka all-tenant Superuser
 KAFKA_SU_USER=master
-KAFKA_SU_PW=adminadmin
+KAFKA_SU_PASSWORD=adminadmin
 # secret to generate tenant specific passwords
 KAFKA_SECRET=$(gen_random_string)
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# ElasticSearch
+# ==================================================================
+# this is a pain to set dynamically, so we're using the default for dev
+# https://aws.amazon.com/blogs/opensource/change-passwords-open-distro-for-elasticsearch/
+ELASTICSEARCH_PASSWORD=admin
 # ------------------------------------------------------------------
 
 

@@ -1,0 +1,36 @@
+opendistro_security:
+  dynamic:
+    kibana:
+      multitenancy_enabled: true
+    http:
+      anonymous_auth_enabled: false
+      xff:
+        enabled: true
+        trustedProxies: '.*'
+        remoteIpHeader:  'x-forwarded-for'
+        proxiesHeader:   'x-forwarded-by'
+        internalProxies: '.*' # trust all internal proxies, regex pattern
+
+    authc:
+      basic_internal_auth_domain:
+        http_enabled: true
+        transport_enabled: true
+        order: 0
+        http_authenticator:
+          type: basic
+          challenge: false
+        authentication_backend:
+          type: intern
+
+      proxy_auth_domain:
+        http_enabled: true
+        transport_enabled: true
+        order: 1
+        http_authenticator:
+          type: proxy
+          challenge: false
+          config:
+            user_header: "x-oauth-preferred_username"
+            roles_header: "x-oauth-realm"
+        authentication_backend:
+          type: noop
