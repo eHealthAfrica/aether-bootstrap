@@ -1,8 +1,8 @@
 {
     "autoconfig_settings": {
         "auto_timestamp" : "aet_ts",
-        "create_kibana_index": true,
-        "index_name_template": "aet_auto_%s_1",
+        "create_kibana_index": false,
+        "index_name_template": "aet_%s_1",
         "enabled": true,
         "ignored_topics": ["__confluent.support.metrics"],
         "geo_point_creation": true,
@@ -11,11 +11,7 @@
     "ingest_routes": {
         "(aet_auto_)(\\w*)(_1)": "route1"
     },
-    "kibana_url": "http://kibana:5601",
     "kibana_auto_timestamp": "aet_ts",
-    "elasticsearch_url": ["elasticsearch"],
-    "elasticsearch_http_auth" : ["admin", "admin"],
-    "elasticsearch_port": 9200,
     "consumer_port" : 9009,
     "connect_retry_wait": 30,
     "startup_connection_retry": 3,
@@ -24,5 +20,5 @@
     "index_path": "/code/es_index/null",
     "log_level": "DEBUG",
     "log_name": "ES_Consumer",
-    "kafka_topic_template": "es_{es_index_name}_{data_type}"
+    "kafka_topic_template": "es_{es_index_name}_7"
 }

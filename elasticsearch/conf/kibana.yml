@@ -6,7 +6,6 @@ elasticsearch.username: kibanaserver
 elasticsearch.password: kibanaserver
 
 opendistro_security.multitenancy.enabled: true
-opendistro_security.multitenancy.tenants.preferred: ["Private", "Global"]
 
 elasticsearch.requestHeadersWhitelist: ["securitytenant","Authorization", "x-forwarded-for", "x-forwarded-by", "x-oauth-preferred_username", "x-oauth-realm"]
 opendistro_security.multitenancy.tenants.enable_private: false

@@ -3,14 +3,15 @@ services:
   elasticsearch-base:
     image: amazon/opendistro-for-elasticsearch:0.9.0
     # this is private to the cluster, only open for debugging
-    ports:
-      - "9200:9200"
+    # ports:
+    #   - "9200:9200"
     environment:
       discovery.type: single-node
       opendistro_security.ssl.http.enabled: "false"
     volumes:
       - ./conf/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
       - ./conf/security.yml:/usr/share/elasticsearch/plugins/opendistro_security/securityconfig/config.yml
+      - ./conf/elasticsearch.yml/usr/share/elasticsearch/config/elasticsearch.yml
 
   kibana-base:
     image: amazon/opendistro-for-elasticsearch-kibana:0.9.0
@@ -27,17 +28,26 @@ services:
       - ./conf/security.yml:/usr/share/kibana/plugins/opendistro_security/securityconfig/config.yml
       - ./conf/kibana.yml:/usr/share/kibana/config/kibana.yml
 
-
-  # DISABLED until multi-tenancy patch is completed.
   es-consumer-base:
+    # demo version without job handling!
     image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190625-01
     stdin_open: true
-    ports:
-      - "9009:9009"
+    # ports:
+    #   - "9009:9009"
     volumes:
      - ./conf:/code/conf/consumer
      - ./es_index:/code/es_index
 
     environment:
      - PYTHONUNBUFFERED=0
+     - KAFKA_URL=kafka:29092
+     - SECURITY_PROTOCOL=SASL_PLAINTEXT
+     - SASL_MECHANISM=PLAIN
+     - SASL_PLAIN_USERNAME=${KAFKA_ROOT_USER}
+     - SASL_PLAIN_PASSWORD=${KAFKA_ROOT_PASSWORD}
+     - KIBANA_URL=http://kibana:5601
+     - ELASTICSEARCH_URL=elasticsearch
+     - ELASTICSEARCH_PORT=9200
+     - ELASTICSEARCH_USER=admin
+     - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
     command: start
