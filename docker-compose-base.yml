@@ -295,7 +295,7 @@ services:
       PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PASSWORD}
       SERVER_PORT: 5005
-      LOG_LEVEL: DEBUG
+      LOG_LEVEL: ERROR
 
       # default settings file
       PRODUCER_SETTINGS_FILE: /code/producer/settings.json

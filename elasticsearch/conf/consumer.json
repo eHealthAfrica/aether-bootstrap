@@ -18,7 +18,6 @@
     "latitude_fields": ["lat", "latitude"],
     "longitude_fields": ["lon", "lng", "long", "longitude"],
     "index_path": "/code/es_index/null",
-    "log_level": "ERROR",
     "log_name": "ES_Consumer",
-    "kafka_topic_template": "es_{es_index_name}_1"
+    "kafka_topic_template": "es_{es_index_name}"
 }
