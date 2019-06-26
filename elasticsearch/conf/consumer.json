@@ -20,5 +20,5 @@
     "index_path": "/code/es_index/null",
     "log_level": "DEBUG",
     "log_name": "ES_Consumer",
-    "kafka_topic_template": "es_{es_index_name}_7"
+    "kafka_topic_template": "es_{es_index_name}_1"
 }
