@@ -9,11 +9,16 @@ volumes:
   elasticsearch-data:
 
 services:
-
+  
   elasticsearch:
     extends:
       file: docker-compose-base.yml
       service: elasticsearch-base
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+      - ./conf/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
+      - ./conf/security.yml:/usr/share/elasticsearch/plugins/opendistro_security/securityconfig/config.yml
+      # - ./conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     networks:
       - aether
 
