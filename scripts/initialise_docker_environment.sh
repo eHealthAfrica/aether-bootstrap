@@ -34,10 +34,6 @@ source .env
 source ./scripts/aether_functions.sh
 kafka/make_credentials.sh
 
-DC_AUTH="docker-compose -f docker-compose-generation.yml"
-AUTH_RUN="$DC_AUTH run --rm auth"
-
-
 echo_message ""
 echo_message "Initializing Aether environment, this may take 15 minutes depending on bandwidth."
 echo_message ""
@@ -104,33 +100,6 @@ echo_message ""
 
 echo_message "Preparing keycloak..."
 start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
-
-function create_kc_tenant {
-    REALM=$1
-    DESC=${2:-$REALM}
-
-    $AUTH_RUN add_realm \
-        $REALM \
-        "$DESC" \
-        $LOGIN_THEME
-
-    $AUTH_RUN add_public_client \
-        $REALM \
-        $KEYCLOAK_AETHER_CLIENT
-
-    $AUTH_RUN add_oidc_client \
-        $REALM \
-        $KEYCLOAK_KONG_CLIENT
-
-    $AUTH_RUN add_user \
-        $REALM \
-        $KEYCLOAK_INITIAL_USER_USERNAME \
-        $KEYCLOAK_INITIAL_USER_PASSWORD
-
-    $AUTH_RUN add_solution aether $REALM $KEYCLOAK_KONG_CLIENT
-
-    $AUTH_RUN add_kafka_tenant $REALM
-}
 
 echo_message "Creating initial tenants/realms in keycloak..."
 create_kc_tenant "dev"  "Local development"

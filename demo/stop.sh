@@ -18,23 +18,8 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
 set -Eeuo pipefail
-
-source ./.env || \
-    ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/gather" && \
-      exit 1 )
-source ./scripts/aether_functions.sh
-
-DCG="docker-compose -f ./gather/docker-compose.yml"
-
-start_container kong     $KONG_INTERNAL
-start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
-
-$DCG pull gather
-$DCG run --rm --no-deps gather setup
-
-# From aether_functions.sh
-add_gather_tenant "dev"
-add_gather_tenant "prod"
-add_gather_tenant "test"
+docker-compose kill
+docker-compose -f ./docker-compose-connect.yml kill
+docker-compose -f ./elasticsearch/docker-compose.yml kill
+docker-compose -f ./gather/docker-compose.yml kill
