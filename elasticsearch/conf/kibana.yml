@@ -14,3 +14,6 @@ opendistro_security.auth.type: "proxy"
 
 timelion.enabled: false
 console.enabled: false
+
+tilemap.url: https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png
+tilemap.options.maxZoom: 18
