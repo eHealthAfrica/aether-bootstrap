@@ -20,62 +20,13 @@
 #
 set -Eeuo pipefail
 
-source .env
+source ./.env || \
+    ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/demo" && \
+      exit 1 )
 source ./scripts/aether_functions.sh
 
+echo_message "You services must be running! If you encounter errors, run demo/start.sh"
 echo_message "Adding tenant $1..."
-echo_message "Starting kong..."
-start_container kong $KONG_INTERNAL
-echo_message "Starting keycloak..."
-start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
-echo_message "Starting other services..."
-demo/up.sh
-echo_message "Waiting for other services..."
-sleep 20
-
-DC_AUTH="docker-compose -f docker-compose-generation.yml"
-AUTH_RUN="$DC_AUTH run --rm auth"
-
-function create_kc_tenant {
-    REALM=$1
-    DESC=${2:-$REALM}
-
-    $AUTH_RUN add_realm \
-        $REALM \
-        "$DESC" \
-        $LOGIN_THEME
-
-    $AUTH_RUN add_public_client \
-        $REALM \
-        $KEYCLOAK_AETHER_CLIENT
-
-    $AUTH_RUN add_oidc_client \
-        $REALM \
-        $KEYCLOAK_KONG_CLIENT
-
-    $AUTH_RUN add_user \
-        $REALM \
-        $KEYCLOAK_INITIAL_USER_USERNAME \
-        $KEYCLOAK_INITIAL_USER_PASSWORD
-
-    $AUTH_RUN add_solution aether $REALM $KEYCLOAK_KONG_CLIENT
-
-    $AUTH_RUN add_kafka_tenant $REALM
-}
-
-function add_es_tenant {
-    REALM=$1
-    echo_message "Adding [kibana] service in kong..."
-    $AUTH_RUN add_service kibana $REALM $KEYCLOAK_KONG_CLIENT
-    $AUTH_RUN add_elasticsearch_tenant $REALM
-}
-
-function add_gather_tenant {
-    REALM=$1
-    echo_message "Adding [gather] solution in kong..."
-    $AUTH_RUN add_solution gather $REALM $KEYCLOAK_KONG_CLIENT
-}
-
 echo_message "Creating initial tenants/realms in keycloak..."
 create_kc_tenant "$1"  "Realm: $1"
 add_es_tenant "$1"

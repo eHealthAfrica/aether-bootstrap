@@ -21,6 +21,8 @@
 set -Eeuo pipefail
 
 LINE=`printf -v row "%${COLUMNS:-$(tput cols)}s"; echo ${row// /=}`
+DC_AUTH="docker-compose -f docker-compose-generation.yml"
+AUTH_RUN="$DC_AUTH run --rm auth"
 
 
 function echo_message {
@@ -99,4 +101,44 @@ function rebuild_database {
         CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};
 EOSQL
     echo_message "$1 database is ready"
+}
+
+function create_kc_tenant {
+    REALM=$1
+    DESC=${2:-$REALM}
+
+    $AUTH_RUN add_realm \
+        $REALM \
+        "$DESC" \
+        $LOGIN_THEME
+
+    $AUTH_RUN add_public_client \
+        $REALM \
+        $KEYCLOAK_AETHER_CLIENT
+
+    $AUTH_RUN add_oidc_client \
+        $REALM \
+        $KEYCLOAK_KONG_CLIENT
+
+    $AUTH_RUN add_user \
+        $REALM \
+        $KEYCLOAK_INITIAL_USER_USERNAME \
+        $KEYCLOAK_INITIAL_USER_PASSWORD
+
+    $AUTH_RUN add_solution aether $REALM $KEYCLOAK_KONG_CLIENT
+
+    $AUTH_RUN add_kafka_tenant $REALM
+}
+
+function add_es_tenant {
+    REALM=$1
+    echo_message "Adding [kibana] service in kong..."
+    $AUTH_RUN add_service kibana $REALM $KEYCLOAK_KONG_CLIENT
+    $AUTH_RUN add_elasticsearch_tenant $REALM
+}
+
+function add_gather_tenant {
+    REALM=$1
+    echo_message "Adding [gather] solution in kong..."
+    $AUTH_RUN add_solution gather $REALM $KEYCLOAK_KONG_CLIENT
 }

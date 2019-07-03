@@ -25,8 +25,6 @@ source ./.env || \
       exit 1 )
 source ./scripts/aether_functions.sh
 
-DC_AUTH="docker-compose -f docker-compose-generation.yml"
-AUTH_RUN="$DC_AUTH run --rm auth"
 DCES="docker-compose -f ./elasticsearch/docker-compose.yml"
 
 $DCES pull elasticsearch kibana
@@ -38,14 +36,7 @@ start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
 
 $AUTH_RUN setup_elasticsearch
 
-function add_es_tenant {
-    REALM=$1
-    echo_message "Adding [kibana] service in kong..."
-    $AUTH_RUN add_service kibana $REALM $KEYCLOAK_KONG_CLIENT
-    $AUTH_RUN add_elasticsearch_tenant $REALM
-}
-
-
+# From aether_functions.sh
 add_es_tenant "dev"
 add_es_tenant "prod"
 add_es_tenant "test"
