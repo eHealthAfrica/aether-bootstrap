@@ -172,6 +172,7 @@ services:
       PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PASSWORD}
       PRODUCER_URL: http://producer-test:9005
+      TEST_REALM: test
     networks:
       - test
     command: test
