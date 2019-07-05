@@ -89,7 +89,6 @@ echo_message ""
 start_container kong $KONG_INTERNAL
 
 $AUTH_RUN setup_auth
-$AUTH_RUN register_app minio $MINIO_INTERNAL
 echo_message ""
 
 echo_message "Creating Kafka Superuser..."
