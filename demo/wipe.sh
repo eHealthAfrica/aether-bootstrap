@@ -21,7 +21,7 @@
 set -Eeuo pipefail
 
 docker-compose -f ./docker-compose-connect.yml kill
-docker-compose -f ./docker-compose-connect.yml down
+docker-compose -f ./docker-compose-connect.yml down -v
 docker-compose -f ./elasticsearch/docker-compose.yml kill
 docker-compose -f ./elasticsearch/docker-compose.yml down -v
 docker-compose -f ./gather/docker-compose.yml kill
