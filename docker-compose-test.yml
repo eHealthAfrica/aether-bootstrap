@@ -156,7 +156,7 @@ services:
       OFFSET_DB_NAME: producer_offset_db_test
 
       SERVER_PORT: 9005
-      links:
+    links:
       - kafka-test
       - zookeeper-test
     ports:
