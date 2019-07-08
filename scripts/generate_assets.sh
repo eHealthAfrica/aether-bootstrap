@@ -22,5 +22,5 @@ set -Eeuo pipefail
 
 DC="docker-compose -f ./docker-compose-generation.yml"
 
-$DC build assets
+$DC build --force-rm assets
 $DC run --rm assets generate ${@:1}

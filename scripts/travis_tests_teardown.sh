@@ -20,7 +20,10 @@
 #
 set -Eeuo pipefail
 
-DC="docker-compose -f ./docker-compose-generation.yml"
+./scripts/kill_all.sh
 
-$DC build --force-rm assets
-$DC run --rm assets register --build
+docker network rm aether_bootstrap_net || true
+docker network rm aether_test || true
+
+docker volume rm aether_database_data --force || true
+docker volume rm aether_test_database_data --force || true

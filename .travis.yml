@@ -13,9 +13,7 @@ script:
   - ./scripts/travis_tests.sh
 
 after_script:
-  # setup integration teardown
-  - ./scripts/integration_test_teardown.sh
-  - ./scripts/kill_all.sh
+  - ./scripts/travis_tests_teardown.sh
 
 after_failure:
-  - docker-compose -f docker-compose-test.yml logs -t --tail="all"
+  - ./scripts/travis_tests_failure.sh

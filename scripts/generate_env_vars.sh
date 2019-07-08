@@ -149,6 +149,11 @@ TEST_KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
 # ==================================================================
 PRODUCER_ADMIN_USER=admin
 PRODUCER_ADMIN_PASSWORD=adminadmin
+
+# TEST Aether Producer
+# ------------------------------------------------------------------
+TEST_PRODUCER_ADMIN_USER=admin-test
+TEST_PRODUCER_ADMIN_PASSWORD=testingtesting
 # ------------------------------------------------------------------
 
 
@@ -158,13 +163,14 @@ PRODUCER_ADMIN_PASSWORD=adminadmin
 # internal users
 KAFKA_ROOT_USER=root
 KAFKA_ROOT_PASSWORD=$(gen_random_string)
-ZOOKEEPER_ROOT_USER=zk-admin
-ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
 # kafka all-tenant Superuser
 KAFKA_SU_USER=master
 KAFKA_SU_PASSWORD=adminadmin
 # secret to generate tenant specific passwords
 KAFKA_SECRET=$(gen_random_string)
+
+ZOOKEEPER_ROOT_USER=zk-admin
+ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 
 
@@ -204,6 +210,7 @@ UI_ADMIN_PASSWORD=adminadmin
 UI_DJANGO_SECRET_KEY=$(gen_random_string)
 UI_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------
 # Gather

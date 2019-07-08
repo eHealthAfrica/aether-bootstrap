@@ -20,14 +20,35 @@
 #
 set -Eeuo pipefail
 
-# just check that the script works
+# just check that the scripts work
+
+echo_message "Set up tests"
 ./scripts/initialise_docker_environment.sh
 
-# build assets generation container
-docker-compose -f docker-compose-generation.yml build assets
 
-# setup integration test requirements
-./scripts/integration_test_setup.sh
+source .env
+source ./scripts/aether_functions.sh
+DC="docker-compose -f ./docker-compose-test.yml"
 
-# run integration tests
-docker-compose -f docker-compose-test.yml run --rm --no-deps integration-test test
+
+# TODO: generate assets
+echo_message "Assets tests [TBD]"
+# ./scripts/kill_all.sh
+# start_db
+# start_container kong     $KONG_INTERNAL
+# start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
+# start_container kernel   http://kernel:8000/health
+
+# ./scripts/register_assets.sh
+# ./scripts/generate_assets.sh 10
+
+
+# TODO: integration tests
+echo_message "Integration tests [TBD]"
+# ./scripts/kill_all.sh
+# ./scripts/integration_test_setup.sh
+# $DC run --rm integration-test test
+
+echo_message ""
+echo_message "Done!"
+echo_message ""

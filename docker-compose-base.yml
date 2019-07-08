@@ -273,9 +273,13 @@ services:
   aether-producer-base:
     image: ehealthafrica/aether-producer:${AETHER_VERSION}
     environment:
-      PYTHONUNBUFFERED: 1
+      # default settings file
+      PRODUCER_SETTINGS_FILE: /code/producer/settings.json
 
       # These variables will override the ones indicated in the settings file
+      PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
+      PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PASSWORD}
+
       KERNEL_URL: http://kernel:8000
       KERNEL_USERNAME: ${KERNEL_ADMIN_USERNAME}
       KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
@@ -295,13 +299,8 @@ services:
       KAFKA_SU_PW: ${KAFKA_SU_PASSWORD}
       KAFKA_SECURITY: SASL_PLAINTEXT
 
-      PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
-      PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PASSWORD}
       SERVER_PORT: 5005
       LOG_LEVEL: ERROR
-
-      # default settings file
-      PRODUCER_SETTINGS_FILE: /code/producer/settings.json
     ports:
       - 5005:5005
     command: start
