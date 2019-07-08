@@ -23,33 +23,48 @@ set -Eeuo pipefail
 # just check that the scripts work
 source ./scripts/aether_functions.sh
 
-echo_message "Set up tests"
-./scripts/initialise_docker_environment.sh
-./gather/setup_gather.sh
-./elasticsearch/setup.sh
+echo_message "Set up [Aether]..."
+./scripts/initialise_docker_environment.sh || (
+    echo_message "Set up [Aether] FAILED!!!" && exit 1
+)
+
+echo_message "Set up [Gather]..."
+./gather/setup_gather.sh || (
+    echo_message "Set up [Gather] FAILED!!!"
+)
+
+# ToBeFixed: ES
+echo_message "Set up [ElasticSearch]..."
+./elasticsearch/setup.sh || (
+    echo_message "Set up [ElasticSearch] FAILED!!!"
+)
 
 
 source .env
+
+
+./scripts/kill_all.sh
+echo_message "Set up [Assets]..."
+start_db
+start_container kong     $KONG_INTERNAL
+start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
+start_container kernel   http://kernel:8000/health
+
+./scripts/generate_assets.sh 1 || (
+    echo_message "Generate assets FAILED!!!"
+)
+./scripts/register_assets.sh || (
+    echo_message "Register assets FAILED!!!"
+)
+
+
+./scripts/kill_all.sh
+echo_message "Integration tests..."
+./scripts/integration_test_setup.sh
 DC="docker-compose -f ./docker-compose-test.yml"
-
-
-# TODO: generate assets
-echo_message "Assets tests [TBD]"
-# ./scripts/kill_all.sh
-# start_db
-# start_container kong     $KONG_INTERNAL
-# start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
-# start_container kernel   http://kernel:8000/health
-
-# ./scripts/register_assets.sh
-# ./scripts/generate_assets.sh 10
-
-
-# TODO: integration tests
-echo_message "Integration tests [TBD]"
-# ./scripts/kill_all.sh
-# ./scripts/integration_test_setup.sh
-# $DC run --rm integration-test test
+$DC run --rm integration-test test || (
+    echo_message "Integration tests FAILED!!!"
+)
 
 echo_message ""
 echo_message "Done!"

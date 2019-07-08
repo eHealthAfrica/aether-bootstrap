@@ -132,13 +132,11 @@ function create_kc_tenant {
 
 function add_es_tenant {
     REALM=$1
-    echo_message "Adding [kibana] service in kong..."
     $AUTH_RUN add_service kibana $REALM $KEYCLOAK_KONG_CLIENT
     $AUTH_RUN add_elasticsearch_tenant $REALM
 }
 
 function add_gather_tenant {
     REALM=$1
-    echo_message "Adding [gather] solution in kong..."
     $AUTH_RUN add_solution gather $REALM $KEYCLOAK_KONG_CLIENT
 }
