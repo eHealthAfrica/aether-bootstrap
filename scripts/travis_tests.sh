@@ -25,6 +25,8 @@ source ./scripts/aether_functions.sh
 
 echo_message "Set up tests"
 ./scripts/initialise_docker_environment.sh
+./gather/setup_gather.sh
+./elasticsearch/setup.sh
 
 
 source .env
