@@ -66,15 +66,15 @@ function start_container {
     container=$1
     url=$2
 
-    echo_message "Starting $container server..."
+    echo_message "Starting [$container] server..."
     docker-compose up -d $container
 
     CHECK_URL="docker-compose run --rm --no-deps kernel manage check_url -u"
     until $CHECK_URL $url >/dev/null; do
-        >&2 echo "Waiting for $container..."
+        >&2 echo "Waiting for [$container]..."
         sleep 2
     done
-    echo_message "$container is ready"
+    echo_message "[$container] is ready"
 }
 
 
