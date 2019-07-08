@@ -21,13 +21,13 @@
 set -Eeuo pipefail
 
 # just check that the scripts work
+source ./scripts/aether_functions.sh
 
 echo_message "Set up tests"
 ./scripts/initialise_docker_environment.sh
 
 
 source .env
-source ./scripts/aether_functions.sh
 DC="docker-compose -f ./docker-compose-test.yml"
 
 
