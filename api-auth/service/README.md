@@ -128,5 +128,5 @@ docker-compose \
     -f docker-compose-generation.yml \
     run --rm \
     auth \
-    remove_service "service-name" "*"
+    remove_service "service-name"
 ```

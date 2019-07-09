@@ -44,5 +44,5 @@ docker-compose \
     -f docker-compose-generation.yml \
     run --rm \
     auth \
-    remove_solution "solution-name" "*"
+    remove_solution "solution-name"
 ```

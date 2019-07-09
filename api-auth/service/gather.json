@@ -4,16 +4,14 @@
   "oidc_endpoints": [
     {
       "name": "protected",
-      "url": "/",
-      "strip_path": "false"
+      "url": "/"
     }
   ],
   "public_endpoints": [
     {
       "name": "public",
       "url": "/-/gather/",
-      "route_path": "/-/gather/",
-      "strip_path": "true"
+      "route_path": "/-/gather/"
     }
   ]
 }

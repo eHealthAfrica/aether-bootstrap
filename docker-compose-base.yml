@@ -311,6 +311,9 @@ services:
       KONG_PROXY_LISTEN: 0.0.0.0:80, 0.0.0.0:8443
 
       KONG_PLUGINS: bundled,kong-oidc-auth
+    # volumes:
+    # # uncomment to mount logs outside of docker
+    #  - ../.persistent_data/logs/kong:/usr/local/kong/logs/
     ports:
       - 80:80
       - 8443:8443  # ODK Collect requirement!!!
