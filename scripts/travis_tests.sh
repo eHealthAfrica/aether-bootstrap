@@ -53,7 +53,7 @@ case "$1" in
         echo_message "Start [Aether]..."
         start_db
         start_container kong     $KONG_INTERNAL
-        start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
+        start_container keycloak $KEYCLOAK_INTERNAL
         start_container kernel   http://kernel:8000/health
 
         echo_message "Start [CKAN]..."
