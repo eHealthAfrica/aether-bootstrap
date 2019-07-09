@@ -10,12 +10,22 @@ services:
 install: true
 
 script:
-  - ./scripts/travis_tests.sh
+  - ./scripts/travis_tests.sh $TEST_MODE
 
 after_script:
-  # setup integration teardown
-  - ./scripts/integration_test_teardown.sh
-  - ./scripts/kill_all.sh
+  - ./scripts/travis_tests_teardown.sh
 
 after_failure:
-  - docker-compose -f docker-compose-test.yml logs -t --tail="all"
+  - ./scripts/travis_tests_failure.sh
+
+matrix:
+  fast_finish: true
+  include:
+    - name: "Set up"
+      env: 'TEST_MODE=setup'
+
+    # - name: "CKAN + assets"
+    #   env: 'TEST_MODE=ckan'
+
+    # - name: "Integration tests"
+    #   env: 'TEST_MODE=integration'

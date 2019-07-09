@@ -20,13 +20,14 @@
 #
 set -Eeuo pipefail
 
+source .env
 source ./scripts/aether_functions.sh
 create_docker_assets
 
 pushd ckan
 
 { # try
-    docker-compose build
+    docker-compose build --pull --force-rm
 } || { # catch
     echo 'not ready...'
 }

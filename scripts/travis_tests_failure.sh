@@ -20,7 +20,6 @@
 #
 set -Eeuo pipefail
 
-DC="docker-compose -f ./docker-compose-generation.yml"
-
-$DC build --force-rm assets
-$DC run --rm assets register --build
+for dc_file in $(find docker-compose*.yml */docker-compose*.yml 2> /dev/null); do
+    docker-compose -f $dc_file logs -t --tail="all"
+done

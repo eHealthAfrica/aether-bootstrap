@@ -66,15 +66,15 @@ function start_container {
     container=$1
     url=$2
 
-    echo_message "Starting $container server..."
+    echo_message "Starting [$container] server..."
     docker-compose up -d $container
 
     CHECK_URL="docker-compose run --rm --no-deps kernel manage check_url -u"
     until $CHECK_URL $url >/dev/null; do
-        >&2 echo "Waiting for $container..."
+        >&2 echo "Waiting for [$container]..."
         sleep 2
     done
-    echo_message "$container is ready"
+    echo_message "[$container] is ready"
 }
 
 
@@ -132,13 +132,11 @@ function create_kc_tenant {
 
 function add_es_tenant {
     REALM=$1
-    echo_message "Adding [kibana] service in kong..."
     $AUTH_RUN add_service kibana $REALM $KEYCLOAK_KONG_CLIENT
     $AUTH_RUN add_elasticsearch_tenant $REALM
 }
 
 function add_gather_tenant {
     REALM=$1
-    echo_message "Adding [gather] solution in kong..."
     $AUTH_RUN add_solution gather $REALM $KEYCLOAK_KONG_CLIENT
 }
