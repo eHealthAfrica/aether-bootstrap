@@ -24,8 +24,6 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
     command: minio server --quiet --address minio:9000 /data
-    ports:
-      - 9000:9000
 
   # ---------------------------------
   # Aether kernel
@@ -92,8 +90,6 @@ services:
     volumes:
       # backup folder
       - ./.persistent_data/backups/kernel:/backups
-    ports:
-      - 8000:8000
     command: start
 
 
@@ -154,8 +150,6 @@ services:
     volumes:
       # backup folder
       - ./.persistent_data/backups/odk:/backups
-    ports:
-      - 8002:8002
     command: start
 
 
@@ -205,8 +199,6 @@ services:
     volumes:
       # backup folder
       - ./.persistent_data/backups/ui:/backups
-    ports:
-      - 8004:8004
     command: start
 
 
@@ -225,15 +217,13 @@ services:
         -DrequireClientAuthScheme=digest
         -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
         -Dzookeeper.authProvider.2=org.apache.zookeeper.server.auth.DigestAuthenticationProvider
-    extra_hosts:
-      - moby:127.0.0.1
     volumes:
       - ./kafka/zk_server_jaas.conf:/etc/zookeeper/zk_server_jaas.conf
+    extra_hosts:
+      - moby:127.0.0.1
 
   kafka-base:
     image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-5.2.1}
-    ports:
-      - 9092:9092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
@@ -259,7 +249,6 @@ services:
       KAFKA_LOG4J_LOGGERS: "kafka.authorizer.logger=ERROR"
       KAFKA_LOG4J_ROOT_LOGLEVEL: ERROR
       KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
-
     volumes:
       - ./kafka/kafka_server_jaas.conf:/etc/kafka/kafka_server_jaas.conf
     extra_hosts:
@@ -301,8 +290,6 @@ services:
 
       SERVER_PORT: 5005
       LOG_LEVEL: ERROR
-    ports:
-      - 5005:5005
     command: start
 
 
@@ -351,8 +338,6 @@ services:
 
       KEYCLOAK_LOGLEVEL: ERROR
       ROOT_LOGLEVEL: ERROR
-    ports:
-      - 8080:8080
 
 
   # ---------------------------------
