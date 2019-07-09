@@ -60,8 +60,8 @@ function gen_env_file {
 # ------------------------------------------------------------------
 # Releases
 # ==================================================================
-AETHER_VERSION=1.5.0
-GATHER_VERSION=3.2.0
+AETHER_VERSION=1.5.1-rc
+GATHER_VERSION=3.2.1-rc
 GATEWAY_VERSION=latest
 KONG_VERSION=1.1
 KEYCLOAK_VERSION=latest
@@ -115,7 +115,7 @@ KONG_IP=192.168.9.10
 MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
 MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
 
-MINIO_INTERNAL=http://minio:9000
+MINIO_ENDPOINT=minio:9100
 # ------------------------------------------------------------------
 
 
