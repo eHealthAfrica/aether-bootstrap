@@ -31,7 +31,7 @@ $DCES pull elasticsearch kibana
 $DCES up -d elasticsearch
 
 start_container kong     $KONG_INTERNAL
-start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
+start_container keycloak $KEYCLOAK_INTERNAL
 
 
 $AUTH_RUN setup_elasticsearch
