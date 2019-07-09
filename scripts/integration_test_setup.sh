@@ -21,17 +21,22 @@
 set -Eeuo pipefail
 
 DC_TEST="docker-compose -f docker-compose-test.yml"
+DC_KERNEL_RUN="$DC_TEST run --rm --no-deps kernel-test"
 
-function wait_for_db {
-    until $DC_TEST run --rm --no-deps kernel-test eval pg_isready -q; do
+function start_db_test {
+    $DC_TEST up -d db-test
+
+    until $DC_KERNEL_RUN eval pg_isready -q; do
         >&2 echo "Waiting for database..."
         sleep 2
     done
 }
 
-function wait_for_kernel {
-    KERNEL_HEALTH_URL="http://localhost:9000/health"
-    until curl -s $KERNEL_HEALTH_URL > /dev/null; do
+function start_kernel_test {
+    $DC_TEST up -d kernel-test
+
+    KERNEL_HEALTH_URL="http://kernel-test:9000/health"
+    until $DC_KERNEL_RUN manage check_url -u $KERNEL_HEALTH_URL >/dev/null; do
         >&2 echo "Waiting for Kernel..."
         sleep 2
     done
@@ -41,15 +46,12 @@ function wait_for_kernel {
 docker network create aether_test 2>/dev/null || true
 docker volume create --name=aether_test_database_data 2>/dev/null || true
 
-$DC_TEST up -d db-test
-wait_for_db
+start_db_test
 
-$DC_TEST run --rm --no-deps kernel-test setup
-$DC_TEST run --rm --no-deps kernel-test eval python /code/sql/create_readonly_user.py
-$DC_TEST kill kernel-test
+$DC_KERNEL_RUN setup
+$DC_KERNEL_RUN eval python /code/sql/create_readonly_user.py
 
-$DC_TEST up -d kernel-test
 $DC_TEST up -d zookeeper-test kafka-test producer-test
 
 echo "Containers started, waiting for Kernel to be available..."
-wait_for_kernel
+start_kernel_test
