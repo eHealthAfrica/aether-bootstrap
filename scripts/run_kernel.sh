@@ -20,7 +20,4 @@
 #
 set -Eeuo pipefail
 
-source ./scripts/aether_functions.sh
-
-create_docker_assets
 docker-compose up -d

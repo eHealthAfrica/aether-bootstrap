@@ -21,5 +21,5 @@
 set -Eeuo pipefail
 
 pushd ckan
-docker-compose up
+docker-compose up -d
 popd

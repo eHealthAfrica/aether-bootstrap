@@ -17,6 +17,7 @@ services:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${GATHER_DJANGO_SECRET_KEY}
       LOGGING_FORMATTER: verbose
+      PROFILING_ENABLED: "true"
 
       APP_NAME: Gather
 

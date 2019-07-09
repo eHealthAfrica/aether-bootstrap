@@ -20,6 +20,8 @@
 #
 set -Eeuo pipefail
 
+DC_TEST="docker-compose -f docker-compose-test.yml"
+
 function wait_for_db {
     until $DC_TEST run --rm --no-deps kernel-test eval pg_isready -q; do
         >&2 echo "Waiting for database..."
@@ -38,7 +40,6 @@ function wait_for_kernel {
 # Setup test network and volume if it doesn't exist.
 docker network create aether_test 2>/dev/null || true
 docker volume create --name=aether_test_database_data 2>/dev/null || true
-DC_TEST="docker-compose -f docker-compose-test.yml"
 
 $DC_TEST up -d db-test
 wait_for_db
