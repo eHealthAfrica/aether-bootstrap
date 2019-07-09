@@ -242,9 +242,9 @@ if [ -e ".env" ]; then
     # check localhost vs base domain
     if [ "$LOCAL_HOST" = "$BASE_DOMAIN" ]; then
         generate_new=no
-        echo "  - Remove it if you want to generate new local credentials."
+        echo "Remove it if you want to generate new local credentials."
     else
-        echo "  - Current domain [$LOCAL_HOST] differs from saved one [$BASE_DOMAIN], generating new credentials"
+        echo "Current domain [$LOCAL_HOST] differs from saved one [$BASE_DOMAIN], generating new credentials"
         mv ".env" ".env.${BASE_DOMAIN}"
     fi
 fi
@@ -259,11 +259,11 @@ cat << EOF
 
 Add to your
 
-    /etc/hosts file (Linux / MacOS)
+    [/etc/hosts] file (Linux / MacOS)
 
 or
 
-    C:\Windows\System32\Drivers\etc\hosts file (Windows)
+    [C:\Windows\System32\Drivers\etc\hosts] file (Windows)
 
 the following line:
 
