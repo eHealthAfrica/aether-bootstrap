@@ -100,6 +100,7 @@ BASE_PROTOCOL=http
 # to be used in the aether containers
 KEYCLOAK_SERVER_URL=http://${LOCAL_HOST}/auth/realms
 
+KEYCLOAK_HOST=http://keycloak:8080
 KEYCLOAK_INTERNAL=http://keycloak:8080/auth
 KONG_INTERNAL=http://kong:8001
 

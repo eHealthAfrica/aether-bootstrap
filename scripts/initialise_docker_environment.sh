@@ -93,7 +93,7 @@ docker-compose run --rm kong kong migrations up
 echo_message ""
 start_container kong $KONG_INTERNAL
 
-$AUTH_RUN setup_auth
+$AUTH_RUN add_app auth $KEYCLOAK_HOST
 echo_message ""
 
 echo_message "Creating Kafka Superuser..."

@@ -220,8 +220,6 @@ services:
         -Dzookeeper.authProvider.2=org.apache.zookeeper.server.auth.DigestAuthenticationProvider
     volumes:
       - ./kafka/zk_server_jaas.conf:/etc/zookeeper/zk_server_jaas.conf
-    extra_hosts:
-      - moby:127.0.0.1
 
   kafka-base:
     image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-5.2.1}
@@ -252,8 +250,6 @@ services:
       KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
     volumes:
       - ./kafka/kafka_server_jaas.conf:/etc/kafka/kafka_server_jaas.conf
-    extra_hosts:
-      - moby:127.0.0.1
 
 
   # ---------------------------------
@@ -313,8 +309,8 @@ services:
 
       KONG_PLUGINS: bundled,kong-oidc-auth
     # volumes:
-    # # uncomment to mount logs outside of docker
-    #  - ../.persistent_data/logs/kong:/usr/local/kong/logs/
+    #   # uncomment to mount logs outside of docker
+    #   - ./.persistent_data/logs/kong:/usr/local/kong/logs/
     ports:
       - 80:80
       - 8443:8443  # ODK Collect requirement!!!
@@ -342,6 +338,9 @@ services:
 
       KEYCLOAK_LOGLEVEL: ERROR
       ROOT_LOGLEVEL: ERROR
+    # this is private to the cluster, only open for debugging
+    # ports:
+    #   - 8080:8080
 
 
   # ---------------------------------
@@ -367,8 +366,6 @@ services:
 
       PROJECT_NAME: DefaultDemo
       MAPPING_NAME: default_mapping
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}
 
   auth-base:
     image: ehealthafrica/gateway-manager:${GATEWAY_VERSION:-latest}
@@ -398,5 +395,3 @@ services:
       - ./api-auth/solution:/code/solution
       - ./api-auth/keycloak/realm/realm_template.json:/code/templates/realm_template.json
     command: help
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}
