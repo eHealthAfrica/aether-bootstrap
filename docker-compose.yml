@@ -36,6 +36,37 @@ services:
       - aether
 
   # ---------------------------------
+  # API & Auth
+  # ---------------------------------
+
+  kong:
+    extends:
+      file: ./docker-compose-base.yml
+      service: kong-base
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      aether:
+        ipv4_address: ${KONG_IP}
+    extra_hosts:
+      - ${BASE_DOMAIN}:127.0.0.1
+
+  keycloak:
+    extends:
+      file: ./docker-compose-base.yml
+      service: keycloak-base
+    depends_on:
+      db:
+        condition: service_healthy
+      kong:
+        condition: service_started
+    networks:
+      - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
+
+  # ---------------------------------
   # Aether kernel
   # ---------------------------------
 
@@ -95,37 +126,6 @@ services:
       kong:
         condition: service_started
       keycloak:
-        condition: service_started
-    networks:
-      - aether
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}
-
-  # ---------------------------------
-  # API & Auth
-  # ---------------------------------
-
-  kong:
-    extends:
-      file: ./docker-compose-base.yml
-      service: kong-base
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      aether:
-        ipv4_address: ${KONG_IP}
-    extra_hosts:
-      - ${BASE_DOMAIN}:127.0.0.1
-
-  keycloak:
-    extends:
-      file: ./docker-compose-base.yml
-      service: keycloak-base
-    depends_on:
-      db:
-        condition: service_healthy
-      kong:
         condition: service_started
     networks:
       - aether
