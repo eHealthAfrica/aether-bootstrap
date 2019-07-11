@@ -23,9 +23,8 @@ services:
     environment:
       MINIO_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
-    command: minio server --quiet --address minio:9000 /data
-    ports:
-      - 9000:9000
+    command: minio server --quiet --address ${MINIO_ENDPOINT} /data
+
 
   # ---------------------------------
   # Aether kernel
@@ -38,14 +37,15 @@ services:
       DJANGO_SECRET_KEY: ${KERNEL_DJANGO_SECRET_KEY}
       LOGGING_FORMATTER: verbose
       HTML_SELECT_CUTOFF: 10
+      PROFILING_ENABLED: "true"
 
       BUCKET_NAME: kernel
       DJANGO_STORAGE_BACKEND: minio
       MINIO_STORAGE_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
       MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
-      MINIO_STORAGE_ENDPOINT: minio:9000
+      MINIO_STORAGE_ENDPOINT: ${MINIO_ENDPOINT}
       MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
-      MINIO_STORAGE_MEDIA_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/minio/kernel
+      MINIO_STORAGE_MEDIA_URL: http://${MINIO_ENDPOINT}/kernel
       MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: "true"
       MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: "true"
 
@@ -91,8 +91,6 @@ services:
     volumes:
       # backup folder
       - ./.persistent_data/backups/kernel:/backups
-    ports:
-      - 8000:8000
     command: start
 
 
@@ -107,14 +105,15 @@ services:
       DJANGO_SECRET_KEY: ${ODK_DJANGO_SECRET_KEY}
       LOGGING_FORMATTER: verbose
       HTML_SELECT_CUTOFF: 10
+      PROFILING_ENABLED: "true"
 
       BUCKET_NAME: odk
       DJANGO_STORAGE_BACKEND: minio
       MINIO_STORAGE_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
       MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
-      MINIO_STORAGE_ENDPOINT: minio:9000
+      MINIO_STORAGE_ENDPOINT: ${MINIO_ENDPOINT}
       MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
-      MINIO_STORAGE_MEDIA_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/minio/odk
+      MINIO_STORAGE_MEDIA_URL: http://${MINIO_ENDPOINT}/odk
       MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: "true"
       MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: "true"
 
@@ -152,8 +151,6 @@ services:
     volumes:
       # backup folder
       - ./.persistent_data/backups/odk:/backups
-    ports:
-      - 8002:8002
     command: start
 
 
@@ -168,6 +165,7 @@ services:
       DJANGO_SECRET_KEY: ${UI_DJANGO_SECRET_KEY}
       LOGGING_FORMATTER: verbose
       HTML_SELECT_CUTOFF: 10
+      PROFILING_ENABLED: "true"
 
       APP_NAME: Aether
 
@@ -202,8 +200,6 @@ services:
     volumes:
       # backup folder
       - ./.persistent_data/backups/ui:/backups
-    ports:
-      - 8004:8004
     command: start
 
 
@@ -222,15 +218,11 @@ services:
         -DrequireClientAuthScheme=digest
         -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
         -Dzookeeper.authProvider.2=org.apache.zookeeper.server.auth.DigestAuthenticationProvider
-    extra_hosts:
-      - moby:127.0.0.1
     volumes:
       - ./kafka/zk_server_jaas.conf:/etc/zookeeper/zk_server_jaas.conf
 
   kafka-base:
     image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-5.2.1}
-    ports:
-      - 9092:9092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
@@ -256,11 +248,8 @@ services:
       KAFKA_LOG4J_LOGGERS: "kafka.authorizer.logger=ERROR"
       KAFKA_LOG4J_ROOT_LOGLEVEL: ERROR
       KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
-
     volumes:
       - ./kafka/kafka_server_jaas.conf:/etc/kafka/kafka_server_jaas.conf
-    extra_hosts:
-      - moby:127.0.0.1
 
 
   # ---------------------------------
@@ -270,9 +259,13 @@ services:
   aether-producer-base:
     image: ehealthafrica/aether-producer:${AETHER_VERSION}
     environment:
-      PYTHONUNBUFFERED: 1
+      # default settings file
+      PRODUCER_SETTINGS_FILE: /code/producer/settings.json
 
       # These variables will override the ones indicated in the settings file
+      PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
+      PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PASSWORD}
+
       KERNEL_URL: http://kernel:8000
       KERNEL_USERNAME: ${KERNEL_ADMIN_USERNAME}
       KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
@@ -292,15 +285,8 @@ services:
       KAFKA_SU_PW: ${KAFKA_SU_PASSWORD}
       KAFKA_SECURITY: SASL_PLAINTEXT
 
-      PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
-      PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PASSWORD}
       SERVER_PORT: 5005
       LOG_LEVEL: ERROR
-
-      # default settings file
-      PRODUCER_SETTINGS_FILE: /code/producer/settings.json
-    ports:
-      - 5005:5005
     command: start
 
 
@@ -322,6 +308,9 @@ services:
       KONG_PROXY_LISTEN: 0.0.0.0:80, 0.0.0.0:8443
 
       KONG_PLUGINS: bundled,kong-oidc-auth
+    # volumes:
+    #   # uncomment to mount logs outside of docker
+    #   - ./.persistent_data/logs/kong:/usr/local/kong/logs/
     ports:
       - 80:80
       - 8443:8443  # ODK Collect requirement!!!
@@ -349,8 +338,9 @@ services:
 
       KEYCLOAK_LOGLEVEL: ERROR
       ROOT_LOGLEVEL: ERROR
-    ports:
-      - 8080:8080
+    # this is private to the cluster, only open for debugging
+    # ports:
+    #   - 8080:8080
 
 
   # ---------------------------------
@@ -376,8 +366,6 @@ services:
 
       PROJECT_NAME: DefaultDemo
       MAPPING_NAME: default_mapping
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}
 
   auth-base:
     image: ehealthafrica/gateway-manager:${GATEWAY_VERSION:-latest}
@@ -390,7 +378,7 @@ services:
       KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
       KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
 
-      KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}
+      KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}/
       KONG_INTERNAL: ${KONG_INTERNAL}
 
       ZOOKEEPER_HOST: zookeeper:32181
@@ -403,9 +391,8 @@ services:
       ELASTICSEARCH_PW: ${ELASTICSEARCH_PASSWORD}
 
     volumes:
+      - ./api-auth/app:/code/app
       - ./api-auth/service:/code/service
       - ./api-auth/solution:/code/solution
       - ./api-auth/keycloak/realm/realm_template.json:/code/templates/realm_template.json
     command: help
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}

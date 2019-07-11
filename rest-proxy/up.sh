@@ -20,7 +20,7 @@
 #
 set -Eeuo pipefail
 
-DC="docker-compose -f ./docker-compose-generation.yml"
-
-$DC build --force-rm assets
-$DC run --rm assets register --build
+source ./.env || \
+    ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/demo" && \
+      exit 1 )
+docker-compose -f ./rest-proxy/docker-compose.yml up -d

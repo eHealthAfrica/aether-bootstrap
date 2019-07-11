@@ -41,7 +41,7 @@ fi
 
 start_db
 start_container kong     $KONG_INTERNAL
-start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
+start_container keycloak $KEYCLOAK_INTERNAL
 
 echo_message "Connecting to keycloak server..."
 connect_to_keycloak

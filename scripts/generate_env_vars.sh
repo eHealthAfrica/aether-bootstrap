@@ -60,8 +60,8 @@ function gen_env_file {
 # ------------------------------------------------------------------
 # Releases
 # ==================================================================
-AETHER_VERSION=1.5.0
-GATHER_VERSION=3.2.0
+AETHER_VERSION=1.5.1-rc
+GATHER_VERSION=3.2.1-rc
 GATEWAY_VERSION=latest
 KONG_VERSION=1.1
 KEYCLOAK_VERSION=latest
@@ -100,7 +100,8 @@ BASE_PROTOCOL=http
 # to be used in the aether containers
 KEYCLOAK_SERVER_URL=http://${LOCAL_HOST}/auth/realms
 
-KEYCLOAK_INTERNAL=http://keycloak:8080
+KEYCLOAK_HOST=http://keycloak:8080
+KEYCLOAK_INTERNAL=http://keycloak:8080/auth
 KONG_INTERNAL=http://kong:8001
 
 NETWORK_SUBNET=192.168.9.0/24
@@ -115,7 +116,7 @@ KONG_IP=192.168.9.10
 MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
 MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
 
-MINIO_INTERNAL=http://minio:9000
+MINIO_ENDPOINT=minio:9100
 # ------------------------------------------------------------------
 
 
@@ -149,6 +150,11 @@ TEST_KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
 # ==================================================================
 PRODUCER_ADMIN_USER=admin
 PRODUCER_ADMIN_PASSWORD=adminadmin
+
+# TEST Aether Producer
+# ------------------------------------------------------------------
+TEST_PRODUCER_ADMIN_USER=admin-test
+TEST_PRODUCER_ADMIN_PASSWORD=testingtesting
 # ------------------------------------------------------------------
 
 
@@ -158,13 +164,14 @@ PRODUCER_ADMIN_PASSWORD=adminadmin
 # internal users
 KAFKA_ROOT_USER=root
 KAFKA_ROOT_PASSWORD=$(gen_random_string)
-ZOOKEEPER_ROOT_USER=zk-admin
-ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
 # kafka all-tenant Superuser
 KAFKA_SU_USER=master
 KAFKA_SU_PASSWORD=adminadmin
 # secret to generate tenant specific passwords
 KAFKA_SECRET=$(gen_random_string)
+
+ZOOKEEPER_ROOT_USER=zk-admin
+ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 
 
@@ -205,6 +212,7 @@ UI_DJANGO_SECRET_KEY=$(gen_random_string)
 UI_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 
+
 # ------------------------------------------------------------------
 # Gather
 # ==================================================================
@@ -235,9 +243,9 @@ if [ -e ".env" ]; then
     # check localhost vs base domain
     if [ "$LOCAL_HOST" = "$BASE_DOMAIN" ]; then
         generate_new=no
-        echo "  - Remove it if you want to generate new local credentials."
+        echo "Remove it if you want to generate new local credentials."
     else
-        echo "  - Current domain [$LOCAL_HOST] differs from saved one [$BASE_DOMAIN], generating new credentials"
+        echo "Current domain [$LOCAL_HOST] differs from saved one [$BASE_DOMAIN], generating new credentials"
         mv ".env" ".env.${BASE_DOMAIN}"
     fi
 fi
@@ -252,11 +260,11 @@ cat << EOF
 
 Add to your
 
-    /etc/hosts file (Linux / MacOS)
+    [/etc/hosts] file (Linux / MacOS)
 
 or
 
-    C:\Windows\System32\Drivers\etc\hosts file (Windows)
+    [C:\Windows\System32\Drivers\etc\hosts] file (Windows)
 
 the following line:
 

@@ -17,6 +17,8 @@ services:
       service: assets-base
     networks:
       - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
 
   # ---------------------------------
   # Auth builder Container
@@ -28,3 +30,5 @@ services:
       service: auth-base
     networks:
       - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}

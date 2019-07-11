@@ -25,9 +25,11 @@ set -Eeuo pipefail
 export LOCAL_HOST=aether.local
 # ------------------------------------------------------------------------------
 
-echo "-------------------------------------------------------"
-echo "  Initialising installation for host: ${LOCAL_HOST}"
-echo "-------------------------------------------------------"
+source ./scripts/aether_functions.sh
+
+echo_message ""
+echo_message "  Initializing installation for host: ${LOCAL_HOST}"
+echo_message ""
 
 ./scripts/generate_env_vars.sh
 source .env
@@ -35,7 +37,8 @@ source ./scripts/aether_functions.sh
 kafka/make_credentials.sh
 
 echo_message ""
-echo_message "Initializing Aether environment, this may take 15 minutes depending on bandwidth."
+echo_message "Initializing Aether environment,"
+echo_message " this may take 15 minutes depending on bandwidth."
 echo_message ""
 
 # stop and remove all containers or the network cannot be recreated
@@ -47,11 +50,13 @@ create_docker_assets
 echo_message "Pulling docker images..."
 docker-compose pull db minio keycloak kong
 docker-compose -f docker-compose-connect.yml pull
-docker-compose -f docker-compose-connect.yml up -d zookeeper kafka
 $DC_AUTH pull auth
 echo_message ""
 
 start_db
+
+echo_message "Starting Kafka & Zookeper containers..."
+docker-compose -f docker-compose-connect.yml up -d zookeeper kafka
 
 
 echo_message "Preparing aether containers..."
@@ -88,8 +93,7 @@ docker-compose run --rm kong kong migrations up
 echo_message ""
 start_container kong $KONG_INTERNAL
 
-$AUTH_RUN setup_auth
-$AUTH_RUN register_app minio $MINIO_INTERNAL
+$AUTH_RUN add_app keycloak
 echo_message ""
 
 echo_message "Creating Kafka Superuser..."
@@ -97,9 +101,8 @@ $AUTH_RUN add_kafka_su $KAFKA_SU_USER $KAFKA_SU_PASSWORD
 $AUTH_RUN grant_kafka_su $KAFKA_ROOT_USER
 echo_message ""
 
-
 echo_message "Preparing keycloak..."
-start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
+start_container keycloak $KEYCLOAK_INTERNAL
 
 echo_message "Creating initial tenants/realms in keycloak..."
 create_kc_tenant "dev"  "Local development"

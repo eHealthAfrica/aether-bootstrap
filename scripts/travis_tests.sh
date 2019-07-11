@@ -20,14 +20,67 @@
 #
 set -Eeuo pipefail
 
-# just check that the script works
-./scripts/initialise_docker_environment.sh
+# just check that the scripts work
 
-# build assets generation container
-docker-compose -f docker-compose-generation.yml build assets
+./scripts/generate_env_vars.sh
+./kafka/make_credentials.sh
 
-# setup integration test requirements
-./scripts/integration_test_setup.sh
+source .env
+source ./scripts/aether_functions.sh
 
-# run integration tests
-docker-compose -f docker-compose-test.yml run --rm --no-deps integration-test test
+
+case "$1" in
+
+    setup )
+        echo_message "Set up [Aether]..."
+        ./scripts/initialise_docker_environment.sh || (
+            echo_message "Set up [Aether] FAILED!!!" && exit 1
+        )
+
+        echo_message "Set up [Gather]..."
+        ./gather/setup_gather.sh || (
+            echo_message "Set up [Gather] FAILED!!!"
+        )
+
+        # ToBeFixed: ES
+        echo_message "Set up [ElasticSearch]..."
+        ./elasticsearch/setup.sh || (
+            echo_message "Set up [ElasticSearch] FAILED!!!"
+        )
+    ;;
+
+    ckan )
+        echo_message "Start [Aether]..."
+        start_db
+        start_container kong     $KONG_INTERNAL
+        start_container keycloak $KEYCLOAK_INTERNAL
+        start_container kernel   http://kernel:8000/health
+
+        echo_message "Start [CKAN]..."
+        ./scripts/run_ckan.sh
+        ./scripts/run_connect.sh
+
+
+        ./scripts/register_assets.sh || (
+            echo_message "Register assets FAILED!!!"
+        )
+        ./scripts/generate_assets.sh 1 || (
+            echo_message "Generate assets FAILED!!!"
+        )
+    ;;
+
+    integration )
+        echo_message "Integration tests..."
+        ./scripts/integration_test_setup.sh
+
+        DC="docker-compose -f ./docker-compose-test.yml"
+        $DC run --rm integration-test test || (
+            echo_message "Integration tests FAILED!!!"
+        )
+    ;;
+
+esac
+
+echo_message ""
+echo_message "Done!"
+echo_message ""
