@@ -8,7 +8,6 @@ networks:
 services:
   rest-proxy:
     image: ehealthafrica/scheduled-rest-proxy:latest
-    build: .
     stdin_open: true
     tty: true
     environment:
