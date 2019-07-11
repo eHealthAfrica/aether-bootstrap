@@ -12,7 +12,7 @@ services:
     stdin_open: true
     tty: true
     environment:
-      LOG_LEVEL: ERROR
+      LOG_LEVEL: DEBUG
       PORT: 3333
       REQUIRES_AUTH: "False"
       REDIS_HOST: rest-proxy-redis
@@ -31,6 +31,8 @@ services:
 
   rest-proxy-redis:
     image: redis:3-alpine
-    command: ["--notify-keyspace-events", "KA", "--appendonly", "yes"]
+    command: ["--appendonly", "yes"]
+    volumes:
+      - ./redisdata:/data
     networks:
       - aether
