@@ -53,10 +53,13 @@ docker-compose -f docker-compose-connect.yml pull
 $DC_AUTH pull auth
 echo_message ""
 
-start_db
 
 echo_message "Starting Kafka & Zookeper containers..."
 docker-compose -f docker-compose-connect.yml up -d zookeeper kafka
+
+
+start_db
+./scripts/setup_auth.sh
 
 
 echo_message "Preparing aether containers..."
@@ -70,27 +73,7 @@ done
 docker-compose run --rm --no-deps kernel eval python /code/sql/create_readonly_user.py
 echo_message ""
 
-
-# Initialize the kong & keycloak databases in the postgres instance
-
-# THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
-rebuild_database kong     kong     ${KONG_PG_PASSWORD}
-rebuild_database keycloak keycloak ${KEYCLOAK_PG_PASSWORD}
-echo_message ""
-
-
 echo_message "Preparing kong..."
-#
-# https://docs.konghq.com/install/docker/
-#
-# Note for Kong < 0.15: with Kong versions below 0.15 (up to 0.14),
-# use the up sub-command instead of bootstrap.
-# Also note that with Kong < 0.15, migrations should never be run concurrently;
-# only one Kong node should be performing migrations at a time.
-# This limitation is lifted for Kong 0.15, 1.0, and above.
-docker-compose run --rm kong kong migrations bootstrap 2>/dev/null || true
-docker-compose run --rm kong kong migrations up
-echo_message ""
 start_container kong $KONG_INTERNAL
 
 $AUTH_RUN add_app keycloak

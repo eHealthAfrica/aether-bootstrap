@@ -20,24 +20,27 @@
 #
 set -Eeuo pipefail
 
-source ./.env || \
-    ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/elasticsearch" && \
-      exit 1 )
+source .env
 source ./scripts/aether_functions.sh
 
-DCES="docker-compose -f ./elasticsearch/docker-compose.yml"
 
-$DCES pull elasticsearch kibana
+start_db
 
-start_container kong     $KONG_INTERNAL
-start_container keycloak $KEYCLOAK_INTERNAL
+# Initialize the kong & keycloak databases in the postgres instance
 
-ES_URL="http://admin:${ELASTICSEARCH_PASSWORD}@elasticsearch:9200"
-start_container elasticsearch $ES_URL "./elasticsearch/docker-compose.yml"
+# THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
+rebuild_database kong     kong     ${KONG_PG_PASSWORD}
+rebuild_database keycloak keycloak ${KEYCLOAK_PG_PASSWORD}
+echo_message ""
 
-$AUTH_RUN setup_elasticsearch
-
-# From aether_functions.sh
-add_es_tenant "dev"
-add_es_tenant "prod"
-add_es_tenant "test"
+#
+# https://docs.konghq.com/install/docker/
+#
+# Note for Kong < 0.15: with Kong versions below 0.15 (up to 0.14),
+# use the up sub-command instead of bootstrap.
+# Also note that with Kong < 0.15, migrations should never be run concurrently;
+# only one Kong node should be performing migrations at a time.
+# This limitation is lifted for Kong 0.15, 1.0, and above.
+docker-compose run --rm kong kong migrations bootstrap 2>/dev/null || true
+docker-compose run --rm kong kong migrations up
+echo_message ""
