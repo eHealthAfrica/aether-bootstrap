@@ -28,7 +28,7 @@ export LOCAL_HOST=aether.local
 source ./scripts/aether_functions.sh
 
 echo_message ""
-echo_message "  Initializing installation for host: ${LOCAL_HOST}"
+echo_message "Initializing installation for host: ${LOCAL_HOST}"
 echo_message ""
 
 ./scripts/generate_env_vars.sh
