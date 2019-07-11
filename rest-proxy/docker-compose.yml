@@ -12,9 +12,9 @@ services:
     stdin_open: true
     tty: true
     environment:
-      LOG_LEVEL: DEBUG
+      LOG_LEVEL: ERROR
       PORT: 3333
-      REQUIRES_AUTH: "False"
+      REQUIRES_AUTH: "False"  # Gateway handles this
       REDIS_HOST: rest-proxy-redis
 
     depends_on:
