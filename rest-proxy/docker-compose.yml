@@ -1,0 +1,37 @@
+version: "2.1"
+
+networks:
+  aether:
+    external:
+      name: aether_bootstrap_net
+
+services:
+  rest-proxy:
+    image: ehealthafrica/scheduled-rest-proxy:latest
+    stdin_open: true
+    tty: true
+    environment:
+      LOG_LEVEL: ERROR
+      PORT: 3333
+      REQUIRES_AUTH: "False"  # Gateway handles this
+      REDIS_HOST: rest-proxy-redis
+
+    depends_on:
+      rest-proxy-redis:
+        condition: service_started
+    ports:
+     - 3333:3333
+    command: start
+    networks:
+      - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
+      - moby:127.0.0.1
+
+  rest-proxy-redis:
+    image: redis:3-alpine
+    command: ["--appendonly", "yes"]
+    volumes:
+      - ./redisdata:/data
+    networks:
+      - aether
