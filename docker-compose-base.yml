@@ -391,6 +391,7 @@ services:
       ELASTICSEARCH_PW: ${ELASTICSEARCH_PASSWORD}
 
     volumes:
+      - ./api-auth/app:/code/app
       - ./api-auth/service:/code/service
       - ./api-auth/solution:/code/solution
       - ./api-auth/keycloak/realm/realm_template.json:/code/templates/realm_template.json

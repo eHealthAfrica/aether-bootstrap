@@ -1,0 +1,5 @@
+{
+  "name": "keycloak",
+  "host": "http://keycloak:8080",
+  "paths": [ "/auth/" ]
+}
