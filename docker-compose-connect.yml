@@ -24,6 +24,9 @@ services:
       - aether
     volumes:
       - zookeeper-data:/var/lib/zookeeper
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
+      - moby:127.0.0.1
 
   kafka:
     extends:
@@ -36,7 +39,9 @@ services:
       - aether
     volumes:
       - kafka-data:/var/lib/kafka/data
-
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
+      - moby:127.0.0.1
 
   # ---------------------------------
   # Aether Kafka Producer

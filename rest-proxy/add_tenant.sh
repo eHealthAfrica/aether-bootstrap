@@ -21,22 +21,13 @@
 set -Eeuo pipefail
 
 source ./.env || \
-    ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/elasticsearch" && \
+    ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/demo" && \
       exit 1 )
 source ./scripts/aether_functions.sh
 
-DCES="docker-compose -f ./elasticsearch/docker-compose.yml"
+echo_message "You services must be running!"
+echo_message "REST PROXY IS NOT MULTI-TENANT!!!"
+echo_message "ONLY ONE REALM SHOULD BE GRANTED ACCESS"
+echo_message "Adding rest-proxy service tenant $1..."
 
-$DCES pull elasticsearch kibana
-$DCES up -d elasticsearch
-
-start_container kong     $KONG_INTERNAL
-start_container keycloak $KEYCLOAK_INTERNAL
-
-
-$AUTH_RUN setup_elasticsearch
-
-# From aether_functions.sh
-add_es_tenant "dev"
-add_es_tenant "prod"
-add_es_tenant "test"
+$AUTH_RUN add_service rest-proxy $1 $KEYCLOAK_KONG_CLIENT

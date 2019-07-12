@@ -93,8 +93,7 @@ docker-compose run --rm kong kong migrations up
 echo_message ""
 start_container kong $KONG_INTERNAL
 
-$AUTH_RUN setup_auth
-$AUTH_RUN register_app minio $MINIO_INTERNAL
+$AUTH_RUN add_app keycloak
 echo_message ""
 
 echo_message "Creating Kafka Superuser..."
@@ -103,7 +102,7 @@ $AUTH_RUN grant_kafka_su $KAFKA_ROOT_USER
 echo_message ""
 
 echo_message "Preparing keycloak..."
-start_container keycloak "${KEYCLOAK_INTERNAL}/auth"
+start_container keycloak $KEYCLOAK_INTERNAL
 
 echo_message "Creating initial tenants/realms in keycloak..."
 create_kc_tenant "dev"  "Local development"

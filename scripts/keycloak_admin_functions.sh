@@ -28,10 +28,9 @@ function connect_to_keycloak {
     KC_ID=$(docker-compose ps -q keycloak)
     export KCADM="docker container exec -i ${KC_ID} ./keycloak/bin/kcadm.sh"
 
-    KC_URL="${KEYCLOAK_INTERNAL}/auth"
     $KCADM \
         config credentials \
-        --server ${KC_URL} \
+        --server ${KEYCLOAK_INTERNAL} \
         --realm master \
         --user "${KEYCLOAK_GLOBAL_ADMIN}" \
         --password "${KEYCLOAK_GLOBAL_PASSWORD}"
