@@ -4,14 +4,17 @@
   "oidc_endpoints": [
     {
       "name": "protected",
-      "url": "/"
+      "paths": [
+        "/{realm}/{name}/"
+      ]
     }
   ],
   "public_endpoints": [
     {
       "name": "public",
-      "url": "/-/kernel/",
-      "route_path": "/-/kernel/"
+      "paths": [
+        "/{public_realm}/{name}/"
+      ]
     }
   ]
 }

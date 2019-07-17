@@ -1,7 +1,7 @@
 {
-    "realm": "${realm}",
-    "displayName": "${displayName}",
-    "loginTheme": "${loginTheme}",
-    "sslRequired": "NONE",
-    "enabled": true
+  "realm": "${realm}",
+  "displayName": "${displayName}",
+  "loginTheme": "${loginTheme}",
+  "sslRequired": "NONE",
+  "enabled": true
 }

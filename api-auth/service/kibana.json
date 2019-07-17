@@ -4,11 +4,16 @@
   "oidc_endpoints": [
     {
       "name": "protected",
-      "url": "/",
-      "template_path": "/{realm}/kibana",
+      "paths": [
+        "/{realm}/{name}"
+      ],
       "strip_path": "true",
       "oidc_override": {
-        "config.user_keys": ["preferred_username", "email", "groups"]
+        "config.user_keys": [
+          "preferred_username",
+          "email",
+          "groups"
+        ]
       }
     }
   ]
