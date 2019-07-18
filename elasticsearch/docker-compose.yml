@@ -28,7 +28,7 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
     # ports:
-    #   - "9200:9200"
+    #   - 9200:9200
 
 
   kibana:
@@ -36,7 +36,7 @@ services:
     environment:
       ELASTICSEARCH_URL: http://elasticsearch:9200
       ELASTICSEARCH_PRESERVEHOST: "false"
-      SERVER_BASEPATH: "/kibana-app"
+      SERVER_BASEPATH: /kibana-app
       SERVER_REWRITEBASEPATH: "true"
       opendistro_security.ssl.http.enabled: "false"
     volumes:
@@ -50,25 +50,28 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
     # ports:
-    #   - "5601:5601"
+    #   - 5601:5601
 
 
   consumer:
     # demo version without job handling!
     image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190625-01
     environment:
-      PYTHONUNBUFFERED: 0
       KAFKA_URL: kafka:29092
       SECURITY_PROTOCOL: SASL_PLAINTEXT
       SASL_MECHANISM: PLAIN
       SASL_PLAIN_USERNAME: ${KAFKA_ROOT_USER}
       SASL_PLAIN_PASSWORD: ${KAFKA_ROOT_PASSWORD}
+
       KIBANA_URL: http://kibana:5601
+
       ELASTICSEARCH_URL: elasticsearch
       ELASTICSEARCH_PORT: 9200
       ELASTICSEARCH_USER: admin
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+
       LOG_LEVEL: ERROR
+
       CONSUMER_PORT: 9099
       ES_CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
       ES_CONSUMER_KAFKA_CONFIG_PATH: /code/conf/consumer/kafka.json
@@ -82,4 +85,4 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
     # ports:
-    #   - "9009:9009"
+    #   - 9009:9009

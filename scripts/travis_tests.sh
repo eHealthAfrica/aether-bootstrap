@@ -33,25 +33,17 @@ case "$1" in
 
     setup )
         echo_message "Set up [Aether]..."
-        ./scripts/initialise_docker_environment.sh || (
-            echo_message "Set up [Aether] FAILED!!!" && exit 1
-        )
+        ./scripts/initialise_docker_environment.sh
 
         echo_message "Set up [Gather]..."
-        ./gather/setup_gather.sh || (
-            echo_message "Set up [Gather] FAILED!!!"
-        )
+        ./gather/setup_gather.sh
 
-        # ToBeFixed: ES
         echo_message "Set up [ElasticSearch]..."
-        ./elasticsearch/setup.sh || (
-            echo_message "Set up [ElasticSearch] FAILED!!!"
-        )
+        ./elasticsearch/setup.sh
     ;;
 
     ckan )
         echo_message "Start [Aether]..."
-        start_db
         start_container kong     $KONG_INTERNAL
         start_container keycloak $KEYCLOAK_INTERNAL
         start_container kernel   http://kernel:8000/health

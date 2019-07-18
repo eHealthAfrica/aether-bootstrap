@@ -65,9 +65,10 @@ function start_db {
 function start_container {
     container=$1
     url=$2
+    dc=${3:-docker-compose.yml}
 
     echo_message "Starting [$container] server..."
-    docker-compose up -d $container
+    docker-compose -f $dc up -d $container
 
     CHECK_URL="docker-compose run --rm --no-deps kernel manage check_url -u"
     until $CHECK_URL $url >/dev/null; do
