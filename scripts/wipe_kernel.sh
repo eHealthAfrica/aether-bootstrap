@@ -21,9 +21,9 @@
 set -Eeuo pipefail
 
 docker-compose kill
-docker-compose down
+docker-compose down -v
 
-docker volume  rm aether_database_data -f
-docker network rm aether_bootstrap_net
+docker volume  rm aether_database_data -f || true
+docker network rm aether_bootstrap_net    || true
 
 sudo rm -R -f ./.persistent_data

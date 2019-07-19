@@ -27,7 +27,6 @@ gen_random_string () {
 }
 
 create_config() {
-
     COOKIE_SECRET=$(gen_random_string)
     POSTGRES_PASSWORD=$(gen_random_string)
     REDASH_DATABASE_URL="postgresql://postgres:${POSTGRES_PASSWORD}@postgres/postgres"

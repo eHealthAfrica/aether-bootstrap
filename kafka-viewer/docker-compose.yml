@@ -12,12 +12,12 @@ services:
     stdin_open: true
     tty: true
     environment:
-     - PYTHONUNBUFFERED=1
-     - KAFKA_CONFIG=/code/conf/consumer/kafka.json
-     - CONSUMER_CONFIG=/code/conf/consumer/consumer.json
+      - PYTHONUNBUFFERED=1
+      - KAFKA_CONFIG=/code/conf/consumer/kafka.json
+      - CONSUMER_CONFIG=/code/conf/consumer/consumer.json
     volumes:
-     - ./conf:/code/conf/consumer
-     - ./logs:/code/logs
+      - ./conf:/code/conf/consumer
+      - ./logs:/code/logs
     command: start
     networks:
       - aether

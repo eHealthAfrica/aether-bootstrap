@@ -20,6 +20,11 @@
 #
 set -Eeuo pipefail
 
+if [ -z "${1:-}" ]; then
+    echo "Please, indicate tenant name!"
+    exit 1
+fi
+
 source ./.env || \
     ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/demo" && \
       exit 1 )
@@ -28,6 +33,7 @@ source ./scripts/aether_functions.sh
 echo_message "You services must be running! If you encounter errors, run demo/start.sh"
 echo_message "Adding tenant $1..."
 echo_message "Creating initial tenants/realms in keycloak..."
-create_kc_tenant "$1"  "Realm: $1"
-add_es_tenant "$1"
+
+create_kc_tenant  "$1"  "Realm: $1"
+add_es_tenant     "$1"
 add_gather_tenant "$1"

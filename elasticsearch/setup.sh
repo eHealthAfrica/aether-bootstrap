@@ -25,17 +25,13 @@ source ./.env || \
       exit 1 )
 source ./scripts/aether_functions.sh
 
-DCES="docker-compose -f ./elasticsearch/docker-compose.yml"
-
-$DCES pull elasticsearch kibana
+docker-compose -f ./elasticsearch/docker-compose.yml pull elasticsearch kibana
+ES_URL="http://admin:${ELASTICSEARCH_PASSWORD}@elasticsearch:9200"
+start_container elasticsearch $ES_URL "./elasticsearch/docker-compose.yml"
+$AUTH_RUN setup_elasticsearch
 
 start_container kong     $KONG_INTERNAL
 start_container keycloak $KEYCLOAK_INTERNAL
-
-ES_URL="http://admin:${ELASTICSEARCH_PASSWORD}@elasticsearch:9200"
-start_container elasticsearch $ES_URL "./elasticsearch/docker-compose.yml"
-
-$AUTH_RUN setup_elasticsearch
 
 # From aether_functions.sh
 add_es_tenant "dev"

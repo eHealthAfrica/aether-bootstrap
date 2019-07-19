@@ -21,10 +21,12 @@
 set -Eeuo pipefail
 
 scripts/initialise_docker_environment.sh
+
 docker-compose up -d
 docker-compose -f ./docker-compose-connect.yml up -d
-docker-compose -f ./elasticsearch/docker-compose.yml up -d elasticsearch
+
 gather/setup_gather.sh
 gather/start_gather.sh
+
 elasticsearch/setup.sh
 elasticsearch/start.sh

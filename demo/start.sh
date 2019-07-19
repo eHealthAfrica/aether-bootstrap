@@ -19,7 +19,10 @@
 # under the License.
 #
 set -Eeuo pipefail
-docker-compose up -d
-docker-compose -f ./docker-compose-connect.yml up -d
-docker-compose -f ./elasticsearch/docker-compose.yml up -d
-docker-compose -f ./gather/docker-compose.yml up -d
+
+docker-compose \
+    -f ./docker-compose.yml \
+    -f ./docker-compose-connect.yml \
+    -f ./elasticsearch/docker-compose.yml \
+    -f ./gather/docker-compose.yml \
+    up -d

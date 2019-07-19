@@ -20,6 +20,11 @@
 #
 set -Eeuo pipefail
 
+if [ -z "${1:-}" ]; then
+    echo "Please, indicate tenant name!"
+    exit 1
+fi
+
 source ./.env || \
     ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/demo" && \
       exit 1 )

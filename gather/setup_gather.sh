@@ -27,12 +27,11 @@ source ./.env || \
 source ./scripts/aether_functions.sh
 
 DCG="docker-compose -f ./gather/docker-compose.yml"
+$DCG pull gather
+$DCG run --rm --no-deps gather setup
 
 start_container kong     $KONG_INTERNAL
 start_container keycloak $KEYCLOAK_INTERNAL
-
-$DCG pull gather
-$DCG run --rm --no-deps gather setup
 
 # From aether_functions.sh
 add_gather_tenant "dev"

@@ -19,7 +19,19 @@
 # under the License.
 #
 set -Eeuo pipefail
-docker-compose kill
-docker-compose -f ./docker-compose-connect.yml kill
-docker-compose -f ./elasticsearch/docker-compose.yml kill
-docker-compose -f ./gather/docker-compose.yml kill
+
+# do not include "-v" option in down command if they are not "external"
+
+docker-compose \
+    -f ./docker-compose.yml \
+    -f ./docker-compose-connect.yml \
+    -f ./elasticsearch/docker-compose.yml \
+    -f ./gather/docker-compose.yml \
+    kill
+
+docker-compose \
+    -f ./docker-compose.yml \
+    -f ./docker-compose-connect.yml \
+    -f ./elasticsearch/docker-compose.yml \
+    -f ./gather/docker-compose.yml \
+    down

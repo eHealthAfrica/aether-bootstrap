@@ -23,4 +23,5 @@ set -Eeuo pipefail
 source ./.env || \
     ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/demo" && \
       exit 1 )
+
 docker-compose -f ./rest-proxy/docker-compose.yml up -d
