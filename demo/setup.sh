@@ -25,8 +25,8 @@ scripts/initialise_docker_environment.sh
 docker-compose up -d
 docker-compose -f ./docker-compose-connect.yml up -d
 
-gather/setup_gather.sh
-gather/start_gather.sh
+gather/setup.sh
+gather/start.sh
 
 elasticsearch/setup.sh
 elasticsearch/start.sh

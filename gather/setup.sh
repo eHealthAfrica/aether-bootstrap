@@ -28,6 +28,7 @@ source ./scripts/aether_functions.sh
 
 DCG="docker-compose -f ./gather/docker-compose.yml"
 $DCG pull gather
+docker-compose up -d db
 $DCG run --rm --no-deps gather setup
 
 start_container kong     $KONG_INTERNAL
