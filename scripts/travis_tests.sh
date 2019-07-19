@@ -38,7 +38,7 @@ case "$1" in
         ./scripts/initialise_docker_environment.sh
 
         echo_message "Set up [Gather]..."
-        ./gather/setup_gather.sh
+        ./gather/setup.sh
 
         echo_message "Set up [ElasticSearch]..."
         ./elasticsearch/setup.sh
