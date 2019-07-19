@@ -5,7 +5,7 @@
     {
       "name": "protected",
       "paths": [
-        "/{realm}/{name}/"
+        "/{realm}/{name}"
       ]
     }
   ],
@@ -13,7 +13,7 @@
     {
       "name": "public",
       "paths": [
-        "/{public_realm}/{name}/"
+        "/{public_realm}/{name}"
       ]
     }
   ]
