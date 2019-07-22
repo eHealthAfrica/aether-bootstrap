@@ -20,7 +20,7 @@ services:
       rest-proxy-redis:
         condition: service_started
     ports:
-     - 3333:3333
+      - 3333:3333
     command: start
     networks:
       - aether

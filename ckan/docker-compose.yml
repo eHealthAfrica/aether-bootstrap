@@ -3,6 +3,15 @@
 version: "3"
 
 
+networks:
+  aether:
+    external:
+      name: aether_bootstrap_net
+
+  ckan_net:
+    driver: bridge
+
+
 services:
   ckan:
     container_name: ckan
@@ -35,7 +44,7 @@ services:
       #- POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       #- DS_RO_PASS=${DATASTORE_READONLY_PASSWORD}
     volumes:
-     - ./ckan:/etc/ckan
+      - ./ckan:/etc/ckan
     networks:
       - aether
       - ckan_net
@@ -76,10 +85,3 @@ services:
     image: redis:latest
     networks:
       - ckan_net
-
-networks:
-  aether:
-    external:
-      name: aether_bootstrap_net
-  ckan_net:
-      driver: bridge

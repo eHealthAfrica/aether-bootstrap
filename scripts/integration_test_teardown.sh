@@ -23,7 +23,7 @@ set -Eeuo pipefail
 DC_TEST="docker-compose -f docker-compose-test.yml"
 
 $DC_TEST kill
-$DC_TEST down
+$DC_TEST down -v
 
 docker network rm aether_test 2>/dev/null || true
 docker volume  rm aether_test_database_data --force 2>/dev/null || true

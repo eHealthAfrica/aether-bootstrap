@@ -20,8 +20,6 @@
 #
 set -Eeuo pipefail
 
-# do not include "-v" option in down command if they are not "external"
-
 docker-compose \
     -f ./docker-compose.yml \
     -f ./docker-compose-connect.yml \
@@ -29,6 +27,7 @@ docker-compose \
     -f ./gather/docker-compose.yml \
     kill
 
+# do not include "-v" option in down command if volumes are not "external"
 docker-compose \
     -f ./docker-compose.yml \
     -f ./docker-compose-connect.yml \

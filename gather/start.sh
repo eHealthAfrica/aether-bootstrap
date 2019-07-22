@@ -21,7 +21,4 @@
 
 set -Eeuo pipefail
 
-DCG="docker-compose -f ./gather/docker-compose.yml"
-
-docker-compose up -d
-$DCG up -d
+docker-compose -f ./gather/docker-compose.yml up -d gather

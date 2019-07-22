@@ -21,7 +21,7 @@
 set -Eeuo pipefail
 
 if [ -z "${1:-}" ]; then
-    echo "Please, indicate tenant name!"
+    echo "Please, indicate tenant!"
     exit 1
 fi
 

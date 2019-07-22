@@ -18,5 +18,8 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+
+set -Eeuo pipefail
+
 docker-compose pull
 docker-compose run kafka-viewer start

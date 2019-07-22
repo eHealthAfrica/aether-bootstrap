@@ -27,8 +27,8 @@ services:
       REDASH_WEB_WORKERS: 4
 
     networks:
-     - redash_net
-     - aether
+      - redash_net
+      - aether
 
   worker:
     image: redash/redash:latest
@@ -43,8 +43,8 @@ services:
       QUEUES: "queries,scheduled_queries,celery"
       WORKERS_COUNT: 2
     networks:
-     - redash_net
-     - aether
+      - redash_net
+      - aether
 
   redis:
     image: redis:3-alpine
@@ -64,4 +64,4 @@ services:
     command: "postgres -c fsync=off -c full_page_writes=off -c synchronous_commit=OFF"
     restart: unless-stopped
     networks:
-     - redash_net
+      - redash_net
