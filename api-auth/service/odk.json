@@ -1,6 +1,9 @@
 {
   "name": "odk",
   "host": "http://odk:8002",
+  "paths": [
+    "/{public_realm}/{name}"
+  ],
   "oidc_endpoints": [
     {
       "name": "protected",
@@ -13,7 +16,6 @@
     {
       "name": "public",
       "paths": [
-        "/{public_realm}/{name}",
         "/{realm}/{name}/formList",
         "/{realm}/{name}/forms",
         "/{realm}/{name}/media-file/",
