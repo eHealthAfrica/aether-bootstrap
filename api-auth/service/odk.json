@@ -14,10 +14,10 @@
   ],
   "public_endpoints": [
     {
-      "name": "public",
+      "name": "collect",
       "paths": [
         "/{realm}/{name}/formList",
-        "/{realm}/{name}/forms",
+        "/{realm}/{name}/forms/",
         "/{realm}/{name}/media-file/",
         "/{realm}/{name}/submission"
       ]
