@@ -1,19 +1,14 @@
 {
   "name": "kernel",
   "host": "http://kernel:8000",
+  "paths": [
+    "/{public_realm}/{name}"
+  ],
   "oidc_endpoints": [
     {
       "name": "protected",
       "paths": [
         "/{realm}/{name}"
-      ]
-    }
-  ],
-  "public_endpoints": [
-    {
-      "name": "public",
-      "paths": [
-        "/{public_realm}/{name}"
       ]
     }
   ]
