@@ -1,5 +1,6 @@
-# Host from which all services will be served
-LOCAL_HOST=aether.local
+##
+# Setup Options
+##
 
 # Initial tenants to create
 INITIAL_TENANTS="dev;prod;test;"
@@ -9,3 +10,24 @@ SETUP_CONNECT=true
 
 # Pull latest images from dockerhub
 PULL_IMAGES=true
+
+##
+# Services Options
+##
+
+## Keycloak Settings
+KEYCLOAK_GLOBAL_ADMIN=admin
+KEYCLOAK_GLOBAL_PASSWORD=password
+KEYCLOAK_INITIAL_USER_USERNAME=user
+KEYCLOAK_INITIAL_USER_PASSWORD=password
+KEYCLOAK_AETHER_CLIENT=aether
+KEYCLOAK_KONG_CLIENT=kong
+
+## Routing Settings
+BASE_PROTOCOL=http
+# Host from which all services will be served
+LOCAL_HOST=aether.local
+
+## Services Settings
+# Password for user "admin"
+SERVICES_DEFAULT_ADMIN_PASSWORD=adminadmin

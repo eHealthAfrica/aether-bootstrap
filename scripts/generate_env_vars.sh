@@ -72,16 +72,16 @@ CONFLUENTINC_VERSION=5.2.1
 # ------------------------------------------------------------------
 # Authorization & Authentication
 # ==================================================================
-KEYCLOAK_GLOBAL_ADMIN=admin
-KEYCLOAK_GLOBAL_PASSWORD=password
+KEYCLOAK_GLOBAL_ADMIN=${KEYCLOAK_GLOBAL_ADMIN:-admin}
+KEYCLOAK_GLOBAL_PASSWORD=${KEYCLOAK_GLOBAL_PASSWORD:-password}
 KEYCLOAK_PG_PASSWORD=$(gen_random_string)
 KONG_PG_PASSWORD=$(gen_random_string)
 
-KEYCLOAK_INITIAL_USER_USERNAME=user
-KEYCLOAK_INITIAL_USER_PASSWORD=password
+KEYCLOAK_INITIAL_USER_USERNAME=${KEYCLOAK_INITIAL_USER_USERNAME:-user}
+KEYCLOAK_INITIAL_USER_PASSWORD=${KEYCLOAK_INITIAL_USER_PASSWORD:-password}
 
-KEYCLOAK_AETHER_CLIENT=aether
-KEYCLOAK_KONG_CLIENT=kong
+KEYCLOAK_AETHER_CLIENT=${KEYCLOAK_AETHER_CLIENT:-aether}
+KEYCLOAK_KONG_CLIENT=${KEYCLOAK_KONG_CLIENT:-kong}
 REALM_COOKIE=aether-realm
 
 MULTITENANCY=true
@@ -95,7 +95,7 @@ LOGIN_THEME=aether
 # Routing
 # ==================================================================
 BASE_DOMAIN=${LOCAL_HOST}
-BASE_PROTOCOL=http
+BASE_PROTOCOL=${BASE_PROTOCOL:-http}
 
 # to be used in the aether containers
 KEYCLOAK_SERVER_URL=http://${LOCAL_HOST}/auth/realms
@@ -124,7 +124,7 @@ MINIO_ENDPOINT=minio:9100
 # Aether Kernel
 # ==================================================================
 KERNEL_ADMIN_USERNAME=admin
-KERNEL_ADMIN_PASSWORD=adminadmin
+KERNEL_ADMIN_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
 KERNEL_ADMIN_TOKEN=$(gen_random_string)
 KERNEL_DJANGO_SECRET_KEY=$(gen_random_string)
 KERNEL_DB_PASSWORD=$(gen_random_string)
@@ -149,7 +149,7 @@ TEST_KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
 # Aether Producer
 # ==================================================================
 PRODUCER_ADMIN_USER=admin
-PRODUCER_ADMIN_PASSWORD=adminadmin
+PRODUCER_ADMIN_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
 
 # TEST Aether Producer
 # ------------------------------------------------------------------
@@ -166,7 +166,7 @@ KAFKA_ROOT_USER=root
 KAFKA_ROOT_PASSWORD=$(gen_random_string)
 # kafka all-tenant Superuser
 KAFKA_SU_USER=master
-KAFKA_SU_PASSWORD=adminadmin
+KAFKA_SU_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
 # secret to generate tenant specific passwords
 KAFKA_SECRET=$(gen_random_string)
 
@@ -188,7 +188,7 @@ ELASTICSEARCH_PASSWORD=admin
 # Aether ODK Module
 # ==================================================================
 ODK_ADMIN_USERNAME=admin
-ODK_ADMIN_PASSWORD=adminadmin
+ODK_ADMIN_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
 ODK_ADMIN_TOKEN=$(gen_random_string)
 ODK_DJANGO_SECRET_KEY=$(gen_random_string)
 ODK_DB_PASSWORD=$(gen_random_string)
@@ -207,7 +207,7 @@ TEST_ODK_DB_PASSWORD=$(gen_random_string)
 # Aether UI
 # ==================================================================
 UI_ADMIN_USERNAME=admin
-UI_ADMIN_PASSWORD=adminadmin
+UI_ADMIN_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
 UI_DJANGO_SECRET_KEY=$(gen_random_string)
 UI_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
@@ -217,7 +217,7 @@ UI_DB_PASSWORD=$(gen_random_string)
 # Gather
 # ==================================================================
 GATHER_ADMIN_USERNAME=admin
-GATHER_ADMIN_PASSWORD=adminadmin
+GATHER_ADMIN_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
 GATHER_DJANGO_SECRET_KEY=$(gen_random_string)
 GATHER_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
@@ -233,6 +233,7 @@ fi
 
 set -Eeo pipefail
 
+source ./options.txt
 LOCAL_HOST=${LOCAL_HOST:-aether.local}
 
 generate_new=yes

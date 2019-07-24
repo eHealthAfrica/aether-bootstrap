@@ -22,11 +22,13 @@ set -Eeuo pipefail
 
 # just check that the scripts work
 
+source ./scripts/aether_functions.sh
+parse_options
+source options.txt
+
 ./scripts/generate_env_vars.sh
 ./kafka/make_credentials.sh
-
 source .env
-source ./scripts/aether_functions.sh
 
 
 case "$1" in
