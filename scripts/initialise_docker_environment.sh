@@ -35,7 +35,6 @@ echo_message ""
 
 ./scripts/generate_env_vars.sh
 source .env
-source ./scripts/aether_functions.sh
 
 if [ "$SETUP_CONNECT" = true ]; then
     kafka/make_credentials.sh
