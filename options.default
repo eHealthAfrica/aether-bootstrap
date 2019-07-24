@@ -30,5 +30,4 @@ LOCAL_HOST=aether.local
 
 ## Services Settings
 # Password for user "admin"
-
-# SERVICES_DEFAULT_ADMIN_PASSWORD=adminadmin
+SERVICES_DEFAULT_ADMIN_PASSWORD=adminadmin
