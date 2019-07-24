@@ -21,11 +21,13 @@
 set -Eeuo pipefail
 
 # ------------------------------------------------------------------------------
-# CHANGE THIS VALUE if you want a different host name
-export LOCAL_HOST=aether.local
+# Set LOCAL_HOST and other installation specific options in options.txt
+# See options.default for possible values
 # ------------------------------------------------------------------------------
 
 source ./scripts/aether_functions.sh
+parse_options
+source options.txt
 
 echo_message ""
 echo_message "Initializing installation for host: ${LOCAL_HOST}"
@@ -34,7 +36,10 @@ echo_message ""
 ./scripts/generate_env_vars.sh
 source .env
 source ./scripts/aether_functions.sh
-kafka/make_credentials.sh
+
+if [ "$SETUP_CONNECT" = true ]; then
+    kafka/make_credentials.sh
+fi
 
 echo_message ""
 echo_message "Initializing Aether environment,"
@@ -47,16 +52,23 @@ docker network rm aether_bootstrap_net || true
 
 create_docker_assets
 
-echo_message "Pulling docker images..."
-docker-compose pull db minio keycloak kong
-docker-compose -f docker-compose-connect.yml pull
-$DC_AUTH pull auth
-echo_message ""
+if [ "$PULL_IMAGES" = true ]; then
+    echo_message "Pulling docker images..."
+    docker-compose pull db minio keycloak kong
+    $DC_AUTH pull auth
+fi
 
 
-echo_message "Starting Kafka & Zookeper containers..."
-docker-compose -f docker-compose-connect.yml up -d zookeeper kafka
-
+if [ "$SETUP_CONNECT" = true ]; then
+    if [ "$PULL_IMAGES" = true ]; then
+        docker-compose -f docker-compose-connect.yml pull
+        echo_message ""
+    fi
+    echo_message "Starting Kafka & Zookeper containers..."
+    docker-compose -f docker-compose-connect.yml up -d zookeeper kafka
+else
+    echo_message ""
+fi
 
 start_db
 ./scripts/setup_auth.sh
@@ -67,7 +79,9 @@ echo_message "Preparing aether containers..."
 CONTAINERS=( kernel ui odk )
 for container in "${CONTAINERS[@]}"
 do
-    docker-compose pull $container
+    if [ "$PULL_IMAGES" = true ]; then
+        docker-compose pull $container
+    fi
     docker-compose run --rm --no-deps $container setup
 done
 docker-compose run --rm --no-deps kernel eval python /code/sql/create_readonly_user.py
@@ -79,18 +93,22 @@ start_container kong $KONG_INTERNAL
 $AUTH_RUN add_app keycloak
 echo_message ""
 
-echo_message "Creating Kafka Superuser..."
-$AUTH_RUN add_kafka_su $KAFKA_SU_USER $KAFKA_SU_PASSWORD
-$AUTH_RUN grant_kafka_su $KAFKA_ROOT_USER
-echo_message ""
+if [ "$SETUP_CONNECT" = true ]; then
+    echo_message "Creating Kafka Superuser..."
+    $AUTH_RUN add_kafka_su $KAFKA_SU_USER $KAFKA_SU_PASSWORD
+    $AUTH_RUN grant_kafka_su $KAFKA_ROOT_USER
+    echo_message ""
+fi
 
 echo_message "Preparing keycloak..."
 start_container keycloak $KEYCLOAK_INTERNAL
 
 echo_message "Creating initial tenants/realms in keycloak..."
-create_kc_tenant "dev"  "Local development"
-create_kc_tenant "prod" "Production environment"
-create_kc_tenant "test" "Testing playground"
+IFS=';' read -a tenants <<<$INITIAL_TENANTS
+for tenant in "${tenants[@]}"
+do
+    create_kc_tenant "$tenant" "Realm: $tenant"
+done
 echo_message ""
 
 ./scripts/kill_all.sh

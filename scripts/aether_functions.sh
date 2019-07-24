@@ -25,6 +25,14 @@ DC_AUTH="docker-compose -f docker-compose-generation.yml"
 AUTH_RUN="$DC_AUTH run --rm auth"
 
 
+function parse_options {
+    test -e ./options.txt || \
+    (
+        echo "No options.txt found, using 'options.default'" && \
+        cp ./options.default ./options.txt
+    )
+}
+
 function echo_message {
     if [ -z "$1" ]; then
         echo "$LINE"
@@ -128,7 +136,9 @@ function create_kc_tenant {
 
     $AUTH_RUN add_solution aether $REALM $KEYCLOAK_KONG_CLIENT
 
-    $AUTH_RUN add_kafka_tenant $REALM
+    if [ "$SETUP_CONNECT" = true ]; then
+        $AUTH_RUN add_kafka_tenant $REALM
+    fi
 }
 
 function add_es_tenant {

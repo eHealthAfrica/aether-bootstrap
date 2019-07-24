@@ -1,0 +1,4 @@
+LOCAL_HOST=aether.local
+INITIAL_TENANTS="dev;prod;test;"
+SETUP_CONNECT=true
+PULL_IMAGES=true
