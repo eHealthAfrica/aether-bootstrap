@@ -1,0 +1,11 @@
+# Host from which all services will be served
+LOCAL_HOST=aether.local
+
+# Initial tenants to create
+INITIAL_TENANTS="dev;prod;test;"
+
+# Setup Kafka
+SETUP_CONNECT=true
+
+# Pull latest images from dockerhub
+PULL_IMAGES=true

@@ -44,6 +44,7 @@ Session.vim
 # Environment variables
 .env
 .env.*
+options.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
