@@ -36,6 +36,4 @@ start_container kong     $KONG_INTERNAL
 start_container keycloak $KEYCLOAK_INTERNAL
 
 # From aether_functions.sh
-add_gather_tenant "dev"
-add_gather_tenant "prod"
-add_gather_tenant "test"
+add_gather_tenant ${INITIAL_REALM:-dev}

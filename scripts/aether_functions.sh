@@ -69,7 +69,7 @@ function start_db {
 }
 
 
-# Usage:    start_container <container-name> <container-health-url>
+# Usage:    start_container <container-name> <container-health-url> [<container-dc-file>]
 function start_container {
     container=$1
     url=$2
@@ -114,7 +114,7 @@ EOSQL
 
 function create_kc_tenant {
     REALM=$1
-    DESC=${2:-$REALM}
+    DESC=${2:-Tenant:  $REALM}
 
     $AUTH_RUN add_realm \
         $REALM \

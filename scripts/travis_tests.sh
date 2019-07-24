@@ -21,6 +21,8 @@
 set -Eeuo pipefail
 
 # just check that the scripts work
+export LOCAL_HOST=aether.travis
+export INITIAL_REALM=test
 
 source ./scripts/aether_functions.sh
 parse_options

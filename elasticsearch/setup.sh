@@ -34,6 +34,4 @@ start_container kong     $KONG_INTERNAL
 start_container keycloak $KEYCLOAK_INTERNAL
 
 # From aether_functions.sh
-add_es_tenant "dev"
-add_es_tenant "prod"
-add_es_tenant "test"
+add_es_tenant ${INITIAL_REALM:-dev}
