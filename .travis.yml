@@ -29,3 +29,8 @@ matrix:
 
     # - name: "Integration tests"
     #   env: 'TEST_MODE=integration'
+
+env:
+  global:
+    LOCAL_HOST: aether.travis
+    INITIAL_REALM: travis

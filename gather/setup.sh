@@ -22,7 +22,7 @@
 set -Eeuo pipefail
 
 source ./.env || \
-    ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/gather" && \
+    ( echo -e "\e[91mRun this script from /aether-bootstrap not from /aether-bootstrap/gather\e[0m" && \
       exit 1 )
 source ./scripts/aether_functions.sh
 

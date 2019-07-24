@@ -21,18 +21,18 @@
 set -Eeuo pipefail
 
 if [ -z "${1:-}" ]; then
-    echo "Please, indicate tenant!"
+    echo -e "\e[91mPlease, indicate tenant!\e[0m"
     exit 1
 fi
 
 source ./.env || \
-    ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/demo" && \
+    ( echo -e "\e[91mRun this script from /aether-bootstrap not from /aether-bootstrap/demo\e[0m" && \
       exit 1 )
 source ./scripts/aether_functions.sh
 
-echo_message "You services must be running!"
-echo_message "REST PROXY IS NOT MULTI-TENANT!!!"
-echo_message "ONLY ONE REALM SHOULD BE GRANTED ACCESS"
+echo_warning "You services must be running!"
+echo_warning "REST PROXY IS NOT MULTI-TENANT!!!"
+echo_warning "ONLY ONE REALM SHOULD BE GRANTED ACCESS"
 echo_message "Adding rest-proxy service tenant $1..."
 
 $AUTH_RUN add_service rest-proxy $1 $KEYCLOAK_KONG_CLIENT

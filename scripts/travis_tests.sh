@@ -21,17 +21,14 @@
 set -Eeuo pipefail
 
 # just check that the scripts work
-export LOCAL_HOST=aether.travis
-export INITIAL_REALM=test
 
 source ./scripts/aether_functions.sh
-parse_options
-source options.txt
 
-./scripts/generate_env_vars.sh
-./kafka/make_credentials.sh
-source .env
-
+if [[ $1 != "setup" ]]; then
+    ./scripts/generate_env_vars.sh
+    ./kafka/make_credentials.sh
+    source .env
+fi
 
 case "$1" in
 
@@ -58,10 +55,10 @@ case "$1" in
 
 
         ./scripts/register_assets.sh || (
-            echo_message "Register assets FAILED!!!"
+            echo_error "Register assets FAILED!!!"
         )
         ./scripts/generate_assets.sh 1 || (
-            echo_message "Generate assets FAILED!!!"
+            echo_error "Generate assets FAILED!!!"
         )
     ;;
 
@@ -71,12 +68,12 @@ case "$1" in
 
         DC="docker-compose -f ./docker-compose-test.yml"
         $DC run --rm integration-test test || (
-            echo_message "Integration tests FAILED!!!"
+            echo_error "Integration tests FAILED!!!"
         )
     ;;
 
 esac
 
 echo_message ""
-echo_message "Done!"
+echo_success "Done!"
 echo_message ""

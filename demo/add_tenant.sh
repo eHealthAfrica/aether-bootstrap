@@ -21,16 +21,16 @@
 set -Eeuo pipefail
 
 if [ -z "${1:-}" ]; then
-    echo "Please, indicate tenant/realm!"
+    echo -e "\e[91mPlease, indicate tenant/realm!\e[0m"
     exit 1
 fi
 
 source ./.env || \
-    ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/demo" && \
+    ( echo -e "\e[91mRun this script from /aether-bootstrap not from /aether-bootstrap/demo\e[0m" && \
       exit 1 )
 source ./scripts/aether_functions.sh
 
-echo_message "You services must be running! If you encounter errors, run demo/start.sh"
+echo_warning "You services must be running! If you encounter errors, run demo/start.sh"
 echo_message "Adding tenant $1..."
 echo_message "Creating initial tenants/realms in keycloak..."
 

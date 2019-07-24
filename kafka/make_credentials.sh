@@ -49,7 +49,7 @@ EOF
 }
 
 gen_kafka_creds > kafka/kafka_server_jaas.conf
-echo "[kafka/kafka_server_jaas.conf] security file generated!"
+echo -e "\e[92m[kafka/kafka_server_jaas.conf] security file generated!\e[0m"
 
 gen_zookeeper_creds > kafka/zk_server_jaas.conf
-echo "[kafka/zk_server_jaas.conf] security file generated!"
+echo -e "\e[92m[kafka/zk_server_jaas.conf] security file generated!\e[0m"

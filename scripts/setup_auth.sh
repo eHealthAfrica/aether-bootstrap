@@ -29,6 +29,7 @@ start_db
 # Initialize the kong & keycloak databases in the postgres instance
 
 # THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
+echo_warning "ERASING PREVIOUS KONG & KEYCLOAK DATA!!!"
 rebuild_database kong     kong     ${KONG_PG_PASSWORD}
 rebuild_database keycloak keycloak ${KEYCLOAK_PG_PASSWORD}
 echo_message ""

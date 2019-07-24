@@ -35,11 +35,24 @@ function parse_options {
 
 function echo_message {
     if [ -z "$1" ]; then
-        echo "$LINE"
+        echo -e "\e[90m$LINE\e[0m"
     else
         msg=" $1 "
-        echo "${LINE:${#msg}}$msg"
+        color=${2:-\\e[39m}
+        echo -e "\e[90m${LINE:${#msg}}\e[0m$color$msg\e[0m"
     fi
+}
+
+function echo_error {
+    echo_message "$1" \\e[91m
+}
+
+function echo_success {
+    echo_message "$1" \\e[92m
+}
+
+function echo_warning {
+    echo_message "$1" \\e[93m
 }
 
 
@@ -51,10 +64,10 @@ function create_docker_assets {
             --subnet=${NETWORK_SUBNET} \
             --gateway=${NETWORK_GATEWAY}
     } || true
-    echo_message "aether_bootstrap_net network is ready"
+    echo_success "aether_bootstrap_net network is ready"
 
     docker volume create aether_database_data || true
-    echo_message "aether_database_data volume is ready"
+    echo_success "aether_database_data volume is ready"
 }
 
 
@@ -65,7 +78,7 @@ function start_db {
         >&2 echo "Waiting for database..."
         sleep 2
     done
-    echo_message "database is ready"
+    echo_success "database is ready"
 }
 
 
@@ -83,7 +96,7 @@ function start_container {
         >&2 echo "Waiting for [$container]..."
         sleep 2
     done
-    echo_message "[$container] is ready"
+    echo_success "[$container] is ready"
 }
 
 
@@ -109,7 +122,7 @@ function rebuild_database {
         CREATE USER ${DB_USER} PASSWORD '${DB_PWD}';
         CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};
 EOSQL
-    echo_message "$1 database is ready"
+    echo_success "$1 database is ready"
 }
 
 function create_kc_tenant {

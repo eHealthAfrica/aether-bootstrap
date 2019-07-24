@@ -35,7 +35,7 @@ PWD="secretsecret"
 
 
 if [ -z "${REALM:-}" ]; then
-    echo "Please, indicate realm name!"
+    echo -e "\e[91mPlease, indicate realm name!\e[0m"
     exit 1
 fi
 

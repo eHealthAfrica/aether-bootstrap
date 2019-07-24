@@ -30,7 +30,7 @@ parse_options
 source options.txt
 
 echo_message ""
-echo_message "Initializing installation for host: ${LOCAL_HOST}"
+echo_message "Initializing installation for host: \\e[1m$LOCAL_HOST\\e[0m"
 echo_message ""
 
 ./scripts/generate_env_vars.sh
@@ -41,8 +41,8 @@ if [ "$SETUP_CONNECT" = true ]; then
 fi
 
 echo_message ""
-echo_message "Initializing Aether environment,"
-echo_message " this may take 15 minutes depending on bandwidth."
+echo_warning "Initializing Aether environment,"
+echo_warning " this may take 15 minutes depending on bandwidth."
 echo_message ""
 
 # stop and remove all containers or the network cannot be recreated
@@ -113,5 +113,5 @@ echo_message ""
 ./scripts/kill_all.sh
 
 echo_message ""
-echo_message "Done!"
+echo_success "Done!"
 echo_message ""
