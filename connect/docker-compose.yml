@@ -1,0 +1,147 @@
+version: '3'
+
+networks:
+  aether:
+    external:
+      name: aether_bootstrap_net
+
+volumes:
+  kafka-data:
+  zookeeper-data:
+  zookeeper-log:
+
+services:
+
+  # ---------------------------------
+  # Zookeeper
+  # ---------------------------------
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:${CONFLUENTINC_VERSION:-5.2.1}
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 32181
+      ZOOKEEPER_TICK_TIME: 2000
+      # may be too short for prod.
+      ZOOKEEPER_SESSION_TIMEOUT_MS: 750
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/zookeeper/zk_server_jaas.conf
+        -DjaasLoginRenew=3600000
+        -DrequireClientAuthScheme=digest
+        -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
+        -Dzookeeper.authProvider.2=org.apache.zookeeper.server.auth.DigestAuthenticationProvider
+    volumes:
+      - ./zk_server_jaas.conf:/etc/zookeeper/zk_server_jaas.conf
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
+    restart: on-failure
+    networks:
+      - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
+      - moby:127.0.0.1
+
+
+  # ---------------------------------
+  # Kafka
+  # ---------------------------------
+
+  kafka:
+    image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-5.2.1}
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
+      # Listeners and Protocols
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL_SASL:SASL_PLAINTEXT,SASL_PLAINTEXT:SASL_PLAINTEXT,INTERNAL:SASL_PLAINTEXT,INTERNAL_SASL:SASL_PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29093,EXTERNAL_SASL://localhost:9092,INTERNAL_SASL://kafka:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      # SASL Settings
+      KAFKA_SASL_ENABLED_MECHANISMS: SCRAM-SHA-256,SCRAM-SHA-512,PLAIN
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      # ACL Inclusion
+      KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.auth.SimpleAclAuthorizer
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: 'false'
+      # Broker topic settings
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_RETENTION_HOURS: -1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      # Generic Kafka Opts
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 1000
+      # Auth debugging
+      KAFKA_LOG4J_LOGGERS: 'kafka.authorizer.logger=ERROR'
+      KAFKA_LOG4J_ROOT_LOGLEVEL: ERROR
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
+    volumes:
+      - ./kafka_server_jaas.conf:/etc/kafka/kafka_server_jaas.conf
+      - kafka-data:/var/lib/kafka/data
+    restart: always
+    networks:
+      - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
+      - moby:127.0.0.1
+    depends_on:
+      - zookeeper
+
+
+  # ---------------------------------
+  # Kafka Viewer
+  # ---------------------------------
+
+  kafka-viewer:
+    image: ehealthafrica/aether-kafka-viewer
+    stdin_open: true
+    tty: true
+    environment:
+      - PYTHONUNBUFFERED=1
+      - KAFKA_CONFIG=/code/conf/consumer/kafka.json
+      - CONSUMER_CONFIG=/code/conf/consumer/consumer.json
+    volumes:
+      - ./kafka-viewer:/code/conf/consumer
+      - ./.persistent_data/logs/kafka-viewer:/code/logs
+    command: start
+    networks:
+      - aether
+
+
+  # ---------------------------------
+  # Aether Kafka Producer
+  # ---------------------------------
+
+  aether-producer:
+    image: ehealthafrica/aether-producer:${AETHER_VERSION}
+    environment:
+      # default settings file
+      PRODUCER_SETTINGS_FILE: /code/producer/settings.json
+
+      # These variables will override the ones indicated in the settings file
+      PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
+      PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PASSWORD}
+
+      KERNEL_URL: http://kernel:8000
+      KERNEL_USERNAME: ${KERNEL_ADMIN_USERNAME}
+      KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
+
+      POSTGRES_HOST: db
+      POSTGRES_DBNAME: aether
+      POSTGRES_USER: ${KERNEL_READONLY_DB_USERNAME}
+      POSTGRES_PASSWORD: ${KERNEL_READONLY_DB_PASSWORD}
+
+      OFFSET_DB_HOST: db
+      OFFSET_DB_USER: postgres
+      OFFSET_DB_PORT: 5432
+      OFFSET_DB_PASSWORD: ${KERNEL_DB_PASSWORD}
+      OFFSET_DB_NAME: producer_offset_db
+
+      KAFKA_SU_USER: ${KAFKA_SU_USER}
+      KAFKA_SU_PW: ${KAFKA_SU_PASSWORD}
+      KAFKA_SECURITY: SASL_PLAINTEXT
+
+      SERVER_PORT: 5005
+      LOG_LEVEL: ERROR
+    command: start
+    restart: on-failure
+    networks:
+      - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}

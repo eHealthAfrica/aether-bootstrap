@@ -18,22 +18,21 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
 set -Eeuo pipefail
 
-source ./.env || \
-    ( echo -e "\e[91mRun this script from /aether-bootstrap not from /aether-bootstrap/gather\e[0m" && \
+source scripts/lib.sh || \
+    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
       exit 1 )
-source ./scripts/aether_functions.sh
-
-DCG="docker-compose -f ./gather/docker-compose.yml"
-$DCG pull gather
+source options.txt
 
 start_db
-$DCG run --rm --no-deps gather setup
 
-start_container kong     $KONG_INTERNAL
-start_container keycloak $KEYCLOAK_INTERNAL
-
-# From aether_functions.sh
-add_gather_tenant ${INITIAL_REALM:-dev}
+# setup container (model migration, admin user, static content...)
+DCG="docker-compose -f aether/docker-compose.yml"
+GATHER_CONTAINERS=( odk gather )
+for container in "${GATHER_CONTAINERS[@]}"; do
+    if [ "$PULL_IMAGES" = true ]; then
+        $DCG pull $container
+    fi
+    $DCG run --rm $container setup
+done

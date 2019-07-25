@@ -25,15 +25,16 @@ if [ -z "${1:-}" ]; then
     exit 1
 fi
 
-source ./.env || \
-    ( echo -e "\e[91mRun this script from /aether-bootstrap not from /aether-bootstrap/demo\e[0m" && \
+source .env || \
+    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
       exit 1 )
-source ./scripts/aether_functions.sh
+source scripts/lib.sh
 
 echo_warning "You services must be running! If you encounter errors, run demo/start.sh"
 echo_message "Adding tenant $1..."
 echo_message "Creating initial tenants/realms in keycloak..."
 
-create_kc_tenant  "$1"  "Realm: $1"
-add_es_tenant     "$1"
-add_gather_tenant "$1"
+auth/add_tenant.sh          "$1"
+aether/add_tenant.sh        "$1"
+gather/add_tenant.sh        "$1"
+elasticsearch/add_tenant.sh "$1"

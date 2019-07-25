@@ -20,13 +20,9 @@
 #
 set -Eeuo pipefail
 
-scripts/initialise_docker_environment.sh
+scripts/init.sh
 
-docker-compose up -d
-docker-compose -f ./docker-compose-connect.yml up -d
-
+auth/setup.sh
+aether/setup.sh
 gather/setup.sh
-gather/start.sh
-
 elasticsearch/setup.sh
-elasticsearch/start.sh

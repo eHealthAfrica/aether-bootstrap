@@ -20,18 +20,17 @@
 #
 set -Eeuo pipefail
 
-source ./.env || \
-    ( echo -e "\e[91mRun this script from /aether-bootstrap not from /aether-bootstrap/elasticsearch\e[0m" && \
+source scripts/lib.sh || \
+    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
       exit 1 )
-source ./scripts/aether_functions.sh
+source auth/lib.sh
+source .env
+source options.txt
 
-docker-compose -f ./elasticsearch/docker-compose.yml pull elasticsearch kibana
+if [ "$PULL_IMAGES" = true ]; then
+    docker-compose -f elasticsearch/docker-compose.yml pull
+fi
+
 ES_URL="http://admin:${ELASTICSEARCH_PASSWORD}@elasticsearch:9200"
-start_container elasticsearch $ES_URL "./elasticsearch/docker-compose.yml"
-$AUTH_RUN setup_elasticsearch
-
-start_container kong     $KONG_INTERNAL
-start_container keycloak $KEYCLOAK_INTERNAL
-
-# From aether_functions.sh
-add_es_tenant ${INITIAL_REALM:-dev}
+start_container elasticsearch elasticsearch $ES_URL
+$GWM_RUN setup_elasticsearch

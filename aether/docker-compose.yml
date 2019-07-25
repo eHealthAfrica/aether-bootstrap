@@ -1,0 +1,131 @@
+version: '3'
+
+networks:
+  aether:
+    external:
+      name: aether_bootstrap_net
+
+services:
+
+  # ---------------------------------
+  # Aether kernel
+  # ---------------------------------
+
+  kernel:
+    image: ehealthafrica/aether-kernel:${AETHER_VERSION}
+    environment:
+      CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
+      DJANGO_SECRET_KEY: ${KERNEL_DJANGO_SECRET_KEY}
+      LOGGING_FORMATTER: verbose
+      HTML_SELECT_CUTOFF: 10
+      PROFILING_ENABLED: "true"
+
+      BUCKET_NAME: kernel
+      DJANGO_STORAGE_BACKEND: minio
+      MINIO_STORAGE_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
+      MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
+      MINIO_STORAGE_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
+      MINIO_STORAGE_MEDIA_URL: http://${MINIO_ENDPOINT}/kernel
+      MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: "true"
+      MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: "true"
+
+      APP_NAME: Aether Kernel
+
+      ADMIN_USERNAME: ${KERNEL_ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
+      ADMIN_TOKEN: ${KERNEL_ADMIN_TOKEN}
+
+      KERNEL_READONLY_DB_USERNAME: ${KERNEL_READONLY_DB_USERNAME}
+      KERNEL_READONLY_DB_PASSWORD: ${KERNEL_READONLY_DB_PASSWORD}
+
+      DB_NAME: aether
+      PGHOST: db
+      PGPASSWORD: ${KERNEL_DB_PASSWORD}
+      PGPORT: 5432
+      PGUSER: postgres
+
+      # Export
+      EXPORT_CSV_ESCAPE: "\\"
+      EXPORT_CSV_QUOTES: "\""
+      EXPORT_CSV_SEPARATOR: ","
+      EXPORT_DATA_FORMAT: "split"
+      EXPORT_HEADER_CONTENT: "labels"
+      EXPORT_HEADER_SEPARATOR: "/"
+      EXPORT_HEADER_SHORTEN: "no"
+
+      # Kong requirements
+      GATEWAY_SERVICE_ID: kernel
+      GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
+
+      KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
+
+      MULTITENANCY: "true"
+      DEFAULT_REALM: ${DEFAULT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
+
+      UWSGI_BUFFER_SIZE: 32768
+      CUSTOM_UWSGI_SERVE_STATIC: "true"
+
+      WEB_SERVER_PORT: 8000
+    volumes:
+      # backup folder
+      - ../.persistent_data/backups/kernel:/backups
+    command: start
+    networks:
+      - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
+
+  # ---------------------------------
+  # Aether UI
+  # ---------------------------------
+
+  ui:
+    image: ehealthafrica/aether-ui:${AETHER_VERSION}
+    environment:
+      CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
+      DJANGO_SECRET_KEY: ${UI_DJANGO_SECRET_KEY}
+      LOGGING_FORMATTER: verbose
+      HTML_SELECT_CUTOFF: 10
+      PROFILING_ENABLED: "true"
+
+      APP_NAME: Aether
+
+      ADMIN_USERNAME: ${UI_ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${UI_ADMIN_PASSWORD}
+
+      AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
+      AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/kernel
+      AETHER_KERNEL_URL_TEST: http://kernel-test:9000
+
+      DB_NAME: ui
+      PGHOST: db
+      PGPASSWORD: ${UI_DB_PASSWORD}
+      PGPORT: 5432
+      PGUSER: postgres
+
+      # Kong requirements
+      GATEWAY_SERVICE_ID: ui
+      GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
+
+      KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
+
+      MULTITENANCY: "true"
+      DEFAULT_REALM: ${DEFAULT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
+
+      UWSGI_BUFFER_SIZE: 32768
+      CUSTOM_UWSGI_SERVE_STATIC: "true"
+
+      WEB_SERVER_PORT: 8004
+    volumes:
+      # backup folder
+      - ../.persistent_data/backups/ui:/backups
+    command: start
+    networks:
+      - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}

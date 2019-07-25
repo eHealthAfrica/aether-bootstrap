@@ -1,4 +1,4 @@
-version: "2.1"
+version: '3'
 
 networks:
   aether:
@@ -6,6 +6,13 @@ networks:
       name: aether_bootstrap_net
 
 services:
+
+  rest-proxy-redis:
+    image: redis:3-alpine
+    command: ["--appendonly", "yes"]
+    networks:
+      - aether
+
   rest-proxy:
     image: ehealthafrica/scheduled-rest-proxy:latest
     stdin_open: true
@@ -15,10 +22,8 @@ services:
       PORT: 3333
       REQUIRES_AUTH: "False"  # Gateway handles this
       REDIS_HOST: rest-proxy-redis
-
     depends_on:
-      rest-proxy-redis:
-        condition: service_started
+      - rest-proxy-redis
     ports:
       - 3333:3333
     command: start
@@ -27,11 +32,3 @@ services:
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
       - moby:127.0.0.1
-
-  rest-proxy-redis:
-    image: redis:3-alpine
-    command: ["--appendonly", "yes"]
-    volumes:
-      - ./redisdata:/data
-    networks:
-      - aether

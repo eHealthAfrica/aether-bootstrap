@@ -20,17 +20,4 @@
 #
 set -Eeuo pipefail
 
-docker-compose \
-    -f ./docker-compose.yml \
-    -f ./docker-compose-connect.yml \
-    -f ./elasticsearch/docker-compose.yml \
-    -f ./gather/docker-compose.yml \
-    kill
-
-# do not include "-v" option in down command if volumes are not "external"
-docker-compose \
-    -f ./docker-compose.yml \
-    -f ./docker-compose-connect.yml \
-    -f ./elasticsearch/docker-compose.yml \
-    -f ./gather/docker-compose.yml \
-    down
+scripts/stop.sh

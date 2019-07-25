@@ -1,4 +1,4 @@
-version: "2.1"
+version: '3'
 
 networks:
   aether:
@@ -6,7 +6,6 @@ networks:
       name: aether_bootstrap_net
 
 volumes:
-  # docker volume create aether_database_data
   database_data:
     external:
       name: aether_database_data
@@ -18,116 +17,26 @@ services:
   # ---------------------------------
 
   db:
-    extends:
-      file: ./docker-compose-base.yml
-      service: postgres-base
+    image: postgres:10-alpine
     environment:
       PGUSER: postgres
+    healthcheck:
+      test: pg_isready
+      interval: 2s
+      timeout: 3s
+      retries: 30
     volumes:
       - database_data:/var/lib/postgresql/data
     networks:
       - aether
 
   minio:
-    extends:
-      file: ./docker-compose-base.yml
-      service: minio-base
+    image: minio/minio:latest
+    volumes:
+      - ./.persistent_data/media:/data
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
+    command: minio server --quiet --address ${MINIO_ENDPOINT} /data
     networks:
       - aether
-
-  # ---------------------------------
-  # API & Auth
-  # ---------------------------------
-
-  kong:
-    extends:
-      file: ./docker-compose-base.yml
-      service: kong-base
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      aether:
-        ipv4_address: ${KONG_IP}
-    extra_hosts:
-      - ${BASE_DOMAIN}:127.0.0.1
-
-  keycloak:
-    extends:
-      file: ./docker-compose-base.yml
-      service: keycloak-base
-    depends_on:
-      db:
-        condition: service_healthy
-      kong:
-        condition: service_started
-    networks:
-      - aether
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}
-
-  # ---------------------------------
-  # Aether kernel
-  # ---------------------------------
-
-  kernel:
-    extends:
-      file: ./docker-compose-base.yml
-      service: kernel-base
-    depends_on:
-      db:
-        condition: service_healthy
-      minio:
-        condition: service_started
-      kong:
-        condition: service_started
-      keycloak:
-        condition: service_started
-    networks:
-      - aether
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}
-
-  # ---------------------------------
-  # Aether UI
-  # ---------------------------------
-
-  ui:
-    extends:
-      file: ./docker-compose-base.yml
-      service: ui-base
-    depends_on:
-      db:
-        condition: service_healthy
-      minio:
-        condition: service_started
-      kong:
-        condition: service_started
-      keycloak:
-        condition: service_started
-    networks:
-      - aether
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}
-
-  # ---------------------------------
-  # Aether ODK Module
-  # ---------------------------------
-
-  odk:
-    extends:
-      file: ./docker-compose-base.yml
-      service: odk-base
-    depends_on:
-      db:
-        condition: service_healthy
-      minio:
-        condition: service_started
-      kong:
-        condition: service_started
-      keycloak:
-        condition: service_started
-    networks:
-      - aether
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}

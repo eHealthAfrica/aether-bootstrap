@@ -20,9 +20,7 @@
 #
 set -Eeuo pipefail
 
-docker-compose \
-    -f ./docker-compose.yml \
-    -f ./docker-compose-connect.yml \
-    -f ./elasticsearch/docker-compose.yml \
-    -f ./gather/docker-compose.yml \
-    up -d
+auth/start.sh
+aether/start.sh
+gather/start.sh
+elasticsearch/start.sh

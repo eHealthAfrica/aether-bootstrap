@@ -98,7 +98,7 @@ BASE_DOMAIN=${LOCAL_HOST}
 BASE_PROTOCOL=${BASE_PROTOCOL:-http}
 
 # to be used in the aether containers
-KEYCLOAK_SERVER_URL=http://${LOCAL_HOST}/auth/realms
+KEYCLOAK_SERVER_URL=${BASE_PROTOCOL:-http}://${LOCAL_HOST}/auth/realms
 
 KEYCLOAK_HOST=http://keycloak:8080
 KEYCLOAK_INTERNAL=http://keycloak:8080/auth
@@ -233,7 +233,7 @@ fi
 
 set -Eeo pipefail
 
-source ./options.txt
+source options.txt
 LOCAL_HOST=${LOCAL_HOST:-aether.local}
 
 generate_new=yes

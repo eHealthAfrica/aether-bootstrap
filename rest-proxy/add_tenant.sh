@@ -25,14 +25,15 @@ if [ -z "${1:-}" ]; then
     exit 1
 fi
 
-source ./.env || \
-    ( echo -e "\e[91mRun this script from /aether-bootstrap not from /aether-bootstrap/demo\e[0m" && \
+source scripts/lib.sh || \
+    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
       exit 1 )
-source ./scripts/aether_functions.sh
+source auth/lib.sh
+source .env
 
 echo_warning "You services must be running!"
 echo_warning "REST PROXY IS NOT MULTI-TENANT!!!"
 echo_warning "ONLY ONE REALM SHOULD BE GRANTED ACCESS"
 echo_message "Adding rest-proxy service tenant $1..."
 
-$AUTH_RUN add_service rest-proxy $1 $KEYCLOAK_KONG_CLIENT
+$GWM_RUN add_service rest-proxy $1 $KEYCLOAK_KONG_CLIENT

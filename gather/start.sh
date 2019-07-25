@@ -18,7 +18,6 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
 set -Eeuo pipefail
 
-docker-compose -f ./gather/docker-compose.yml up -d gather
+docker-compose -f gather/docker-compose.yml up -d

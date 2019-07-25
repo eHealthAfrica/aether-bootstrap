@@ -1,0 +1,157 @@
+version: '3'
+
+networks:
+  test:
+
+services:
+
+  # ---------------------------------
+  # Database
+  # ---------------------------------
+
+  db-test:
+    image: postgres:10-alpine
+    environment:
+      PGUSER: postgres
+    healthcheck:
+      test: pg_isready
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    networks:
+      - test
+
+  # ---------------------------------
+  # Aether kernel
+  # ---------------------------------
+
+  kernel-test:
+    image: ehealthafrica/aether-kernel:${AETHER_VERSION}
+    environment:
+      TESTING: "true"
+      DJANGO_SECRET_KEY: ${TEST_KERNEL_DJANGO_SECRET_KEY}
+
+      CSRF_COOKIE_DOMAIN: kernel-test
+      LOGGING_FORMATTER: verbose
+
+      BUCKET_NAME: kernel
+      DJANGO_STORAGE_BACKEND: minio
+      MINIO_STORAGE_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
+      MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
+      MINIO_STORAGE_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
+      MINIO_STORAGE_MEDIA_URL: http://${MINIO_ENDPOINT}/kernel
+      MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: "true"
+      MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: "true"
+
+      APP_NAME: Aether Kernel (test)
+
+      ADMIN_USERNAME: ${TEST_KERNEL_ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
+      ADMIN_TOKEN: ${TEST_KERNEL_ADMIN_TOKEN}
+
+      KERNEL_READONLY_DB_USERNAME: ${TEST_KERNEL_READONLY_DB_USERNAME}
+      KERNEL_READONLY_DB_PASSWORD: ${TEST_KERNEL_READONLY_DB_PASSWORD}
+
+      DB_NAME: aether-kernel-test
+      PGHOST: db-test
+      PGPASSWORD: ${TEST_KERNEL_DB_PASSWORD}
+      PGPORT: 5432
+      PGUSER: postgres
+
+      TESTING: "true"
+      DJANGO_SECRET_KEY: ${TEST_KERNEL_DJANGO_SECRET_KEY}
+
+      WEB_SERVER_PORT: 9000
+    depends_on:
+      - db-test
+    networks:
+      - test
+
+  # ---------------------------------
+  # Kafka & Zookeeper
+  # ---------------------------------
+
+  zookeeper-test:
+    image: confluentinc/cp-zookeeper:${CONFLUENTINC_VERSION:-5.2.1}
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 32189
+      ZOOKEEPER_TICK_TIME: 2000
+      # may be too short for prod.
+      ZOOKEEPER_SESSION_TIMEOUT_MS: 750
+    networks:
+      - test
+
+  kafka-test:
+    image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-5.2.1}
+    links:
+      - zookeeper-test
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-test:32189
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-test:29092
+      ADVERTISED_HOST_NAME: kafka-test
+    networks:
+      - test
+
+  # ---------------------------------
+  # Aether Kafka Producer
+  # ---------------------------------
+
+  producer-test:
+    image: ehealthafrica/aether-producer:${AETHER_VERSION}
+    environment:
+      # default settings file
+      PRODUCER_SETTINGS_FILE: /code/tests/conf/producer.json
+
+      # These variables will override the ones indicated in the settings file
+      PRODUCER_ADMIN_USER: ${TEST_PRODUCER_ADMIN_USER}
+      PRODUCER_ADMIN_PW: ${TEST_PRODUCER_ADMIN_PASSWORD}
+
+      KAFKA_URL: kafka-test:29092
+      KAFKA_SU_USER: ${KAFKA_SU_USER}
+      KAFKA_SU_PW: ${KAFKA_SU_PASSWORD}
+      KAFKA_SECURITY: SASL_PLAINTEXT
+
+      KERNEL_URL: http://kernel-test:9000
+      KERNEL_USERNAME: ${TEST_KERNEL_ADMIN_USERNAME}
+      KERNEL_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
+
+      POSTGRES_HOST: db-test
+      POSTGRES_DBNAME: aether-kernel-test
+      POSTGRES_USER: ${TEST_KERNEL_READONLY_DB_USERNAME}
+      POSTGRES_PASSWORD: ${TEST_KERNEL_READONLY_DB_PASSWORD}
+
+      OFFSET_DB_HOST: db-test
+      OFFSET_DB_USER: postgres
+      OFFSET_DB_PORT: 5432
+      OFFSET_DB_PASSWORD: ${TEST_KERNEL_DB_PASSWORD}
+      OFFSET_DB_NAME: producer_offset_db_test
+
+      SERVER_PORT: 9005
+      LOG_LEVEL: ERROR
+    links:
+      - kafka-test
+      - zookeeper-test
+    networks:
+      - test
+
+  # ---------------------------------
+  # Aether Integration Tests
+  # ---------------------------------
+
+  integration-test:
+    image: ehealthafrica/aether-integration-test:${AETHER_VERSION}
+    environment:
+      KERNEL_URL: http://kernel-test:9000
+      KERNEL_USERNAME: ${TEST_KERNEL_ADMIN_USERNAME}
+      KERNEL_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
+
+      PRODUCER_ADMIN_USER: ${TEST_PRODUCER_ADMIN_USER}
+      PRODUCER_ADMIN_PW: ${TEST_PRODUCER_ADMIN_PASSWORD}
+      PRODUCER_URL: http://producer-test:9005
+
+      TEST_REALM: test
+    networks:
+      - test
+    command: test

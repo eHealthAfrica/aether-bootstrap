@@ -20,19 +20,4 @@
 #
 set -Eeuo pipefail
 
-docker-compose \
-    -f ./docker-compose.yml \
-    -f ./docker-compose-connect.yml \
-    -f ./elasticsearch/docker-compose.yml \
-    -f ./gather/docker-compose.yml \
-    kill
-
-docker-compose \
-    -f ./docker-compose.yml \
-    -f ./docker-compose-connect.yml \
-    -f ./elasticsearch/docker-compose.yml \
-    -f ./gather/docker-compose.yml \
-    down -v
-
-scripts/wipe_kernel.sh
-rm .env
+scripts/wipe.sh
