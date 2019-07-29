@@ -11,7 +11,7 @@
 
 **Aether UI** is the "instructions" builder UI.
 
-- Starting from an input sample, it helps creating the instructions (AKA Pipelines and Contracts) to extract and transform the relevant data (AKA entities).
+- Starting from an input sample (AKA Pipeline), it helps creating the instructions (AKA Contract) to extract and transform the relevant data (AKA Output).
 
 **Aether ODK** is the module that communicates with ODK Collect.
 
@@ -65,7 +65,7 @@ Correspondence table:
 | App       | Set of similar inputs | Input sample | Set of transform instructions |
 | --------- | --------------------- | ------------ | ----------------------------- |
 | Kernel    | Project               | MappingSet   | Mapping                       |
-| Kernel UI | Project               | Pipeline     | Contract                      |
+| UI        | Project               | Pipeline     | Contract                      |
 | ODK       | Project               | xForm        | XForm (identity instructions) |
 | Gather    | Survey                | ---          | ---                           |
 
@@ -90,15 +90,15 @@ Using
 
 then:
 
-- Aether Kernel: http://aether.local/ehealth/kernel
-- Aether ODK: http://aether.local/ehealth/odk
+- Aether Kernel: `http://aether.local/ehealth/kernel`
+- Aether ODK: `http://aether.local/ehealth/odk`
 
 
 ### List of items
 
 The REST API implements a page number pagination.
 
-http://aether.local/ehealth/kernel/projects.json?page_size=10&page=5
+`http://aether.local/ehealth/kernel/projects.json?page_size=10&page=5`
 
 ```json
 {
@@ -117,8 +117,8 @@ To reduce the size of the response there are also available two parameters:
 - `field`, comma-separate list of field names to include in the response.
 - `omit`, comma-separate list of field names to omit in the response.
 
-
-http://aether.local/ehealth/kernel/projects.json?fields=id,name
+`http://aether.local/ehealth/kernel/mappingsets.json?omit=created,modified`
+`http://aether.local/ehealth/kernel/projects.json?fields=id,name`
 
 ```json
 {
@@ -132,8 +132,6 @@ http://aether.local/ehealth/kernel/projects.json?fields=id,name
   ]
 }
 ```
-
-http://aether.local/ehealth/kernel/mappingsets.json?omit=created,modified
 
 These two parameters are also available to GET a single item.
 
@@ -151,7 +149,7 @@ There is a one to one relation between Kernel and ODK projects sharing the same 
 
 #### List of xForms (paginated)
 
-http://aether.local/ehealth/odk/xforms.json?fields=id,title,version,kernel_id,project
+`http://aether.local/ehealth/odk/xforms.json?fields=id,title,version,kernel_id,project`
 
 The ODK xForms produce a pair of MappingSet and Mapping (with the same `id`) in kernel.
 The xForm model has a field named `kernel_id` to identify them.
