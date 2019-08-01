@@ -25,6 +25,7 @@ source ./.env || \
     ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/gather" && \
       exit 1 )
 source ./scripts/aether_functions.sh
+source options.txt
 
 DCG="docker-compose -f ./gather/docker-compose.yml"
 
@@ -34,7 +35,10 @@ start_container keycloak $KEYCLOAK_INTERNAL
 $DCG pull gather
 $DCG run --rm --no-deps gather setup
 
-# From aether_functions.sh
-add_gather_tenant "dev"
-add_gather_tenant "prod"
-add_gather_tenant "test"
+# Initial tenants from options.txt
+IFS=';' read -a tenants <<<$INITIAL_TENANTS
+for tenant in "${tenants[@]}"
+do
+    # From aether_functions.sh
+    add_gather_tenant "$tenant"
+done
