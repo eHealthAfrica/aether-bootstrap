@@ -24,6 +24,7 @@ source ./.env || \
     ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/elasticsearch" && \
       exit 1 )
 source ./scripts/aether_functions.sh
+source options.txt
 
 DCES="docker-compose -f ./elasticsearch/docker-compose.yml"
 
@@ -37,7 +38,10 @@ start_container elasticsearch $ES_URL "./elasticsearch/docker-compose.yml"
 
 $AUTH_RUN setup_elasticsearch
 
-# From aether_functions.sh
-add_es_tenant "dev"
-add_es_tenant "prod"
-add_es_tenant "test"
+# Initial tenants from options.txt
+IFS=';' read -a tenants <<<$INITIAL_TENANTS
+for tenant in "${tenants[@]}"
+do
+    # From aether_functions.sh
+    add_es_tenant "$tenant"
+done
