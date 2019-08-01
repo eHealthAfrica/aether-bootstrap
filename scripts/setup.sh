@@ -33,4 +33,3 @@ fi
 if [ "$ENABLE_ELASTICSEARCH" = true ]; then
     elasticsearch/setup.sh
 fi
-echo_message ""

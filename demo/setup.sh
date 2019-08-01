@@ -20,9 +20,31 @@
 #
 set -Eeuo pipefail
 
-scripts/init.sh
+cat << EOF
+# DEMO options
+BASE_PROTOCOL=http
+LOCAL_HOST=demo.server
 
-auth/setup.sh
-aether/setup.sh
-gather/setup.sh
-elasticsearch/setup.sh
+PULL_IMAGES=true
+INITIAL_TENANTS="dev;"
+
+## Keycloak Settings
+KEYCLOAK_GLOBAL_ADMIN=admin
+KEYCLOAK_GLOBAL_PASSWORD=password
+KEYCLOAK_AETHER_CLIENT=aether
+KEYCLOAK_KONG_CLIENT=kong
+
+# Initial user credentials
+KEYCLOAK_INITIAL_USER_USERNAME=user
+KEYCLOAK_INITIAL_USER_PASSWORD=password
+
+# Password for user "admin"
+SERVICES_DEFAULT_ADMIN_PASSWORD=adminadmin
+
+# Enable services
+ENABLE_CONNECT=false
+ENABLE_GATHER=true
+ENABLE_ELASTICSEARCH=true
+EOF > options.txt
+
+scripts/init.sh

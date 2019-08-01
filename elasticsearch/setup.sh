@@ -33,4 +33,5 @@ fi
 
 ES_URL="http://admin:${ELASTICSEARCH_PASSWORD}@elasticsearch:9200"
 start_container elasticsearch elasticsearch $ES_URL
-$GWM_RUN setup_elasticsearch
+# sometimes the "own_index" does not exists
+$GWM_RUN setup_elasticsearch || true

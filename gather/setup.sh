@@ -28,7 +28,7 @@ source options.txt
 start_db
 
 # setup container (model migration, admin user, static content...)
-DCG="docker-compose -f aether/docker-compose.yml"
+DCG="docker-compose -f gather/docker-compose.yml"
 GATHER_CONTAINERS=( odk gather )
 for container in "${GATHER_CONTAINERS[@]}"; do
     if [ "$PULL_IMAGES" = true ]; then

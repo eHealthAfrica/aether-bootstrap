@@ -42,13 +42,3 @@ echo_message "Creating Kafka Superuser..."
 $GWM_RUN add_kafka_su   $KAFKA_SU_USER $KAFKA_SU_PASSWORD
 $GWM_RUN grant_kafka_su $KAFKA_ROOT_USER
 echo_message ""
-
-echo_message "Stoping Kafka & Zookeper containers..."
-docker-compose -f connect/docker-compose.yml kill
-docker-compose -f connect/docker-compose.yml down
-
-IFS=';' read -a tenants <<<$INITIAL_TENANTS
-for tenant in "${tenants[@]}"; do
-    connect/add_tenant "$tenant"
-done
-echo_message ""

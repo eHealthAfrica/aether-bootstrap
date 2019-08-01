@@ -22,6 +22,8 @@ set -Eeuo pipefail
 
 source options.txt
 
+docker-compose up -d
+
 auth/start.sh
 aether/start.sh
 if [ "$ENABLE_CONNECT" = true ]; then

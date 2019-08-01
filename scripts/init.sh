@@ -46,16 +46,15 @@ echo_message ""
 docker network rm aether_bootstrap_net || true
 create_docker_assets
 
-start_db
 ./auth/init.sh
 ./scripts/setup.sh
 
+./scripts/start.sh
 IFS=';' read -a tenants <<<$INITIAL_TENANTS
 for tenant in "${tenants[@]}"; do
-    script/add_tenant.sh "$tenant"
+    ./scripts/add_tenant.sh "$tenant"
 done
-
-./scripts/stop.sh
+./scripts/stop.sh 2>/dev/null
 
 echo_message ""
 echo_success "Done!"

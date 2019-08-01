@@ -20,21 +20,4 @@
 #
 set -Eeuo pipefail
 
-if [ -z "${1:-}" ]; then
-    echo -e "\e[91mPlease, indicate tenant/realm!\e[0m"
-    exit 1
-fi
-
-source .env || \
-    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
-      exit 1 )
-source scripts/lib.sh
-
-echo_warning "You services must be running! If you encounter errors, run demo/start.sh"
-echo_message "Adding tenant $1..."
-echo_message "Creating initial tenants/realms in keycloak..."
-
-auth/add_tenant.sh          "$1"
-aether/add_tenant.sh        "$1"
-gather/add_tenant.sh        "$1"
-elasticsearch/add_tenant.sh "$1"
+scripts/add_tenant.sh "$1"

@@ -26,6 +26,8 @@ case "$1" in
 
     setup )
         ./scripts/init.sh
+        ./scripts/start.sh
+        ./scripts/stop.sh
     ;;
 
     integration )

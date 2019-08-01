@@ -20,7 +20,4 @@
 #
 set -Eeuo pipefail
 
-auth/start.sh
-aether/start.sh
-gather/start.sh
-elasticsearch/start.sh
+scripts/start.sh
