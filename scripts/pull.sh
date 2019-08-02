@@ -20,7 +20,9 @@
 #
 set -Eeuo pipefail
 
-source options.txt
+source options.txt || \
+    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
+      exit 1 )
 
 docker-compose -f _base_/docker-compose.yml pull
 docker-compose -f auth/docker-compose.yml pull

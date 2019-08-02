@@ -20,8 +20,11 @@
 #
 set -Eeuo pipefail
 
+source scripts/lib.sh || \
+    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
+      exit 1 )
 source .env
-source scripts/lib.sh
+
 create_docker_assets
 
 docker network create ckan_bootstrap_net || true

@@ -192,14 +192,6 @@ ODK_ADMIN_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
 ODK_ADMIN_TOKEN=$(gen_random_string)
 ODK_DJANGO_SECRET_KEY=$(gen_random_string)
 ODK_DB_PASSWORD=$(gen_random_string)
-
-# TEST Aether ODK Module
-# ------------------------------------------------------------------
-TEST_ODK_ADMIN_USERNAME=admin-test
-TEST_ODK_ADMIN_PASSWORD=testingtesting
-TEST_ODK_ADMIN_TOKEN=$(gen_random_string)
-TEST_ODK_DJANGO_SECRET_KEY=$(gen_random_string)
-TEST_ODK_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 
 
@@ -233,7 +225,10 @@ fi
 
 set -Eeo pipefail
 
-source options.txt
+source options.txt || \
+    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
+      exit 1 )
+
 LOCAL_HOST=${LOCAL_HOST:-aether.local}
 
 generate_new=yes

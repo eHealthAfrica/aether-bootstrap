@@ -20,7 +20,9 @@
 #
 set -Eeuo pipefail
 
-source options.txt
+source options.txt || \
+    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
+      exit 1 )
 
 _base_/start.sh
 auth/start.sh

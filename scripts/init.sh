@@ -25,7 +25,10 @@ set -Eeuo pipefail
 # See options.default for possible values
 # ------------------------------------------------------------------------------
 
-source scripts/lib.sh
+source scripts/lib.sh || \
+    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
+      exit 1 )
+
 parse_options
 source options.txt
 

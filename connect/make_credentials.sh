@@ -20,7 +20,9 @@
 #
 set -Eeuo pipefail
 
-source .env
+source .env || \
+    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
+      exit 1 )
 
 function gen_kafka_creds {
     cat << EOF
