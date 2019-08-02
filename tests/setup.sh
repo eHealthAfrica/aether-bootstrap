@@ -20,8 +20,8 @@
 #
 set -Eeuo pipefail
 
-DC_TEST="docker-compose -f test/docker-compose.yml"
-DC_KERNEL="$DC_TEST run --rm kernel-test"
+DC_TEST="docker-compose -f tests/docker-compose.yml"
+DC_KERNEL="$DC_TEST run --rm --no-deps kernel-test"
 
 function start_db_test {
     $DC_TEST up -d db-test
@@ -48,6 +48,7 @@ $DC_KERNEL setup
 $DC_KERNEL eval python /code/sql/create_readonly_user.py
 
 $DC_TEST up -d zookeeper-test kafka-test producer-test
+sleep 10
 
 echo "Containers started, waiting for Kernel to be available..."
 start_kernel_test

@@ -9,7 +9,7 @@ services:
 
   rest-proxy-redis:
     image: redis:3-alpine
-    command: ["--appendonly", "yes"]
+    command: ['--appendonly', 'yes']
     networks:
       - aether
 
@@ -18,7 +18,8 @@ services:
     environment:
       LOG_LEVEL: ERROR
       PORT: 3333
-      REQUIRES_AUTH: "False"  # Gateway handles this
+      # Gateway handles this
+      REQUIRES_AUTH: 'false'
       REDIS_HOST: rest-proxy-redis
     depends_on:
       - rest-proxy-redis

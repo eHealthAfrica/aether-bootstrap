@@ -4,6 +4,7 @@ networks:
   aether:
     external:
       name: aether_bootstrap_net
+
   redash_net:
       driver: bridge
 
@@ -20,7 +21,7 @@ services:
     environment:
       PYTHONUNBUFFERED: 0
       REDASH_LOG_LEVEL: ${REDASH_LOG_LEVEL}
-      REDASH_REDIS_URL: "redis://redis:6379/0"
+      REDASH_REDIS_URL: redis://redis:6379/0
       REDASH_DATABASE_URL: ${REDASH_DATABASE_URL}
       REDASH_COOKIE_SECRET: ${REDASH_COOKIE_SECRET}
       REDASH_WEB_WORKERS: 4
@@ -37,9 +38,9 @@ services:
     environment:
       PYTHONUNBUFFERED: 0
       REDASH_LOG_LEVEL: ${REDASH_LOG_LEVEL}
-      REDASH_REDIS_URL: "redis://redis:6379/0"
+      REDASH_REDIS_URL: redis://redis:6379/0
       REDASH_DATABASE_URL: ${REDASH_DATABASE_URL}
-      QUEUES: "queries,scheduled_queries,celery"
+      QUEUES: queries,scheduled_queries,celery
       WORKERS_COUNT: 2
     networks:
       - redash_net
@@ -53,14 +54,16 @@ services:
 
   postgres:
     image: postgres:10-alpine
-    # The following turns the DB into less durable, but gains significant performance improvements for the tests run (x3
-    # improvement on my personal machine). We should consider moving this into a dedicated Docker Compose configuration for
-    # tests.
+    # The following turns the DB into less durable,
+    # but gains significant performance improvements for the tests run
+    # (x3 improvement on my personal machine).
+    # We should consider moving this into a dedicated Docker Compose
+    # configuration for tests.
     ports:
       - 15432:5432
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    command: "postgres -c fsync=off -c full_page_writes=off -c synchronous_commit=OFF"
+    command: postgres -c fsync=off -c full_page_writes=off -c synchronous_commit=OFF
     restart: unless-stopped
     networks:
       - redash_net
