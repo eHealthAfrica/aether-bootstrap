@@ -20,5 +20,5 @@
 #
 set -Eeuo pipefail
 
-docker-compose -f connect/docker-compose.yml up -d
-docker-compose -f connect/docker-compose.yml run --rm kafka-viewer
+docker-compose -f connect/docker-compose.yml up -d kafka zookeeper producer
+# docker-compose -f connect/docker-compose.yml run --rm kafka-viewer

@@ -15,8 +15,6 @@ services:
 
   rest-proxy:
     image: ehealthafrica/scheduled-rest-proxy:latest
-    stdin_open: true
-    tty: true
     environment:
       LOG_LEVEL: ERROR
       PORT: 3333

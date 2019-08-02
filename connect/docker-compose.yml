@@ -90,8 +90,6 @@ services:
 
   kafka-viewer:
     image: ehealthafrica/aether-kafka-viewer
-    stdin_open: true
-    tty: true
     environment:
       - PYTHONUNBUFFERED=1
       - KAFKA_CONFIG=/code/conf/consumer/kafka.json
@@ -108,7 +106,7 @@ services:
   # Aether Kafka Producer
   # ---------------------------------
 
-  aether-producer:
+  producer:
     image: ehealthafrica/aether-producer:${AETHER_VERSION}
     environment:
       # default settings file
