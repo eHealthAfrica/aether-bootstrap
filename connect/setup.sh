@@ -29,6 +29,8 @@ connect/make_credentials.sh
 
 echo_message "Starting Kafka & Zookeper containers..."
 docker-compose -f connect/docker-compose.yml up -d zookeeper kafka
+# give time to the containers
+sleep 10
 
 echo_message "Creating Kafka Superuser..."
 $GWM_RUN add_kafka_su   $KAFKA_SU_USER $KAFKA_SU_PASSWORD
