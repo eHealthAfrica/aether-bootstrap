@@ -20,7 +20,8 @@
 #
 set -Eeuo pipefail
 
-cat << EOF
+function demo_options {
+    cat << EOF
 # DEMO options
 BASE_PROTOCOL=http
 LOCAL_HOST=demo.server
@@ -45,6 +46,9 @@ SERVICES_DEFAULT_ADMIN_PASSWORD=adminadmin
 ENABLE_CONNECT=false
 ENABLE_GATHER=true
 ENABLE_ELASTICSEARCH=true
-EOF > options.txt
+EOF
+}
+
+demo_options > options.txt
 
 scripts/init.sh

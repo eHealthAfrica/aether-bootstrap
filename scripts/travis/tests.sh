@@ -22,7 +22,8 @@ set -Eeuo pipefail
 
 # just check that the scripts work
 
-cat << EOF
+function travis_options {
+    cat << EOF
 # Travis test options
 BASE_PROTOCOL=http
 LOCAL_HOST=travis.test.server
@@ -48,7 +49,10 @@ SERVICES_DEFAULT_ADMIN_PASSWORD=travis-password
 ENABLE_CONNECT=true
 ENABLE_GATHER=true
 ENABLE_ELASTICSEARCH=true
-EOF > options.txt
+EOF
+}
+
+travis_options > options.txt
 
 case "$1" in
 
