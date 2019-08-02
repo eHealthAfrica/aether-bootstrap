@@ -33,7 +33,7 @@ services:
   minio:
     image: minio/minio:latest
     volumes:
-      - ./.persistent_data/media:/data
+      - ../.persistent_data/media:/data
     environment:
       MINIO_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}

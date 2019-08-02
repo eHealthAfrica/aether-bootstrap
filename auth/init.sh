@@ -24,12 +24,6 @@ source scripts/lib.sh || \
     ( echo -e "\e[91mRun this script from root folder\e[0m" && \
       exit 1 )
 source .env
-source options.txt
-
-if [ "$PULL_IMAGES" = true ]; then
-    echo_message "Pulling docker images..."
-    docker-compose -f auth/docker-compose.yml pull
-fi
 
 start_db
 

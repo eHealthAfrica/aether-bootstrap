@@ -24,6 +24,7 @@ source options.txt
 
 auth/setup.sh
 aether/setup.sh
+
 if [ "$ENABLE_CONNECT" = true ]; then
     connect/setup.sh
 fi

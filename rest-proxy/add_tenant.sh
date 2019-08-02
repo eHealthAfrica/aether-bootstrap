@@ -28,7 +28,6 @@ fi
 source scripts/lib.sh || \
     ( echo -e "\e[91mRun this script from root folder\e[0m" && \
       exit 1 )
-source auth/lib.sh
 source .env
 
 echo_warning "You services must be running!"

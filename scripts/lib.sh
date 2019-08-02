@@ -22,6 +22,10 @@ set -Eeuo pipefail
 
 LINE=`printf -v row "%${COLUMNS:-$(tput cols)}s"; echo ${row// /=}`
 
+DC_AUTH="docker-compose -f auth/docker-compose.yml"
+GWM_RUN="$DC_AUTH run --rm gateway-manager"
+
+
 function echo_message {
     if [ -z "$1" ]; then
         echo -e "\e[90m$LINE\e[0m"
@@ -71,7 +75,7 @@ function create_docker_assets {
 
 function start_db {
     echo_message "Starting database server..."
-    docker-compose up -d db
+    docker-compose -f _base_/docker-compose.yml up -d db
 
     local DCK="docker-compose -f aether/docker-compose.yml run --rm kernel"
     until $DCK eval pg_isready -q; do
@@ -100,13 +104,28 @@ function start_container {
 }
 
 
+function start_auth_container {
+    container=$1
+    echo_message "Starting $container server..."
+    $DC_AUTH up -d $container
+
+    is_ready="$GWM_RUN ${container}_ready"
+
+    until $is_ready >/dev/null; do
+        >&2 echo "Waiting for $container..."
+        sleep 2
+    done
+    echo_success "$container is ready!"
+}
+
+
 # Usage:    rebuild_database <database> <user> <password>
 function rebuild_database {
     local DB_NAME=$1
     local DB_USER=$2
     local DB_PWD=$3
 
-    local DB_ID=$(docker-compose ps -q db)
+    local DB_ID=$(docker-compose -f _base_/docker-compose.yml ps -q db)
     local PSQL="docker container exec -i $DB_ID psql"
 
     echo_message "Recreating $1 database..."

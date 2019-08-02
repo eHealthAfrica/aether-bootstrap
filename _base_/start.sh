@@ -20,19 +20,9 @@
 #
 set -Eeuo pipefail
 
-DC_AUTH="docker-compose -f auth/docker-compose.yml"
-GWM_RUN="$DC_AUTH run --rm gateway-manager"
+source scripts/lib.sh || \
+    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
+      exit 1 )
 
-function start_auth_container {
-    container=$1
-    echo_message "Starting $container server..."
-    $DC_AUTH up -d $container
-
-    is_ready="$GWM_RUN ${container}_ready"
-
-    until $is_ready >/dev/null; do
-        >&2 echo "Waiting for $container..."
-        sleep 2
-    done
-    echo_success "$container is ready!"
-}
+start_db
+docker-compose -f _base_/docker-compose.yml up -d minio

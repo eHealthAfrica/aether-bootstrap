@@ -23,13 +23,7 @@ set -Eeuo pipefail
 source scripts/lib.sh || \
     ( echo -e "\e[91mRun this script from root folder\e[0m" && \
       exit 1 )
-source auth/lib.sh
 source .env
-source options.txt
-
-if [ "$PULL_IMAGES" = true ]; then
-    docker-compose -f elasticsearch/docker-compose.yml pull
-fi
 
 ES_URL="http://admin:${ELASTICSEARCH_PASSWORD}@elasticsearch:9200"
 start_container elasticsearch elasticsearch $ES_URL

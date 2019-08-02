@@ -20,25 +20,18 @@
 #
 set -Eeuo pipefail
 
-source options.txt || \
-    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
-      exit 1 )
-source .env
+source options.txt
 
-if [ -z "${1:-}" ]; then
-    echo -e "\e[91mPlease, indicate tenant!\e[0m"
-    exit 1
-fi
-
-auth/add_tenant.sh "$1"
-aether/add_tenant.sh "$1"
+docker-compose -f _base_/docker-compose.yml pull
+docker-compose -f auth/docker-compose.yml pull
+docker-compose -f aether/docker-compose.yml pull
 
 if [ "$ENABLE_CONNECT" = true ]; then
-    connect/add_tenant.sh "$1"
+    docker-compose -f connect/docker-compose.yml pull
 fi
 if [ "$ENABLE_GATHER" = true ]; then
-    gather/add_tenant.sh "$1"
+    docker-compose -f gather/docker-compose.yml pull
 fi
 if [ "$ENABLE_ELASTICSEARCH" = true ]; then
-    elasticsearch/add_tenant.sh "$1"
+    docker-compose -f elasticsearch/docker-compose.yml pull
 fi

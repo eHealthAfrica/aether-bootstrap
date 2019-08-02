@@ -23,7 +23,6 @@ set -Eeuo pipefail
 source scripts/lib.sh || \
     ( echo -e "\e[91mRun this script from root folder\e[0m" && \
       exit 1 )
-source options.txt
 
 start_db
 
@@ -31,9 +30,6 @@ start_db
 DCA="docker-compose -f aether/docker-compose.yml"
 AETHER_CONTAINERS=( kernel ui )
 for container in "${AETHER_CONTAINERS[@]}"; do
-    if [ "$PULL_IMAGES" = true ]; then
-        $DCA pull $container
-    fi
     $DCA run --rm $container setup
 done
 $DCA run --rm kernel eval python /code/sql/create_readonly_user.py

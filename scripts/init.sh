@@ -46,6 +46,10 @@ echo_message ""
 docker network rm aether_bootstrap_net || true
 create_docker_assets
 
+if [ "$PULL_IMAGES" = true ]; then
+    ./scripts/pull.sh
+fi
+
 ./auth/init.sh
 ./scripts/setup.sh
 

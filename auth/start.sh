@@ -23,8 +23,6 @@ set -Eeuo pipefail
 source scripts/lib.sh || \
     ( echo -e "\e[91mRun this script from root folder\e[0m" && \
       exit 1 )
-source auth/lib.sh
 
-start_db
 start_auth_container kong
 start_auth_container keycloak

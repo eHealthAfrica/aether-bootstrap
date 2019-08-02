@@ -23,16 +23,10 @@ set -Eeuo pipefail
 source scripts/lib.sh || \
     ( echo -e "\e[91mRun this script from root folder\e[0m" && \
       exit 1 )
-source options.txt
 
 start_db
 
-# setup container (model migration, admin user, static content...)
-DCG="docker-compose -f gather/docker-compose.yml"
 GATHER_CONTAINERS=( odk gather )
 for container in "${GATHER_CONTAINERS[@]}"; do
-    if [ "$PULL_IMAGES" = true ]; then
-        $DCG pull $container
-    fi
-    $DCG run --rm $container setup
+    docker-compose -f gather/docker-compose.yml run --rm $container setup
 done

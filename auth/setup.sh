@@ -20,11 +20,11 @@
 #
 set -Eeuo pipefail
 
-source auth/lib.sh || \
+source scripts/lib.sh || \
     ( echo -e "\e[91mRun this script from root folder\e[0m" && \
       exit 1 )
-source options.txt
 
-./auth/start.sh
+start_db
+start_auth_container kong
 
 $GWM_RUN add_app keycloak

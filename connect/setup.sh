@@ -23,20 +23,12 @@ set -Eeuo pipefail
 source scripts/lib.sh || \
     ( echo -e "\e[91mRun this script from root folder\e[0m" && \
       exit 1 )
-source auth/lib.sh
 source .env
-source options.txt
 
 connect/make_credentials.sh
 
-if [ "$PULL_IMAGES" = true ]; then
-    docker-compose -f connect/docker-compose.yml pull
-fi
-
 echo_message "Starting Kafka & Zookeper containers..."
 docker-compose -f connect/docker-compose.yml up -d zookeeper kafka
-
-./auth/start.sh
 
 echo_message "Creating Kafka Superuser..."
 $GWM_RUN add_kafka_su   $KAFKA_SU_USER $KAFKA_SU_PASSWORD
