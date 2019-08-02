@@ -31,7 +31,7 @@ DCC="docker-compose -f connect/docker-compose.yml"
 
 echo_message "Starting Kafka & Zookeper containers..."
 $DCC up -d zookeeper kafka
-$DCC run --rm kafka dub wait kafka 9092 60
+$DCC run --rm --no-deps kafka dub wait kafka 9092 60
 
 echo_message "Creating Kafka Superuser..."
 $GWM_RUN add_kafka_su   $KAFKA_SU_USER $KAFKA_SU_PASSWORD
