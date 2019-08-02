@@ -43,7 +43,7 @@ echo_message ""
 # Also note that with Kong < 0.15, migrations should never be run concurrently;
 # only one Kong node should be performing migrations at a time.
 # This limitation is lifted for Kong 0.15, 1.0, and above.
-DC_KONG="docker-compose -f auth/docker-compose.yml run --rm kong kong migrations"
-$DC_KONG bootstrap 2>/dev/null || true
-$DC_KONG up
+DC_KONG="docker-compose -f auth/docker-compose.yml run --rm kong kong"
+$DC_KONG migrations bootstrap
+$DC_KONG migrations up
 echo_message ""

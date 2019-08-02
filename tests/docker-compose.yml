@@ -13,11 +13,6 @@ services:
     image: postgres:10-alpine
     environment:
       PGUSER: postgres
-    healthcheck:
-      test: pg_isready
-      interval: 2s
-      timeout: 3s
-      retries: 30
     networks:
       - test
 

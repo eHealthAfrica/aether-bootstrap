@@ -57,7 +57,7 @@ function gen_local_cert {
     # --------------------------------------------------------------------------
 
     start_db
-    start_container auth kong $KONG_INTERNAL
+    start_auth_container kong
 
     echo_message "Installing self-signed certificate in kong..."
     curl -i -X POST http://localhost:8001/certificates/ \
@@ -72,7 +72,7 @@ function instructions {
 1. Execute the following in bash:
 
 source .env
-source scripts/setup_https.sh
+source scripts/extras/setup_https.sh
 
 gen_local_cert
 
@@ -86,7 +86,7 @@ KEYCLOAK_SERVER_URL=https://.../auth/realms
 
 --------------------------------------------------------------------------------
 
-3. Add in your docker-compose-base.yml file in the kong service the following:
+3. Add in your connect/docker-compose.yml file in the kong service the following:
 
   kong-base:
     environment:
@@ -96,7 +96,7 @@ KEYCLOAK_SERVER_URL=https://.../auth/realms
 
 --------------------------------------------------------------------------------
 
-4. Add to your docker-compose-base.yml file the following volume entry
+4. Add to your {module}/docker-compose.yml file the following volume entry
 in each service that uses https to communicate internally with
 the rest of services (kernel, odk, ui,...):
 

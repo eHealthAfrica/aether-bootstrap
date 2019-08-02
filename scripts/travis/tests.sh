@@ -31,7 +31,7 @@ case "$1" in
     ;;
 
     integration )
-        ./tests/integration_test_run.sh
+        ./tests/run.sh
     ;;
 
 esac

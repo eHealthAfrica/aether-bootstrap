@@ -41,6 +41,7 @@ if [ -z "${REALM:-}" ]; then
     exit 1
 fi
 
+start_db
 ./auth/start.sh
 
 echo_message "Connecting to keycloak server..."

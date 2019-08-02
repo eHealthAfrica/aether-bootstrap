@@ -30,8 +30,8 @@ function echo_message {
     if [ -z "$1" ]; then
         echo -e "\e[90m$LINE\e[0m"
     else
-        msg=" $1 "
-        color=${2:-\\e[39m}
+        local msg=" $1 "
+        local color=${2:-\\e[39m}
         echo -e "\e[90m${LINE:${#msg}}\e[0m$color$msg\e[0m"
     fi
 }
@@ -63,8 +63,7 @@ function create_docker_assets {
     {
         docker network create aether_bootstrap_net \
             --attachable \
-            --subnet=${NETWORK_SUBNET} \
-            --gateway=${NETWORK_GATEWAY}
+            --subnet=${NETWORK_SUBNET}
     } || true
     echo_success "aether_bootstrap_net network is ready"
 
@@ -105,11 +104,11 @@ function start_container {
 
 
 function start_auth_container {
-    container=$1
+    local container=$1
     echo_message "Starting $container server..."
     $DC_AUTH up -d $container
 
-    is_ready="$GWM_RUN ${container}_ready"
+    local is_ready="$GWM_RUN ${container}_ready"
 
     until $is_ready >/dev/null; do
         >&2 echo "Waiting for $container..."

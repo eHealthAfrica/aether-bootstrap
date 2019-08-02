@@ -8,7 +8,7 @@ networks:
     external:
       name: aether_bootstrap_net
 
-  ckan_net:
+  ckan-net:
     external:
       name: ckan_bootstrap_net
 
@@ -48,7 +48,7 @@ services:
       - ./ckan:/etc/ckan
     networks:
       - aether
-      - ckan_net
+      - ckan-net
     restart: on-failure
 
   datapusher:
@@ -57,7 +57,7 @@ services:
     ports:
       - 8800:8800
     networks:
-      - ckan_net
+      - ckan-net
 
   ckanpg:
     container_name: ckanpg
@@ -71,7 +71,7 @@ services:
       - DS_RO_PASS=datastore
       - POSTGRES_PASSWORD=ckan
     networks:
-      - ckan_net
+      - ckan-net
 
   solr:
     container_name: solr
@@ -79,10 +79,10 @@ services:
       context: .
       dockerfile: solr/Dockerfile
     networks:
-      - ckan_net
+      - ckan-net
 
   redis:
     container_name: redis
     image: redis:latest
     networks:
-      - ckan_net
+      - ckan-net

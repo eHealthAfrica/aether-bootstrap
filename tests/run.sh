@@ -20,6 +20,8 @@
 #
 set -Eeuo pipefail
 
-./tests/integration_test_setup.sh
+./tests/setup.sh
 
 docker-compose -f test/docker-compose.yml run --rm integration-test test
+
+./tests/wipe.sh
