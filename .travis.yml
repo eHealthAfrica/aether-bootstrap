@@ -13,10 +13,10 @@ script:
   - ./scripts/travis/tests.sh $TEST_MODE
 
 after_script:
-  - ./scripts/travis/tests_teardown.sh
+  - ./scripts/travis/teardown.sh
 
 after_failure:
-  - ./scripts/travis/tests_failure.sh
+  - ./scripts/travis/failure.sh
 
 matrix:
   fast_finish: true
