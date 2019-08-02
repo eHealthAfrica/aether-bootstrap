@@ -22,6 +22,34 @@ set -Eeuo pipefail
 
 # just check that the scripts work
 
+cat << EOF
+# Travis test options
+BASE_PROTOCOL=http
+LOCAL_HOST=travis.test.server
+
+PULL_IMAGES=true
+INITIAL_TENANTS="test;"
+
+## Keycloak Settings
+KEYCLOAK_GLOBAL_ADMIN=admin-travis
+KEYCLOAK_GLOBAL_PASSWORD=travis-password
+
+KEYCLOAK_AETHER_CLIENT=aether-travis
+KEYCLOAK_KONG_CLIENT=kong-travis
+
+# Initial user credentials
+KEYCLOAK_INITIAL_USER_USERNAME=user-travis
+KEYCLOAK_INITIAL_USER_PASSWORD=travis-password
+
+# Password for user "admin"
+SERVICES_DEFAULT_ADMIN_PASSWORD=travis-password
+
+# Enable services
+ENABLE_CONNECT=true
+ENABLE_GATHER=true
+ENABLE_ELASTICSEARCH=true
+EOF > options.txt
+
 case "$1" in
 
     setup )
