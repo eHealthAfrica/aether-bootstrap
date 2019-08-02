@@ -106,9 +106,9 @@ The expected format for each service file is:
 
 ```bash
 docker-compose \
-    -f docker-compose-generation.yml \
+    -f auth/docker-compose.yml \
     run --rm \
-    auth \
+    gateway-manager \
     add_service "service-name" "realm-name" "kong-client-name-in-keycloak"
 ```
 
@@ -116,9 +116,9 @@ docker-compose \
 
 ```bash
 docker-compose \
-    -f docker-compose-generation.yml \
+    -f auth/docker-compose.yml \
     run --rm \
-    auth \
+    gateway-manager \
     remove_service "service-name" "realm-name"
 ```
 
@@ -126,8 +126,8 @@ docker-compose \
 
 ```bash
 docker-compose \
-    -f docker-compose-generation.yml \
+    -f auth/docker-compose.yml \
     run --rm \
-    auth \
+    gateway-manager \
     remove_service "service-name"
 ```

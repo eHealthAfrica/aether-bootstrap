@@ -21,9 +21,9 @@ The expected format for each solution file is:
 
 ```bash
 docker-compose \
-    -f docker-compose-generation.yml \
+    -f auth/docker-compose.yml \
     run --rm \
-    auth \
+    gateway-manager \
     add_solution "solution-name" "realm-name" "kong-client-name-in-keycloak"
 ```
 
@@ -31,9 +31,9 @@ docker-compose \
 
 ```bash
 docker-compose \
-    -f docker-compose-generation.yml \
+    -f auth/docker-compose.yml \
     run --rm \
-    auth \
+    gateway-manager \
     remove_solution "solution-name" "realm-name"
 ```
 
@@ -41,8 +41,8 @@ docker-compose \
 
 ```bash
 docker-compose \
-    -f docker-compose-generation.yml \
+    -f auth/docker-compose.yml \
     run --rm \
-    auth \
+    gateway-manager \
     remove_solution "solution-name"
 ```

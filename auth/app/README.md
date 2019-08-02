@@ -39,9 +39,9 @@ The expected format for each app file is:
 
 ```bash
 docker-compose \
-    -f docker-compose-generation.yml \
+    -f auth/docker-compose.yml \
     run --rm \
-    auth \
+    gateway-manager \
     add_app "app-name"
 ```
 
@@ -49,8 +49,8 @@ docker-compose \
 
 ```bash
 docker-compose \
-    -f docker-compose-generation.yml \
+    -f auth/docker-compose.yml \
     run --rm \
-    auth \
+    gateway-manager \
     remove_app "app-name"
 ```
