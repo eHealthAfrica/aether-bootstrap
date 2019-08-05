@@ -50,5 +50,3 @@ EOF
 }
 
 demo_options > options.txt
-
-scripts/init.sh
