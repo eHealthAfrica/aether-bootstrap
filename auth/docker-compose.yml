@@ -1,0 +1,113 @@
+version: '3'
+
+networks:
+  aether:
+    external:
+      name: aether_bootstrap_net
+
+services:
+
+  # ---------------------------------
+  # Gateway Service
+  # ---------------------------------
+
+  kong:
+    image: ehealthafrica/kong:${KONG_VERSION:-1.1}
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: db
+      KONG_PG_DATABASE: kong
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: ${KONG_PG_PASSWORD}
+
+      KONG_NGINX_PROXY_LARGE_CLIENT_HEADER_BUFFERS: 16 128k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: 16 128k
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 128k
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_PROXY_LISTEN: 0.0.0.0:80, 0.0.0.0:8443
+
+      KONG_PLUGINS: bundled,kong-oidc-auth
+    # uncomment to mount logs outside of docker volume
+    # volumes:
+    #   - ../.persistent_data/logs/kong:/usr/local/kong/logs/
+    ports:
+      - 80:80
+      - 8443:8443  # ODK Collect requirement!!!
+      - 8001:8001  # open this port to access to kong admin
+    command: ['kong', 'start', '--v']
+    networks:
+      aether:
+        ipv4_address: ${KONG_IP}
+    extra_hosts:
+      - ${BASE_DOMAIN}:127.0.0.1
+
+  # ---------------------------------
+  # Gateway Authentication
+  # ---------------------------------
+
+  keycloak:
+    image: jboss/keycloak:${KEYCLOAK_VERSION:-latest}
+    volumes:
+      # custom aether theme
+      - ./keycloak/aether-theme:/opt/jboss/keycloak/themes/aether
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: db
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: ${KEYCLOAK_PG_PASSWORD}
+
+      KEYCLOAK_USER: ${KEYCLOAK_GLOBAL_ADMIN}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
+
+      PROXY_ADDRESS_FORWARDING: 'true'
+      PROXY_PORT_FORWARDING: 'true'
+
+      KEYCLOAK_LOGLEVEL: ERROR
+      ROOT_LOGLEVEL: ERROR
+    # this is private to the cluster, only open for debugging
+    # ports:
+    #   - 8080:8080
+    networks:
+      - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
+
+
+  # ---------------------------------
+  # Gateway Manager
+  # ---------------------------------
+
+  gateway-manager:
+    image: ehealthafrica/gateway-manager:${GATEWAY_VERSION:-latest}
+    environment:
+      DEBUG: null
+
+      BASE_DOMAIN: ${BASE_DOMAIN}
+      BASE_HOST: ${BASE_PROTOCOL}://${BASE_DOMAIN}
+
+      KEYCLOAK_GLOBAL_ADMIN: ${KEYCLOAK_GLOBAL_ADMIN}
+      KEYCLOAK_GLOBAL_PASSWORD: ${KEYCLOAK_GLOBAL_PASSWORD}
+
+      KEYCLOAK_INTERNAL: ${KEYCLOAK_INTERNAL}/
+      KONG_INTERNAL: ${KONG_INTERNAL}
+
+      ZOOKEEPER_HOST: zookeeper:32181
+      ZOOKEEPER_USER: ${ZOOKEEPER_ROOT_USER}
+      ZOOKEEPER_PW: ${ZOOKEEPER_ROOT_PASSWORD}
+      KAFKA_SECRET: ${KAFKA_SECRET}
+
+      ELASTICSEARCH_HOST: http://elasticsearch:9200
+      ELASTICSEARCH_USER: admin
+      ELASTICSEARCH_PW: ${ELASTICSEARCH_PASSWORD}
+    volumes:
+      - ./app:/code/app
+      - ./service:/code/service
+      - ./solution:/code/solution
+      - ./keycloak/realm/realm_template.json:/code/templates/realm_template.json
+    command: help
+    networks:
+      - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}

@@ -2,14 +2,11 @@
 # Setup Options
 ##
 
-# Initial tenants to create
-INITIAL_TENANTS="dev;prod;test;"
-
-# Setup Kafka
-SETUP_CONNECT=true
-
 # Pull latest images from dockerhub
 PULL_IMAGES=true
+
+# Initial tenants to create
+INITIAL_TENANTS="dev;prod;test;"
 
 ##
 # Services Options
@@ -25,9 +22,24 @@ KEYCLOAK_KONG_CLIENT=kong
 
 ## Routing Settings
 BASE_PROTOCOL=http
+
 # Host from which all services will be served
 LOCAL_HOST=aether.local
 
 ## Services Settings
 # Password for user "admin"
 SERVICES_DEFAULT_ADMIN_PASSWORD=adminadmin
+
+
+##
+# Enable Services
+##
+
+# Kafka
+ENABLE_CONNECT=true
+
+# ODK & Gather3
+ENABLE_GATHER=true
+
+# ElasticSearch
+ENABLE_ELASTICSEARCH=true

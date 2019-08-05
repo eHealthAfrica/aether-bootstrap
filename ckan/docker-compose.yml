@@ -1,22 +1,22 @@
 # docker-compose build && docker-compose up -d
-# If "docker-compose logs ckan" shows DB not ready, run "docker-compose restart ckan" a few times.
-version: "3"
+# If "docker-compose logs ckan" shows DB not ready,
+# run "docker-compose restart ckan" a few times.
+version: '3'
+
+networks:
+  aether:
+    external:
+      name: aether_bootstrap_net
+
+  ckan-net:
+    external:
+      name: ckan_bootstrap_net
 
 
 services:
   ckan:
     container_name: ckan
     image: ehealthafrica/ckan:2.8.0-rc
-    # build:
-    #   context: .
-    # args:
-    #  - CKAN_SITE_URL=${CKAN_SITE_URL}
-    links:
-      - ckanpg
-      - solr
-      - redis
-    ports:
-      - "0.0.0.0:5000:5000"
     environment:
       # Defaults work with linked containers, change to use own Postgres, SolR, Redis or Datapusher
       - DATASTORE_READONLY_PASSWORD=datastore
@@ -35,19 +35,25 @@ services:
       #- POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       #- DS_RO_PASS=${DATASTORE_READONLY_PASSWORD}
     volumes:
-     - ./ckan:/etc/ckan
+      - ./ckan:/etc/ckan
+    depends_on:
+      - ckanpg
+      - solr
+      - redis
+    ports:
+      - 0.0.0.0:5000:5000
     networks:
       - aether
-      - ckan_net
+      - ckan-net
     restart: on-failure
 
   datapusher:
     container_name: datapusher
     image: clementmouchet/datapusher
     ports:
-      - "8800:8800"
+      - 8800:8800
     networks:
-      - ckan_net
+      - ckan-net
 
   ckanpg:
     container_name: ckanpg
@@ -61,7 +67,7 @@ services:
       - DS_RO_PASS=datastore
       - POSTGRES_PASSWORD=ckan
     networks:
-      - ckan_net
+      - ckan-net
 
   solr:
     container_name: solr
@@ -69,17 +75,10 @@ services:
       context: .
       dockerfile: solr/Dockerfile
     networks:
-      - ckan_net
+      - ckan-net
 
   redis:
     container_name: redis
     image: redis:latest
     networks:
-      - ckan_net
-
-networks:
-  aether:
-    external:
-      name: aether_bootstrap_net
-  ckan_net:
-      driver: bridge
+      - ckan-net

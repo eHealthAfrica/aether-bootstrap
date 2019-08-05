@@ -1,5 +1,23 @@
-#!/bin/sh
-set -e
+#!/usr/bin/env bash
+#
+# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+#
+# See the NOTICE file distributed with this work for additional information
+# regarding copyright ownership.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
 
 # URL for the primary database, in the format expected by sqlalchemy (required
 # unless linked to a container called 'db')
@@ -14,40 +32,40 @@ set -e
 CONFIG="${CKAN_CONFIG}/production.ini"
 
 abort () {
-  echo "$@" >&2
-  exit 1
+    echo "$@" >&2
+    exit 1
 }
 
 set_environment () {
-  export CKAN_SITE_ID=${CKAN_SITE_ID}
-  export CKAN_SITE_URL=${CKAN_SITE_URL}
-  export CKAN_SQLALCHEMY_URL=${CKAN_SQLALCHEMY_URL}
-  export CKAN_SOLR_URL=${CKAN_SOLR_URL}
-  export CKAN_REDIS_URL=${CKAN_REDIS_URL}
-  export CKAN_STORAGE_PATH=/var/lib/ckan
-  export CKAN_DATAPUSHER_URL=${CKAN_DATAPUSHER_URL}
-  export CKAN_DATASTORE_WRITE_URL=${CKAN_DATASTORE_WRITE_URL}
-  export CKAN_DATASTORE_READ_URL=${CKAN_DATASTORE_READ_URL}
-  export CKAN_SMTP_SERVER=${CKAN_SMTP_SERVER}
-  export CKAN_SMTP_STARTTLS=${CKAN_SMTP_STARTTLS}
-  export CKAN_SMTP_USER=${CKAN_SMTP_USER}
-  export CKAN_SMTP_PASSWORD=${CKAN_SMTP_PASSWORD}
-  export CKAN_SMTP_MAIL_FROM=${CKAN_SMTP_MAIL_FROM}
-  export CKAN_MAX_UPLOAD_SIZE_MB=${CKAN_MAX_UPLOAD_SIZE_MB}
+    export CKAN_SITE_ID=${CKAN_SITE_ID}
+    export CKAN_SITE_URL=${CKAN_SITE_URL}
+    export CKAN_SQLALCHEMY_URL=${CKAN_SQLALCHEMY_URL}
+    export CKAN_SOLR_URL=${CKAN_SOLR_URL}
+    export CKAN_REDIS_URL=${CKAN_REDIS_URL}
+    export CKAN_STORAGE_PATH=/var/lib/ckan
+    export CKAN_DATAPUSHER_URL=${CKAN_DATAPUSHER_URL}
+    export CKAN_DATASTORE_WRITE_URL=${CKAN_DATASTORE_WRITE_URL}
+    export CKAN_DATASTORE_READ_URL=${CKAN_DATASTORE_READ_URL}
+    export CKAN_SMTP_SERVER=${CKAN_SMTP_SERVER}
+    export CKAN_SMTP_STARTTLS=${CKAN_SMTP_STARTTLS}
+    export CKAN_SMTP_USER=${CKAN_SMTP_USER}
+    export CKAN_SMTP_PASSWORD=${CKAN_SMTP_PASSWORD}
+    export CKAN_SMTP_MAIL_FROM=${CKAN_SMTP_MAIL_FROM}
+    export CKAN_MAX_UPLOAD_SIZE_MB=${CKAN_MAX_UPLOAD_SIZE_MB}
 }
 
 write_config () {
-  ckan-paster make-config --no-interactive ckan "$CONFIG"
+    ckan-paster make-config --no-interactive ckan "$CONFIG"
 }
 
 # If we don't already have a config file, bootstrap
 if [ ! -e "$CONFIG" ]; then
-  write_config
+    write_config
 fi
 
 # Get or create CKAN_SQLALCHEMY_URL
 if [ -z "$CKAN_SQLALCHEMY_URL" ]; then
-  abort "ERROR: no CKAN_SQLALCHEMY_URL specified in docker-compose.yml"
+    abort "ERROR: no CKAN_SQLALCHEMY_URL specified in docker-compose.yml"
 fi
 
 if [ -z "$CKAN_SOLR_URL" ]; then

@@ -1,0 +1,36 @@
+version: '3'
+
+networks:
+  aether:
+    external:
+      name: aether_bootstrap_net
+
+services:
+
+  # ---------------------------------
+  # Data Generation
+  # ---------------------------------
+
+  assets:
+    image: aether-assets
+    build: ./generation
+    volumes:
+      - ./generation:/code
+      - ./resources:/code/resources
+    environment:
+      KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/dev/kernel
+      KERNEL_USER: ${KEYCLOAK_INITIAL_USER_USERNAME}
+      KERNEL_PASSWORD: ${KEYCLOAK_INITIAL_USER_PASSWORD}
+
+      REALM: dev
+      KEYCLOAK_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/auth
+
+      CLIENT_LOGLEVEL: INFO
+      ROOT_LOGLEVEL: DEBUG
+
+      PROJECT_NAME: DefaultDemo
+      MAPPING_NAME: default_mapping
+    networks:
+      - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
