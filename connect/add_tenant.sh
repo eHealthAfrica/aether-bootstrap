@@ -21,12 +21,12 @@
 set -Eeuo pipefail
 
 if [ -z "${1:-}" ]; then
-    echo -e "\e[91mPlease, indicate tenant/realm!\e[0m"
+    echo -e "\033[91mPlease, indicate tenant/realm!\033[0m"
     exit 1
 fi
 
 source scripts/lib.sh || \
-    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
+    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
 
 $GWM_RUN add_kafka_tenant "$1"

@@ -28,24 +28,24 @@ GWM_RUN="$DC_AUTH run --rm gateway-manager"
 
 function echo_message {
     if [ -z "$1" ]; then
-        echo -e "\e[90m$LINE\e[0m"
+        echo -e "\033[90m$LINE\033[0m"
     else
         local msg=" $1 "
-        local color=${2:-\\e[39m}
-        echo -e "\e[90m${LINE:${#msg}}\e[0m$color$msg\e[0m"
+        local color=${2:-\\033[39m}
+        echo -e "\033[90m${LINE:${#msg}}\033[0m$color$msg\033[0m"
     fi
 }
 
 function echo_error {
-    echo_message "$1" \\e[91m
+    echo_message "$1" \\033[91m
 }
 
 function echo_success {
-    echo_message "$1" \\e[92m
+    echo_message "$1" \\033[92m
 }
 
 function echo_warning {
-    echo_message "$1" \\e[93m
+    echo_message "$1" \\033[93m
 }
 
 

@@ -216,21 +216,21 @@ EOF
 check_openssl
 RET=$?
 if [ $RET -eq 1 ]; then
-    echo -e "\e[91mPlease install 'openssl'  https://www.openssl.org/\e[0m"
+    echo -e "\033[91mPlease install 'openssl'  https://www.openssl.org/\033[0m"
     exit 1
 fi
 
 set -Eeo pipefail
 
 source options.txt || \
-    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
+    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
 
 LOCAL_HOST=${LOCAL_HOST:-aether.local}
 
 generate_new=yes
 if [ -e ".env" ]; then
-    echo -e "\e[93m[.env] file already exists!\e[0m"
+    echo -e "\033[93m[.env] file already exists!\033[0m"
     source .env
 
     # check localhost vs base domain
@@ -238,14 +238,14 @@ if [ -e ".env" ]; then
         generate_new=no
         echo "Remove it if you want to generate new local credentials."
     else
-        echo -e "Current domain \e[1m[$LOCAL_HOST]\e[0m differs from saved one \e[1m[$BASE_DOMAIN]\e[0m, generating new credentials"
+        echo -e "Current domain \033[1m[$LOCAL_HOST]\033[0m differs from saved one \033[1m[$BASE_DOMAIN]\033[0m, generating new credentials"
         mv ".env" ".env.${BASE_DOMAIN}"
     fi
 fi
 
 if [[ $generate_new = "yes" ]]; then
     gen_env_file > .env
-    echo -e "\e[92m[.env] file generated!\e[0m"
+    echo -e "\033[92m[.env] file generated!\033[0m"
 fi
 
 

@@ -26,14 +26,14 @@ set -Eeuo pipefail
 # ------------------------------------------------------------------------------
 
 source scripts/lib.sh || \
-    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
+    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
 
 parse_options
 source options.txt
 
 echo_message ""
-echo_message "Initializing installation for host: \\e[1m$LOCAL_HOST\\e[0m"
+echo_message "Initializing installation for host: \\033[1m$LOCAL_HOST\\033[0m"
 echo_message ""
 
 ./scripts/generate_env_vars.sh
