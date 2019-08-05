@@ -21,7 +21,7 @@
 set -Eeuo pipefail
 
 source scripts/lib.sh || \
-    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
+    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
 source auth/extras/keycloak_admin_functions.sh
 source .env
@@ -37,7 +37,7 @@ PWD="secretsecret"
 
 
 if [ -z "${REALM:-}" ]; then
-    echo -e "\e[91mPlease, indicate realm name!\e[0m"
+    echo -e "\033[91mPlease, indicate realm name!\033[0m"
     exit 1
 fi
 

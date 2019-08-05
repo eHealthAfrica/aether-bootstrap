@@ -21,7 +21,7 @@
 set -Eeuo pipefail
 
 source .env || \
-    ( echo -e "\e[91mRun this script from root folder\e[0m" && \
+    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
 
 function gen_kafka_creds {
@@ -51,7 +51,7 @@ EOF
 }
 
 gen_kafka_creds > connect/kafka_server_jaas.conf
-echo -e "\e[92m[connect/kafka_server_jaas.conf] security file generated!\e[0m"
+echo -e "\033[92m[connect/kafka_server_jaas.conf] security file generated!\033[0m"
 
 gen_zookeeper_creds > connect/zk_server_jaas.conf
-echo -e "\e[92m[connect/zk_server_jaas.conf] security file generated!\e[0m"
+echo -e "\033[92m[connect/zk_server_jaas.conf] security file generated!\033[0m"
