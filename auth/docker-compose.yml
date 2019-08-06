@@ -50,6 +50,8 @@ services:
     volumes:
       # custom aether theme
       - ./keycloak/aether-theme:/opt/jboss/keycloak/themes/aether
+      # custom planfeld theme
+      - ./keycloak/planfeld-theme:/opt/jboss/keycloak/themes/planfeld
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: db

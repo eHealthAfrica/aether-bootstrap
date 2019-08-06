@@ -6,7 +6,7 @@
 PULL_IMAGES=true
 
 # Initial tenants to create
-INITIAL_TENANTS="dev;prod;test;"
+INITIAL_TENANTS="planfeld;"
 
 ##
 # Services Options
@@ -24,7 +24,7 @@ KEYCLOAK_KONG_CLIENT=kong
 BASE_PROTOCOL=http
 
 # Host from which all services will be served
-LOCAL_HOST=aether.local
+LOCAL_HOST=planfeld.local
 
 ## Services Settings
 # Password for user "admin"
@@ -36,10 +36,10 @@ SERVICES_DEFAULT_ADMIN_PASSWORD=adminadmin
 ##
 
 # Kafka
-ENABLE_CONNECT=true
+ENABLE_CONNECT=false
 
 # ODK & Gather3
 ENABLE_GATHER=true
 
 # ElasticSearch
-ENABLE_ELASTICSEARCH=true
+ENABLE_ELASTICSEARCH=false
