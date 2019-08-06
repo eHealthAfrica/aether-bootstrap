@@ -23,23 +23,33 @@ set -Eeuo pipefail
 DC_TEST="docker-compose -f tests/docker-compose.yml"
 DC_KERNEL="$DC_TEST run --rm --no-deps kernel-test"
 
-function start_db_test {
-    $DC_TEST up -d db-test
+function _wait_for {
+    local container=$1
+    local is_ready=$2
 
-    until $DC_KERNEL eval pg_isready -q; do
-        >&2 echo "Waiting for database..."
+    echo "Starting $container server..."
+    $DC_TEST up -d "${container}-test"
+
+    local retries=1
+    until $is_ready > /dev/null; do
+        >&2 echo "Waiting for $container... $retries"
         sleep 2
+
+        ((retries++))
+        if [[ $retries -gt 30 ]]; then
+            echo "It could not be possible to start $container"
+            exit 1
+        fi
     done
+    echo "$container is ready!"
+}
+
+function start_db_test {
+    _wait_for "db" "$DC_KERNEL eval pg_isready -q"
 }
 
 function start_kernel_test {
-    $DC_TEST up -d kernel-test
-
-    KERNEL_HEALTH_URL="http://kernel-test:9000/health"
-    until $DC_KERNEL manage check_url -u $KERNEL_HEALTH_URL >/dev/null; do
-        >&2 echo "Waiting for Kernel..."
-        sleep 2
-    done
+    _wait_for "kernel" "$DC_KERNEL manage check_url -u http://kernel-test:9000/health"
 }
 
 start_db_test

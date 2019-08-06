@@ -73,15 +73,9 @@ function create_docker_assets {
 
 
 function start_db {
-    echo_message "Starting database server..."
+    local is_ready="docker-compose -f aether/docker-compose.yml run --rm kernel eval pg_isready -q"
     docker-compose -f _base_/docker-compose.yml up -d db
-
-    local DCK="docker-compose -f aether/docker-compose.yml run --rm kernel"
-    until $DCK eval pg_isready -q; do
-        >&2 echo "Waiting for database..."
-        sleep 2
-    done
-    echo_success "database is ready"
+    _wait_for "database" "$is_ready"
 }
 
 
@@ -89,30 +83,37 @@ function start_db {
 function start_container {
     local dc="${1}/docker-compose.yml"
     local container=$2
-    local url=$3
+    local is_ready="docker-compose -f aether/docker-compose.yml run --rm kernel manage check_url -u $3"
 
-    echo_message "Starting [$container] server..."
     docker-compose -f $dc up -d $container
-
-    local DCK="docker-compose -f aether/docker-compose.yml run --rm kernel"
-    until $DCK manage check_url -u $url >/dev/null; do
-        >&2 echo "Waiting for [$container]..."
-        sleep 2
-    done
-    echo_success "[$container] is ready"
+    _wait_for "$container" "$is_ready"
 }
 
 
 function start_auth_container {
     local container=$1
-    echo_message "Starting $container server..."
     $DC_AUTH up -d $container
+    _wait_for "$container" "$GWM_RUN ${container}_ready"
+}
 
-    local is_ready="$GWM_RUN ${container}_ready"
 
-    until $is_ready >/dev/null; do
-        >&2 echo "Waiting for $container..."
+# Usage:    _wait_for <container-name> <is-ready-check>
+function _wait_for {
+    local container=$1
+    local is_ready=$2
+
+    echo_message "Starting $container server..."
+
+    local retries=1
+    until $is_ready > /dev/null; do
+        >&2 echo "Waiting for $container... $retries"
         sleep 2
+
+        ((retries++))
+        if [[ $retries -gt 30 ]]; then
+            echo_error "It could not be possible to start $container"
+            exit 1
+        fi
     done
     echo_success "$container is ready!"
 }
