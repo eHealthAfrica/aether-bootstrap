@@ -47,7 +47,7 @@ do
 
         ((retries++))
         if [[ $retries -gt 30 ]]; then
-            echo "It could not be possible to start CKAN"
+            echo "It was not possible to start CKAN"
             exit 1
         fi
 done
