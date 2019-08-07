@@ -38,10 +38,18 @@ pushd ckan
 }
 
 docker-compose up -d
+
+retries=1
 until docker exec -it ckan /usr/local/bin/ckan-paster --plugin=ckan sysadmin -c /etc/ckan/production.ini add admin | tee creds.txt && echo "done"
 do
-    echo "waiting for ckan container to be ready..."
+    echo "waiting for ckan container to be ready... $retries"
     sleep 5
+
+        ((retries++))
+        if [[ $retries -gt 30 ]]; then
+            echo "It was not possible to start CKAN"
+            exit 1
+        fi
 done
 
 popd
