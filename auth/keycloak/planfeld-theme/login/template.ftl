@@ -9,6 +9,7 @@
       <meta charset="utf-8">
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
       <meta name="robots" content="noindex, nofollow">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
       <#if properties.meta?has_content>
         <#list properties.meta?split(' ') as meta>
@@ -46,6 +47,8 @@
           </div>
         </div>
 
+        <div id="kc-logo" class="app-logo"></div>
+
         <div class="${properties.kcFormCardClass!} <#if displayWide>${properties.kcFormCardAccountClass!}</#if>">
           <header class="${properties.kcFormHeaderClass!}">
             <#if realm.internationalizationEnabled && locale.supported?size gt 1>
@@ -64,13 +67,7 @@
             </#if>
 
             <div id="kc-page-title">
-              <div class="logo-container">
-                <div class="flipper">
-                  <div class="front"></div>
-                  <div class="back"></div>
-                </div>
-              </div>
-              <span class="brand"><b>ae</b>ther</span>
+              Login
             </div>
           </header>
 

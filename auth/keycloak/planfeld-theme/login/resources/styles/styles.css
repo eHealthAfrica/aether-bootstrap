@@ -24,119 +24,55 @@ body, a, input {
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   font-size: 15px;
   line-height: 1.3rem;
-  color: #fff;
+  color: #4a4a4a;
 }
 
 body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  background: #50aef3;
-  background-image: linear-gradient(to right, #50aef3, #7175dd);
-}
-
-body:before {
-  content: '';
-  display: block;
-  position: fixed;
-  bottom: -80vw;
-  left: 25vw;
-  width: 110vw;
-  height: 110vw;
-  border-radius: 100%;
-  border: 1vw solid #ffffff1a;
-  border-right: 6vw solid #ffffff1a;
-  border-top: 4vw solid #ffffff1a;
-  z-index: -1;
-}
-
-body:after {
-  content: '';
-  display: block;
-  position: fixed;
-  bottom: -20vw;
-  left: 60vw;
-  width: 70vw;
-  height: 70vw;
-  border-radius: 100%;
-  border: .5vw solid #ffffff1a;
-  border-right: 5vw solid #ffffff1a;
-  border-top: 3vw solid #ffffff1a;
-  z-index: -1;
+  background: #F3F8FA;
+  margin: 0;
 }
 
 a {
   text-decoration: none;
 }
 
-.logo-container {
-  perspective: 1000px;
-  position: absolute;
-}
-
-.logo-container:hover .flipper {
-  transform: rotateY(180deg);
-}
-
-.back,
-.front,
-.logo-container {
-  border-radius: 50%;
-  height: 46px;
-  width: 46px;
-}
-
-.flipper {
-  position: relative;
-  transform-style: preserve-3d;
-  transition: 1s;
-}
-
-.back,
-.front {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  box-sizing: border-box;
-  left: 0;
-  position: absolute;
-  top: 0;
-}
-
-.front {
-  background: url('../img/planfeld-white.png') no-repeat left top;
-  background-size: 100%;
-  transform: rotateY(0deg);
-}
-
-.back {
-  background: url('../img/eHA-icon.svg') no-repeat left top;
-  background-size: 100%;
-  transform: rotateY(180deg);
-}
-
-.brand {
-  display: inline-block;
-  font-size: 28px;
-  font-weight: 300;
-  line-height: 46px;
-  margin: 0 60px;
-}
-
-.brand b {
-  font-weight: 600;
-}
-
 .planfeld-header {
-  font-size: 2rem;
-  line-height: 2rem;
+  color: #fff;
+  font-size: .8rem;
   font-weight: 600;
-  margin: 4rem 0;
+  letter-spacing: ..4em;
   text-align: center;
+  background: #62707b;
+  padding: .4rem 1rem;
+  box-shadow: 0 1px 0 #ffffff99, 0 -1px 2px #2d3146aa inset;
+}
+
+.app-logo {
+  background: url('../img/logo.png') no-repeat center center;
+  background-size: contain;
+  width: auto;
+  height: 80px;
+  width: 260px;
+  margin: 5vh auto;
 }
 
 .planfeld-form {
-  width: 320px;
+  width: 80vw;
+  max-width: 400px;
+  padding: 2rem 2rem .5rem;
   margin-left: auto;
   margin-right: auto;
+  background: #fff;
+  box-shadow: 0 1px 1px #e0e7ed, 0 3px 4px #e0e7ed;
+  box-sizing: border-box;
+}
+
+.planfeld-form header {
+  font-size: 1.6rem;
+  letter-spacing: 0.4;
+  font-weight: 300;
 }
 
 div#kc-content {
@@ -149,27 +85,35 @@ div#kc-content-wrapper {
 }
 
 .planfeld-form-group {
-  margin: 0.5rem 0 1rem 0;
+  margin: 0.5rem 0 1.5rem 0;
+  position: relative;
 }
 
 .planfeld-label {
-  font-weight: 300;
+  color: #62707b;
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
 }
 
 .planfeld-input {
-  background: #2d31461a;
+  background: #2d314606;
   box-shadow: 1px 1px 1px #2d31461a inset, 1px 1px 0 #ffffff1a;
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
   padding: 0.8rem;
   border: 0;
-  width: 300px;
+  border-radius: 2px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+.planfeld-input:hover,
 .planfeld-input:focus,
 .planfeld-input:active {
   outline: 0;
-  background: #2d314633;
-  box-shadow: 1px 1px 1px #2d314680 inset, 1px 1px 0 #ffffff1a;
+  background: #00396311;
+  box-shadow: 1px 1px 1px #2d314633 inset, 1px 1px 0 #ffffff1a;
 }
 
 .planfeld-btn-primary {
@@ -178,16 +122,28 @@ div#kc-content-wrapper {
   letter-spacing: 0.06rem;
   text-transform: uppercase;
   padding: 0.8rem;
-  width: calc(320px + 0.5rem);
+  margin-top: 1rem;
+  width: 100%;
   cursor: pointer;
   border: 0;
-  background: #ffffff26;
-  box-shadow: 1px 1px 0 #ffffff1a inset, -1px -1px 0 #2d31464d inset, 0 0 4px #2d31461a;
+  border-radius: 2px;
+  background: #0090fc;
+  color: #fff;
+  box-shadow: 1px 1px 0 #ffffff1a inset, -1px -1px 0 #2d314655 inset, 0 1px 3px #2d314644;
+  transition: background .2s;
 }
 
 .planfeld-btn-primary:hover {
   outline: none;
-  background: #0093ff;
+  background: #30a6ff;
+}
+
+.alert {
+  padding-bottom: 1rem;
+}
+
+.alert-error {
+  color: #ea7373;
 }
 
 .planfeld-social-list {
