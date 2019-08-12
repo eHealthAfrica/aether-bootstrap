@@ -48,10 +48,10 @@ services:
   keycloak:
     image: jboss/keycloak:${KEYCLOAK_VERSION:-latest}
     volumes:
-      # custom aether theme
+      # custom themes
       - ./keycloak/aether-theme:/opt/jboss/keycloak/themes/aether
-      # custom ehealth theme
       - ./keycloak/ehealth-theme:/opt/jboss/keycloak/themes/ehealth
+      - ./keycloak/planfeld-theme:/opt/jboss/keycloak/themes/planfeld
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: db

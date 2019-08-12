@@ -1,0 +1,167 @@
+/*
+ * Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+ *
+ * See the NOTICE file distributed with this work for additional information
+ * regarding copyright ownership.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
+
+body, a, input {
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.3rem;
+  color: #4a4a4a;
+}
+
+body {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  background: #F3F8FA;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+.login-header {
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  text-align: center;
+  background: #62707b;
+  padding: 0.4rem 1rem;
+  box-shadow: 0 1px 0 #ffffff99, 0 -1px 2px #2d3146aa inset;
+}
+
+.app-logo {
+  background: url('../img/planfeld.svg') no-repeat center center;
+  background-size: contain;
+  width: auto;
+  height: 128px;
+  width: 256px;
+  margin: 5vh auto;
+}
+
+.login-form {
+  width: 80vw;
+  max-width: 400px;
+  padding: 2rem 2rem 0.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  background: #fff;
+  box-shadow: 0 1px 1px #e0e7ed, 0 3px 4px #e0e7ed;
+  box-sizing: border-box;
+}
+
+.login-form header {
+  font-size: 1.6rem;
+  letter-spacing: 0.4;
+  font-weight: 300;
+}
+
+div#kc-content {
+  margin-top: 2rem;
+}
+
+div#kc-content-wrapper {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-form-group {
+  margin: 0.5rem 0 1.5rem 0;
+  position: relative;
+}
+
+.login-label {
+  color: #62707b;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.login-input {
+  background: #2d314606;
+  box-shadow: 1px 1px 1px #2d31461a inset, 1px 1px 0 #ffffff1a;
+  margin-top: 0.4rem;
+  padding: 0.8rem;
+  border: 0;
+  border-radius: 2px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-input:hover,
+.login-input:focus,
+.login-input:active {
+  outline: 0;
+  background: #00396311;
+  box-shadow: 1px 1px 1px #2d314633 inset, 1px 1px 0 #ffffff1a;
+}
+
+.login-btn-primary {
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.06rem;
+  text-transform: uppercase;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  width: 100%;
+  cursor: pointer;
+  border: 0;
+  border-radius: 2px;
+  background: #0090fc;
+  color: #fff;
+  box-shadow: 1px 1px 0 #ffffff1a inset, -1px -1px 0 #2d314655 inset, 0 1px 3px #2d314644;
+  transition: background 0.2s;
+}
+
+.login-btn-primary:hover {
+  outline: none;
+  background: #30a6ff;
+}
+
+.alert {
+  padding-bottom: 1rem;
+}
+
+.alert-error {
+  color: #ea7373;
+}
+
+.login-social-list {
+  margin-top: 2rem;
+  list-style-type: none;
+}
+
+/* https://developers.google.com/identity/branding-guidelines */
+
+.google {
+  position: absolute;
+  height: 46px;
+  width: 191px;
+  margin-left: 32px;
+  background: url('../img/btn_google_signin_light_normal_web.png') no-repeat top left;
+  /* background: url('../img/btn_google_signin_dark_normal_web.png') no-repeat top left; */
+}
+
+.google span {
+  display: none;
+}
