@@ -84,7 +84,7 @@ REALM_COOKIE=aether-realm
 MULTITENANCY=true
 DEFAULT_REALM=aether
 PUBLIC_REALM=-
-LOGIN_THEME=planfeld
+DEFAULT_LOGIN_THEME=${KEYCLOAK_LOGIN_THEME:-ehealth}
 # ------------------------------------------------------------------
 
 

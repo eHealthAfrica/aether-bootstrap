@@ -30,7 +30,8 @@ if [ -z "${1:-}" ]; then
     exit 1
 fi
 
-auth/add_tenant.sh "$1"
+# <realm> <login-theme> <realm-description>
+auth/add_tenant.sh "$1" "${2:-}" "${3:-}"
 aether/add_tenant.sh "$1"
 
 if [ "$ENABLE_CONNECT" = true ]; then

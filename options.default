@@ -6,7 +6,7 @@
 PULL_IMAGES=true
 
 # Initial tenants to create
-INITIAL_TENANTS="planfeld;"
+INITIAL_TENANTS="dev;prod;test;"
 
 ##
 # Services Options
@@ -19,12 +19,13 @@ KEYCLOAK_INITIAL_USER_USERNAME=user
 KEYCLOAK_INITIAL_USER_PASSWORD=password
 KEYCLOAK_AETHER_CLIENT=aether
 KEYCLOAK_KONG_CLIENT=kong
+KEYCLOAK_LOGIN_THEME=aether
 
 ## Routing Settings
 BASE_PROTOCOL=http
 
 # Host from which all services will be served
-LOCAL_HOST=planfeld.local
+LOCAL_HOST=aether.local
 
 ## Services Settings
 # Password for user "admin"
@@ -36,10 +37,10 @@ SERVICES_DEFAULT_ADMIN_PASSWORD=adminadmin
 ##
 
 # Kafka
-ENABLE_CONNECT=false
+ENABLE_CONNECT=true
 
 # ODK & Gather3
 ENABLE_GATHER=true
 
 # ElasticSearch
-ENABLE_ELASTICSEARCH=false
+ENABLE_ELASTICSEARCH=true
