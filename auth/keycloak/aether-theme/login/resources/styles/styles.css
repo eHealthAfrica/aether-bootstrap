@@ -58,7 +58,7 @@ body:after {
   width: 70vw;
   height: 70vw;
   border-radius: 100%;
-  border: .5vw solid #ffffff1a;
+  border: 0.5vw solid #ffffff1a;
   border-right: 5vw solid #ffffff1a;
   border-top: 3vw solid #ffffff1a;
   z-index: -1;
