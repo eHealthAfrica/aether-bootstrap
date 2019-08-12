@@ -67,7 +67,7 @@
             </#if>
 
             <div id="kc-page-title">
-              Login
+              ${msg("Login")}
             </div>
           </header>
 

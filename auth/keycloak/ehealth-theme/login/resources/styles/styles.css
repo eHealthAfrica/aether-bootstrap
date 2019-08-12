@@ -38,11 +38,11 @@ a {
   text-decoration: none;
 }
 
-.planfeld-header {
+.login-header {
   color: #fff;
   font-size: .8rem;
   font-weight: 600;
-  letter-spacing: ..4em;
+  letter-spacing: 0.4em;
   text-align: center;
   background: #62707b;
   padding: .4rem 1rem;
@@ -58,7 +58,7 @@ a {
   margin: 5vh auto;
 }
 
-.planfeld-form {
+.login-form {
   width: 80vw;
   max-width: 400px;
   padding: 2rem 2rem .5rem;
@@ -69,7 +69,7 @@ a {
   box-sizing: border-box;
 }
 
-.planfeld-form header {
+.login-form header {
   font-size: 1.6rem;
   letter-spacing: 0.4;
   font-weight: 300;
@@ -84,12 +84,12 @@ div#kc-content-wrapper {
   margin-right: auto;
 }
 
-.planfeld-form-group {
+.login-form-group {
   margin: 0.5rem 0 1.5rem 0;
   position: relative;
 }
 
-.planfeld-label {
+.login-label {
   color: #62707b;
   font-size: .7rem;
   font-weight: 600;
@@ -97,7 +97,7 @@ div#kc-content-wrapper {
   text-transform: uppercase;
 }
 
-.planfeld-input {
+.login-input {
   background: #2d314606;
   box-shadow: 1px 1px 1px #2d31461a inset, 1px 1px 0 #ffffff1a;
   margin-top: 0.4rem;
@@ -108,15 +108,15 @@ div#kc-content-wrapper {
   box-sizing: border-box;
 }
 
-.planfeld-input:hover,
-.planfeld-input:focus,
-.planfeld-input:active {
+.login-input:hover,
+.login-input:focus,
+.login-input:active {
   outline: 0;
   background: #00396311;
   box-shadow: 1px 1px 1px #2d314633 inset, 1px 1px 0 #ffffff1a;
 }
 
-.planfeld-btn-primary {
+.login-btn-primary {
   font-size: 1rem;
   font-weight: 400;
   letter-spacing: 0.06rem;
@@ -133,7 +133,7 @@ div#kc-content-wrapper {
   transition: background .2s;
 }
 
-.planfeld-btn-primary:hover {
+.login-btn-primary:hover {
   outline: none;
   background: #30a6ff;
 }
@@ -146,7 +146,7 @@ div#kc-content-wrapper {
   color: #ea7373;
 }
 
-.planfeld-social-list {
+.login-social-list {
   margin-top: 2rem;
   list-style-type: none;
 }
