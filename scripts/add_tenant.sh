@@ -31,7 +31,7 @@ if [ -z "${1:-}" ]; then
 fi
 
 # <realm> <login-theme> <realm-description>
-auth/add_tenant.sh "$1" "${2:-}" "${3:-}"
+auth/add_tenant.sh "$1" "${2:-$KEYCLOAK_LOGIN_THEME}" "${3:-}"
 aether/add_tenant.sh "$1"
 
 if [ "$ENABLE_CONNECT" = true ]; then

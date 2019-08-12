@@ -38,7 +38,18 @@ Now you just need to tell Docker to start aether up:
 ./scripts/start.sh
 ```
 
-Once the console output has stopped, you should be able to access the **Aether UI** in your browser at http://aether.local/dev/ui/ (`http://{LOCAL_HOST}/{realm}/ui`). Use these credentials to log in:
+Once the console output has stopped, you should be able to access the **Aether UI** in your browser at http://aether.local/dev/ui/ (`http://{LOCAL_HOST}/{realm}/ui`).
 
-- *Username*: **user**
-- *Password*: **password**
+Use these credentials to log in:
+
+- *Username*: **user** (`KEYCLOAK_INITIAL_USER_USERNAME`)
+- *Password*: **password** (`KEYCLOAK_INITIAL_USER_PASSWORD`)
+
+
+If you want to add more tenants to your installation:
+
+```bash
+./scripts/add_tenant.sh "tenant-id" "tenant-theme" "tenant long description"
+```
+
+So far, the possible tenant themes are `ehealth` or `aether`.

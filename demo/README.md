@@ -25,5 +25,5 @@ To add new tenants execute:
 
 ```bash
 # adds the tenant in the services indicated in `options.txt` file
-scripts/add_tenant.sh "new-tenant-id"
+scripts/add_tenant.sh "new-tenant-id" "theme" "tenant name"
 ```
