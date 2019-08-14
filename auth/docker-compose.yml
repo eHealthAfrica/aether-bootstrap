@@ -50,6 +50,8 @@ services:
     volumes:
       # custom aether theme
       - ./keycloak/aether-theme:/opt/jboss/keycloak/themes/aether
+      # custom ehealth theme
+      - ./keycloak/ehealth-theme:/opt/jboss/keycloak/themes/ehealth
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: db

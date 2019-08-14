@@ -31,12 +31,13 @@ source scripts/lib.sh || \
 source .env
 
 REALM="$1"
-DESC=${2:-Tenant:  $REALM}
+THEME=${2:-$DEFAULT_LOGIN_THEME}
+DESC=${3:-Tenant:  $REALM}
 
 $GWM_RUN add_realm \
     $REALM \
     "$DESC" \
-    $LOGIN_THEME
+    $THEME
 
 $GWM_RUN add_public_client \
     $REALM \

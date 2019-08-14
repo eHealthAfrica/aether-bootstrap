@@ -38,6 +38,8 @@ KEYCLOAK_GLOBAL_PASSWORD=travis-password
 KEYCLOAK_AETHER_CLIENT=aether-travis
 KEYCLOAK_KONG_CLIENT=kong-travis
 
+KEYCLOAK_LOGIN_THEME=ehealth
+
 # Initial user credentials
 KEYCLOAK_INITIAL_USER_USERNAME=user-travis
 KEYCLOAK_INITIAL_USER_PASSWORD=travis-password
