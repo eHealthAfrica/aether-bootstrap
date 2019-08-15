@@ -7,7 +7,7 @@ To prepare the environment for the first time execute:
 
 ```bash
 # pulls the containers, creates the needed databases, volumes, the initial tenants...
-scripts/setup.sh
+scripts/init.sh
 ```
 
 To update your installation with new releases and upgrades execute:
