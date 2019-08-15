@@ -41,6 +41,7 @@ Session.vim
 *.keystore
 *.truststore
 *_server_jaas.conf
+*kafkacat.conf
 
 # Environment variables
 .env
