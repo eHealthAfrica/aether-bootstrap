@@ -50,8 +50,21 @@ Server {
 EOF
 }
 
+function gen_kafkacat_creds {
+    cat << EOF
+bootstrap.servers=kafka:29092
+sasl.username=$KAFKA_SU_USER
+sasl.password=$KAFKA_SU_PASSWORD
+sasl.mechanism=SCRAM-SHA-512
+security.protocol=sasl_plaintext
+EOF
+}
+
 gen_kafka_creds > connect/kafka_server_jaas.conf
 echo -e "\033[92m[connect/kafka_server_jaas.conf] security file generated!\033[0m"
 
 gen_zookeeper_creds > connect/zk_server_jaas.conf
 echo -e "\033[92m[connect/zk_server_jaas.conf] security file generated!\033[0m"
+
+gen_kafkacat_creds > connect/kafkacat.conf
+echo -e "\033[92m[connect/kafkacat.conf] configuration file generated!\033[0m"
