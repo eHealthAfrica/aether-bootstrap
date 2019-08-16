@@ -101,6 +101,17 @@ services:
     networks:
       - aether
 
+  # ---------------------------------
+  # Kafka Command Line Tool
+  # ---------------------------------
+  kafkacat:
+    image: ehealthafrica/kafkacat:1.4.0
+    environment:
+      - KAFKACAT_CONFIG=/kafkacat.conf
+    volumes:
+      - ./kafkacat.conf:/kafkacat.conf
+    networks:
+      - aether
 
   # ---------------------------------
   # Aether Kafka Producer
