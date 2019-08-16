@@ -53,7 +53,7 @@ services:
 
   consumer:
     # demo version without job handling!
-    image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190625-01
+    image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190816-01
     environment:
       KAFKA_URL: kafka:29092
       SECURITY_PROTOCOL: SASL_PLAINTEXT
@@ -61,14 +61,14 @@ services:
       SASL_PLAIN_USERNAME: ${KAFKA_ROOT_USER}
       SASL_PLAIN_PASSWORD: ${KAFKA_ROOT_PASSWORD}
 
-      KIBANA_URL: http://kibana:5601
+      KIBANA_URL: http://kibana:5601/kibana-app
 
       ELASTICSEARCH_URL: elasticsearch
       ELASTICSEARCH_PORT: 9200
       ELASTICSEARCH_USER: admin
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
 
-      LOG_LEVEL: ERROR
+      LOG_LEVEL: INFO
 
       CONSUMER_PORT: 9099
       ES_CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
