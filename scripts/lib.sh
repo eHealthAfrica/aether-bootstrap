@@ -107,13 +107,14 @@ function _wait_for {
     local retries=1
     until $is_ready > /dev/null; do
         >&2 echo "Waiting for $container... $retries"
-        sleep 2
 
         ((retries++))
         if [[ $retries -gt 30 ]]; then
             echo_error "It was not possible to start $container"
             exit 1
         fi
+
+        sleep 2
     done
     echo_success "$container is ready!"
 }

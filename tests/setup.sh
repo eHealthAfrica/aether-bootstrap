@@ -33,13 +33,14 @@ function _wait_for {
     local retries=1
     until $is_ready > /dev/null; do
         >&2 echo "Waiting for $container... $retries"
-        sleep 2
 
         ((retries++))
         if [[ $retries -gt 30 ]]; then
             echo "It was not possible to start $container"
             exit 1
         fi
+
+        sleep 2
     done
     echo "$container is ready!"
 }
@@ -52,10 +53,16 @@ function start_kernel_test {
     _wait_for "kernel" "$DC_KERNEL manage check_url -u http://kernel-test:9000/health"
 }
 
+source .env
+
 start_db_test
 
 $DC_KERNEL setup
 $DC_KERNEL eval python /code/sql/create_readonly_user.py
+$DC_KERNEL manage create_user \
+    -u=$TEST_KERNEL_CLIENT_USERNAME \
+    -p=$TEST_KERNEL_CLIENT_PASSWORD \
+    -r=$TEST_KERNEL_CLIENT_REALM
 
 $DC_TEST up -d zookeeper-test kafka-test producer-test
 sleep 10
