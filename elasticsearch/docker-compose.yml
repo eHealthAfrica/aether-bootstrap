@@ -11,7 +11,7 @@ volumes:
 services:
 
   elasticsearch:
-    image: amazon/opendistro-for-elasticsearch:0.9.0
+    image: amazon/opendistro-for-elasticsearch:1.1.0
     environment:
       discovery.type: single-node
       opendistro_security.ssl.http.enabled: 'false'
@@ -25,12 +25,12 @@ services:
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
-    # ports:
-    #   - 9200:9200
+    ports:
+      - 9200:9200
 
 
   kibana:
-    image: amazon/opendistro-for-elasticsearch-kibana:0.9.0
+    image: amazon/opendistro-for-elasticsearch-kibana:1.1.0
     environment:
       ELASTICSEARCH_URL: http://elasticsearch:9200
       ELASTICSEARCH_PRESERVEHOST: 'false'
