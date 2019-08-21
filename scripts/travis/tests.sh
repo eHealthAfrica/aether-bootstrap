@@ -54,11 +54,11 @@ ENABLE_ELASTICSEARCH=true
 EOF
 }
 
+travis_options > options.txt
 
 case "$1" in
 
     setup )
-        travis_options > options.txt
         ./scripts/init.sh
         ./scripts/start.sh
         ./scripts/stop.sh
