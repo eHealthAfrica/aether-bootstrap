@@ -25,14 +25,14 @@ services:
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
-    ports:
-      - 9200:9200
+    # ports:
+    #   - 9200:9200
 
 
   kibana:
     image: amazon/opendistro-for-elasticsearch-kibana:1.1.0
     environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
       ELASTICSEARCH_PRESERVEHOST: 'false'
       SERVER_BASEPATH: /kibana-app
       SERVER_REWRITEBASEPATH: 'true'
