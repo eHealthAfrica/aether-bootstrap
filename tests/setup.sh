@@ -58,7 +58,12 @@ source .env
 start_db_test
 
 $DC_KERNEL setup
-$DC_KERNEL eval python /code/sql/create_readonly_user.py
+
+$DC_KERNEL eval \
+    python3 /code/sql/create_readonly_user.py \
+    "$TEST_KERNEL_READONLY_DB_USERNAME"
+    "$TEST_KERNEL_READONLY_DB_PASSWORD"
+
 $DC_KERNEL manage create_user \
     -u=$TEST_KERNEL_CLIENT_USERNAME \
     -p=$TEST_KERNEL_CLIENT_PASSWORD \
