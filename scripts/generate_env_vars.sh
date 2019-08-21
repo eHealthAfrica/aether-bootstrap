@@ -102,7 +102,6 @@ KEYCLOAK_INTERNAL=http://keycloak:8080/auth
 KONG_INTERNAL=http://kong:8001
 
 NETWORK_SUBNET=192.168.9.0/24
-NETWORK_GATEWAY=192.168.9.1
 KONG_IP=192.168.9.10
 # ------------------------------------------------------------------
 
@@ -139,6 +138,10 @@ TEST_KERNEL_DB_PASSWORD=$(gen_random_string)
 
 TEST_KERNEL_READONLY_DB_USERNAME=readonlytest
 TEST_KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
+
+TEST_KERNEL_CLIENT_USERNAME=user-test
+TEST_KERNEL_CLIENT_PASSWORD=$(gen_random_string)
+TEST_KERNEL_CLIENT_REALM=test
 # ------------------------------------------------------------------
 
 

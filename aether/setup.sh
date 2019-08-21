@@ -23,6 +23,7 @@ set -Eeuo pipefail
 source scripts/lib.sh || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
+source .env
 
 start_db
 
@@ -32,4 +33,8 @@ AETHER_CONTAINERS=( kernel ui )
 for container in "${AETHER_CONTAINERS[@]}"; do
     $DCA run --rm $container setup
 done
-$DCA run --rm kernel eval python /code/sql/create_readonly_user.py
+
+$DCA run --rm kernel eval \
+    python3 /code/sql/create_readonly_user.py \
+    "$KERNEL_READONLY_DB_USERNAME" \
+    "$KERNEL_READONLY_DB_PASSWORD"
