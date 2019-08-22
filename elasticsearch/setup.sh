@@ -27,5 +27,7 @@ source .env
 
 ES_URL="http://admin:${ELASTICSEARCH_PASSWORD}@elasticsearch:9200"
 start_container elasticsearch elasticsearch $ES_URL
+# use mounted configs to initialize security
+docker-compose -f elasticsearch/docker-compose.yml exec elasticsearch sh securityadmin_demo.sh
 # sometimes the "own_index" does not exists
 $GWM_RUN setup_elasticsearch || true
