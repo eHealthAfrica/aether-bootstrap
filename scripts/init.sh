@@ -57,7 +57,7 @@ fi
 ./scripts/setup.sh
 
 ./scripts/start.sh
-IFS=';' read -a tenants <<<$INITIAL_TENANTS
+IFS=';' read -a tenants <<< "$INITIAL_TENANTS"
 for tenant in "${tenants[@]}"; do
     ./scripts/add_tenant.sh "$tenant"
 done
