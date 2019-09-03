@@ -20,23 +20,20 @@
 #
 set -Eeuo pipefail
 
-source options.txt || \
+source scripts/lib.sh || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
+source .env
 
-auth/setup.sh
-aether/setup.sh
+connect/make_credentials.sh
 
+DCC="docker-compose -f connect/docker-compose.yml"
 
-if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
-    connect/setup.sh
-fi
-if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-    connect/setup_ccloud.sh
-fi
-if [ "$ENABLE_GATHER" = true ]; then
-    gather/setup.sh
-fi
-if [ "$ENABLE_ELASTICSEARCH" = true ]; then
-    elasticsearch/setup.sh
-fi
+echo_message "Starting Kafka & Zookeper containers..."
+$DCC up -d zookeeper kafka
+$DCC run --rm --no-deps kafka dub wait kafka 9092 60
+
+echo_message "Creating Kafka Superuser..."
+$GWM_RUN add_kafka_su   $KAFKA_SU_USER $KAFKA_SU_PASSWORD
+$GWM_RUN grant_kafka_su $KAFKA_ROOT_USER
+echo_message ""

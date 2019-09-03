@@ -28,8 +28,12 @@ docker-compose -f _base_/docker-compose.yml pull
 docker-compose -f auth/docker-compose.yml pull
 docker-compose -f aether/docker-compose.yml pull
 
-if [ "$ENABLE_CONNECT" = true ]; then
+
+if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
     docker-compose -f connect/docker-compose.yml pull
+fi
+if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
+    docker-compose -f connect/docker-compose.yml pull producer
 fi
 if [ "$ENABLE_GATHER" = true ]; then
     docker-compose -f gather/docker-compose.yml pull

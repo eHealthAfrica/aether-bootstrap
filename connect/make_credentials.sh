@@ -52,7 +52,7 @@ EOF
 
 function gen_kafkacat_creds {
     cat << EOF
-bootstrap.servers=kafka:29092
+bootstrap.servers=$KAFKA_URL
 sasl.username=$KAFKA_SU_USER
 sasl.password=$KAFKA_SU_PASSWORD
 sasl.mechanism=SCRAM-SHA-512

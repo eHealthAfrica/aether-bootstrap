@@ -20,23 +20,5 @@
 #
 set -Eeuo pipefail
 
-source options.txt || \
-    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
-      exit 1 )
-
-auth/setup.sh
-aether/setup.sh
-
-
-if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
-    connect/setup.sh
-fi
-if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-    connect/setup_ccloud.sh
-fi
-if [ "$ENABLE_GATHER" = true ]; then
-    gather/setup.sh
-fi
-if [ "$ENABLE_ELASTICSEARCH" = true ]; then
-    elasticsearch/setup.sh
-fi
+docker-compose -f connect/docker-compose.yml up -d producer
+# docker-compose -f connect/docker-compose.yml run --rm kafka-viewer

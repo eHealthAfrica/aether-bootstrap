@@ -33,6 +33,23 @@ function gen_random_string {
     openssl rand -hex 16 | tr -d "\n"
 }
 
+function kafka_su_user {
+    if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
+        echo $CCLOUD_SU_USER
+    else
+        echo "master"
+    fi
+}
+
+function kafka_su_password {
+    if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
+        echo ${CCLOUD_SU_PASSWORD}
+    else
+        echo ${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
+    fi
+}
+
+
 function gen_env_file {
     cat << EOF
 #
@@ -162,11 +179,12 @@ TEST_PRODUCER_ADMIN_PASSWORD=testingtesting
 # Kafka & Zookeeper
 # ==================================================================
 # internal users
+KAFKA_URL=${CCLOUD_URL:-kafka:29092}
 KAFKA_ROOT_USER=root
 KAFKA_ROOT_PASSWORD=$(gen_random_string)
 # kafka all-tenant Superuser
-KAFKA_SU_USER=master
-KAFKA_SU_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
+KAFKA_SU_USER=$(kafka_su_user)
+KAFKA_SU_PASSWORD=$(kafka_su_password)
 # secret to generate tenant specific passwords
 KAFKA_SECRET=$(gen_random_string)
 

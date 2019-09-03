@@ -28,8 +28,12 @@ _base_/start.sh
 auth/start.sh
 aether/start.sh
 
-if [ "$ENABLE_CONNECT" = true ]; then
+
+if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
     connect/start.sh
+fi
+if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
+    connect/start_ccloud.sh
 fi
 if [ "$ENABLE_GATHER" = true ]; then
     gather/start.sh

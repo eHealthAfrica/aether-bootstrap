@@ -20,23 +20,13 @@
 #
 set -Eeuo pipefail
 
-source options.txt || \
+if [ -z "${1:-}" ]; then
+    echo -e "\033[91mPlease, indicate tenant/realm!\033[0m"
+    exit 1
+fi
+
+source scripts/lib.sh || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
 
-auth/setup.sh
-aether/setup.sh
-
-
-if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
-    connect/setup.sh
-fi
-if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-    connect/setup_ccloud.sh
-fi
-if [ "$ENABLE_GATHER" = true ]; then
-    gather/setup.sh
-fi
-if [ "$ENABLE_ELASTICSEARCH" = true ]; then
-    elasticsearch/setup.sh
-fi
+$GWM_RUN add_ccloud_tenant "$1"
