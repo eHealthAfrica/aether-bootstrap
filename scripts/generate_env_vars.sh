@@ -33,6 +33,14 @@ function gen_random_string {
     openssl rand -hex 16 | tr -d "\n"
 }
 
+function kafka_url {
+    if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
+        echo $CC_URL
+    else
+        echo "kafka:29092"
+    fi
+}
+
 function kafka_su_user {
     if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
         echo $CC_SU_USER
@@ -179,7 +187,7 @@ TEST_PRODUCER_ADMIN_PASSWORD=testingtesting
 # Kafka & Zookeeper
 # ==================================================================
 # internal users
-KAFKA_URL=${CC_URL:-kafka:29092}
+KAFKA_URL=$(kafka_url)
 KAFKA_ROOT_USER=root
 KAFKA_ROOT_PASSWORD=$(gen_random_string)
 # kafka all-tenant Superuser
