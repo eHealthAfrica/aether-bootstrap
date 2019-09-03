@@ -35,7 +35,7 @@ function gen_random_string {
 
 function kafka_su_user {
     if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-        echo $CCLOUD_SU_USER
+        echo $CC_SU_USER
     else
         echo "master"
     fi
@@ -43,7 +43,7 @@ function kafka_su_user {
 
 function kafka_su_password {
     if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-        echo ${CCLOUD_SU_PASSWORD}
+        echo ${CC_SU_PASSWORD}
     else
         echo ${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
     fi
@@ -179,7 +179,7 @@ TEST_PRODUCER_ADMIN_PASSWORD=testingtesting
 # Kafka & Zookeeper
 # ==================================================================
 # internal users
-KAFKA_URL=${CCLOUD_URL:-kafka:29092}
+KAFKA_URL=${CC_URL:-kafka:29092}
 KAFKA_ROOT_USER=root
 KAFKA_ROOT_PASSWORD=$(gen_random_string)
 # kafka all-tenant Superuser
