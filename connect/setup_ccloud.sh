@@ -26,14 +26,5 @@ source scripts/lib.sh || \
 source .env
 
 connect/make_credentials.sh
-
-DCC="docker-compose -f connect/docker-compose.yml"
-
-echo_message "Starting Kafka & Zookeper containers..."
-$DCC up -d zookeeper kafka
-$DCC run --rm --no-deps kafka dub wait kafka 9092 60
-
-echo_message "Creating Kafka Superuser..."
-$GWM_RUN add_kafka_su   $KAFKA_SU_USER $KAFKA_SU_PASSWORD
-$GWM_RUN grant_kafka_su $KAFKA_ROOT_USER
+echo_message "Creating Kafka Credentials"
 echo_message ""
