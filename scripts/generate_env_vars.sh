@@ -41,6 +41,14 @@ function kafka_url {
     fi
 }
 
+function kafka_security {
+    if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
+        echo "SASL_SSL"
+    else
+        echo "SASL_PLAINTEXT"
+    fi
+}
+
 function kafka_su_user {
     if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
         echo $CC_SU_USER
@@ -193,6 +201,7 @@ KAFKA_ROOT_PASSWORD=$(gen_random_string)
 # kafka all-tenant Superuser
 KAFKA_SU_USER=$(kafka_su_user)
 KAFKA_SU_PASSWORD=$(kafka_su_password)
+KAFKA_SECURITY=$(kafka_security)
 # secret to generate tenant specific passwords
 KAFKA_SECRET=$(gen_random_string)
 
