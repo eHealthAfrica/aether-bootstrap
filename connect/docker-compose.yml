@@ -65,11 +65,11 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       # Generic Kafka Opts
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 1000
       # Auth debugging
-      KAFKA_LOG4J_LOGGERS: kafka.authorizer.logger=ERROR
-      KAFKA_LOG4J_ROOT_LOGLEVEL: ERROR
+      KAFKA_LOG4J_LOGGERS: kafka.authorizer.logger=DEBUG
+      KAFKA_LOG4J_ROOT_LOGLEVEL: DEBUG
       KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
     volumes:
       - ./kafka_server_jaas.conf:/etc/kafka/kafka_server_jaas.conf
@@ -118,7 +118,8 @@ services:
   # ---------------------------------
 
   producer:
-    image: ehealthafrica/aether-producer:${AETHER_VERSION}
+    image: aether-producer:local
+    #image: ehealthafrica/aether-producer:${AETHER_VERSION}
     environment:
       # default settings file
       PRODUCER_SETTINGS_FILE: /code/producer/settings.json
@@ -148,7 +149,9 @@ services:
       KAFKA_SECURITY: ${KAFKA_SECURITY}
 
       SERVER_PORT: 5005
-      LOG_LEVEL: ERROR
+      LOG_LEVEL: DEBUG
+    ports:
+      - 5005:5005
     command: start
     restart: on-failure
     networks:

@@ -25,6 +25,6 @@ source scripts/lib.sh || \
       exit 1 )
 source .env
 
-connect/make_credentials.sh
 echo_message "Creating Kafka Credentials"
+connect/make_credentials.sh
 echo_message ""
