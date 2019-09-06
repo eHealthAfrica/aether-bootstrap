@@ -118,8 +118,7 @@ services:
   # ---------------------------------
 
   producer:
-    image: aether-producer:local
-    #image: ehealthafrica/aether-producer:${AETHER_VERSION}
+    image: ehealthafrica/aether-producer:${AETHER_VERSION}
     environment:
       # default settings file
       PRODUCER_SETTINGS_FILE: /code/producer/settings.json
@@ -147,6 +146,7 @@ services:
       KAFKA_SU_USER: ${KAFKA_SU_USER}
       KAFKA_SU_PW: ${KAFKA_SU_PASSWORD}
       KAFKA_SECURITY: ${KAFKA_SECURITY}
+      KAFKA_DEFAULT_TOPIC_REPLICAS: ${KAFKA_REPLICAS}
 
       SERVER_PORT: 5005
       LOG_LEVEL: DEBUG

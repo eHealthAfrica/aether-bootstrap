@@ -33,38 +33,49 @@ function gen_random_string {
     openssl rand -hex 16 | tr -d "\n"
 }
 
-function kafka_url {
+function ccloud_admin {
     if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-        echo $CC_URL
+        cat << EOF_CC
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# Confluent Cloud Admin
+# ==================================================================
+CC_API_USER=${CC_API_USER}
+CC_API_PASSWORD=${CC_API_PASSWORD}
+CC_CLUSTER_NAME=${CC_CLUSTER_NAME}
+
+
+EOF_CC
     else
-        echo "kafka:29092"
+        echo ""
     fi
 }
 
-function kafka_security {
+function kafka_settings {
     if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-        echo "SASL_SSL"
+        cat << EOF1
+KAFKA_URL=${CC_URL}
+KAFKA_SECURITY=SASL_SSL
+# kafka all-tenant Superuser
+KAFKA_SU_USER=${CC_SU_USER}
+KAFKA_SU_PASSWORD=${CC_SU_PASSWORD}
+# default number of replicas to maintain
+KAFKA_REPLICAS=3
+EOF1
     else
-        echo "SASL_PLAINTEXT"
-    fi
+        cat << EOF2
+KAFKA_URL=kafka:29092
+KAFKA_SECURITY=SASL_PLAINTEXT
+# kafka all-tenant Superuser
+KAFKA_SU_USER=master
+KAFKA_SU_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
+# default number of replicas to maintain
+KAFKA_REPLICAS=1
+EOF2
+fi
 }
-
-function kafka_su_user {
-    if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-        echo $CC_SU_USER
-    else
-        echo "master"
-    fi
-}
-
-function kafka_su_password {
-    if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-        echo ${CC_SU_PASSWORD}
-    else
-        echo ${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
-    fi
-}
-
 
 function gen_env_file {
     cat << EOF
@@ -90,7 +101,7 @@ function gen_env_file {
 # ------------------------------------------------------------------
 # Releases
 # ==================================================================
-AETHER_VERSION=1.5.2-rc
+AETHER_VERSION=1.5.2
 GATHER_VERSION=3.2.1
 GATEWAY_VERSION=latest
 KONG_VERSION=1.1
@@ -194,29 +205,17 @@ TEST_PRODUCER_ADMIN_PASSWORD=testingtesting
 # ------------------------------------------------------------------
 # Kafka & Zookeeper
 # ==================================================================
-# internal users
-KAFKA_URL=$(kafka_url)
+# General Settings
+$(kafka_settings)
+# Internal Root User (local only)
 KAFKA_ROOT_USER=root
 KAFKA_ROOT_PASSWORD=$(gen_random_string)
-# kafka all-tenant Superuser
-KAFKA_SU_USER=$(kafka_su_user)
-KAFKA_SU_PASSWORD=$(kafka_su_password)
-KAFKA_SECURITY=$(kafka_security)
-# secret to generate tenant specific passwords
+# secret to generate tenant specific passwords (local only)
 KAFKA_SECRET=$(gen_random_string)
-
+# ZK settings (local only)
 ZOOKEEPER_ROOT_USER=zk-admin
 ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
-
-
-# ------------------------------------------------------------------
-# Confluent Cloud Admin
-# ==================================================================
-
-CC_API_USER=${CC_API_USER}
-CC_API_PASSWORD=${CC_API_PASSWORD}
-CC_CLUSTER_NAME=${CC_CLUSTER_NAME}
-
+$(ccloud_admin)
 # ------------------------------------------------------------------
 
 

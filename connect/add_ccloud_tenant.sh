@@ -29,4 +29,6 @@ source scripts/lib.sh || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
 
-$GWM_RUN add_ccloud_tenant "$1"
+# this can fail if a tenant already exists on the cluster with the same name
+# this shouldn't stop the local tenant creation process so we `|| true` it
+$GWM_RUN add_ccloud_tenant "$1" || true
