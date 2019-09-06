@@ -90,7 +90,7 @@ function gen_env_file {
 # ------------------------------------------------------------------
 # Releases
 # ==================================================================
-AETHER_VERSION=1.5.1
+AETHER_VERSION=1.5.2-rc
 GATHER_VERSION=3.2.1
 GATEWAY_VERSION=latest
 KONG_VERSION=1.1
