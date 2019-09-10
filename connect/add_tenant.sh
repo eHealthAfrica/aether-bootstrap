@@ -28,5 +28,11 @@ fi
 source scripts/lib.sh || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
+source options.txt
 
-$GWM_RUN add_kafka_tenant "$1"
+if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
+    $GWM_RUN add_kafka_tenant "$1"
+fi
+if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
+    $GWM_RUN add_ccloud_tenant "$1" || true
+fi

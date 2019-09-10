@@ -34,11 +34,8 @@ fi
 auth/add_tenant.sh "$1" "${2:-$KEYCLOAK_LOGIN_THEME}" "${3:-}"
 aether/add_tenant.sh "$1"
 
-if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
+if [ "$ENABLE_CONNECT" = true ]; then
     connect/add_tenant.sh "$1"
-fi
-if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-    connect/add_ccloud_tenant.sh "$1"
 fi
 if [ "$ENABLE_GATHER" = true ]; then
     gather/add_tenant.sh "$1"

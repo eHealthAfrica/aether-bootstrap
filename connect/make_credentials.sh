@@ -23,6 +23,7 @@ set -Eeuo pipefail
 source .env || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
+source options.txt
 
 function gen_kafka_creds {
     cat << EOF
@@ -51,20 +52,34 @@ EOF
 }
 
 function gen_kafkacat_creds {
-    cat << EOF
+    if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
+    cat << EOF1
 bootstrap.servers=$KAFKA_URL
 sasl.username=$KAFKA_SU_USER
 sasl.password=$KAFKA_SU_PASSWORD
 sasl.mechanism=SCRAM-SHA-512
 security.protocol=sasl_plaintext
-EOF
+EOF1
+  fi
+  if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
+    cat << EOF2
+bootstrap.servers=$KAFKA_URL
+sasl.username=$KAFKA_SU_USER
+sasl.password=$KAFKA_SU_PASSWORD
+sasl.mechanism=plain
+security.protocol=sasl_ssl
+EOF2
+  fi
+
 }
 
-gen_kafka_creds > connect/kafka_server_jaas.conf
-echo -e "\033[92m[connect/kafka_server_jaas.conf] security file generated!\033[0m"
+if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
+  gen_kafka_creds > connect/kafka_server_jaas.conf
+  echo -e "\033[92m[connect/kafka_server_jaas.conf] security file generated!\033[0m"
 
-gen_zookeeper_creds > connect/zk_server_jaas.conf
-echo -e "\033[92m[connect/zk_server_jaas.conf] security file generated!\033[0m"
+  gen_zookeeper_creds > connect/zk_server_jaas.conf
+  echo -e "\033[92m[connect/zk_server_jaas.conf] security file generated!\033[0m"
+fi
 
 gen_kafkacat_creds > connect/kafkacat.conf
 echo -e "\033[92m[connect/kafkacat.conf] configuration file generated!\033[0m"

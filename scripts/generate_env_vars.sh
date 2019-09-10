@@ -33,25 +33,6 @@ function gen_random_string {
     openssl rand -hex 16 | tr -d "\n"
 }
 
-function ccloud_admin {
-    if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-        cat << EOF_CC
-# ------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------
-# Confluent Cloud Admin
-# ==================================================================
-CC_API_USER=${CC_API_USER}
-CC_API_PASSWORD=${CC_API_PASSWORD}
-CC_CLUSTER_NAME=${CC_CLUSTER_NAME}
-
-
-EOF_CC
-    else
-        echo ""
-    fi
-}
 
 function kafka_settings {
     if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
@@ -63,6 +44,7 @@ KAFKA_SU_USER=${CC_SU_USER}
 KAFKA_SU_PASSWORD=${CC_SU_PASSWORD}
 # default number of replicas to maintain
 KAFKA_REPLICAS=3
+# ------------------------------------------------------------------
 EOF1
     else
         cat << EOF2
@@ -73,6 +55,7 @@ KAFKA_SU_USER=master
 KAFKA_SU_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
 # default number of replicas to maintain
 KAFKA_REPLICAS=1
+# ------------------------------------------------------------------
 EOF2
 fi
 }
@@ -215,7 +198,14 @@ KAFKA_SECRET=$(gen_random_string)
 # ZK settings (local only)
 ZOOKEEPER_ROOT_USER=zk-admin
 ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
-$(ccloud_admin)
+
+
+------------------------------------------------------------------
+Confluent Cloud Admin (optional)
+==================================================================
+CC_API_USER=${CC_API_USER}
+CC_API_PASSWORD=${CC_API_PASSWORD}
+CC_CLUSTER_NAME=${CC_CLUSTER_NAME}
 # ------------------------------------------------------------------
 
 
