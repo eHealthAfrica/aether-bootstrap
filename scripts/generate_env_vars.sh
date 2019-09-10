@@ -50,12 +50,6 @@ KAFKA_CONSUMER_PASSWORD=${CC_SU_PASSWORD}
 # # Internal Root User (local only)
 # KAFKA_ROOT_USER=root
 # KAFKA_ROOT_PASSWORD=${KAFKA_ROOT_PW}
-# # secret to generate tenant specific passwords (local only)
-# KAFKA_SECRET=$(gen_random_string)
-# # ZK settings (local only)
-# ZOOKEEPER_ROOT_USER=zk-admin
-# ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
-# ------------------------------------------------------------------
 EOF1
     else
         cat << EOF2
@@ -71,12 +65,6 @@ KAFKA_CONSUMER_PASSWORD=${KAFKA_ROOT_PW}
 # Internal Root User (local only)
 KAFKA_ROOT_USER=root
 KAFKA_ROOT_PASSWORD=${KAFKA_ROOT_PW}
-# secret to generate tenant specific passwords (local only)
-KAFKA_SECRET=$(gen_random_string)
-# ZK settings (local only)
-ZOOKEEPER_ROOT_USER=zk-admin
-ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
-# ------------------------------------------------------------------
 EOF2
 fi
 }
@@ -211,7 +199,12 @@ TEST_PRODUCER_ADMIN_PASSWORD=testingtesting
 # ==================================================================
 # General Settings
 $(kafka_settings)
-
+# # secret to generate tenant specific passwords (local only)
+KAFKA_SECRET=$(gen_random_string)
+# ZK settings (local only)
+ZOOKEEPER_ROOT_USER=zk-admin
+ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
+# ------------------------------------------------------------------
 
 # ------------------------------------------------------------------
 # Confluent Cloud Admin (optional)

@@ -66,7 +66,7 @@ EOF1
 bootstrap.servers=$KAFKA_URL
 sasl.username=$KAFKA_SU_USER
 sasl.password=$KAFKA_SU_PASSWORD
-sasl.mechanism=plain
+sasl.mechanism=PLAIN
 security.protocol=sasl_ssl
 EOF2
   fi

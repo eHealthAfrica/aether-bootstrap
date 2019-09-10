@@ -27,12 +27,8 @@ source options.txt || \
 auth/setup.sh
 aether/setup.sh
 
-
-if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
+if [ "$ENABLE_CONNECT" = true ]; then
     connect/setup.sh
-fi
-if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-    connect/setup_ccloud.sh
 fi
 if [ "$ENABLE_GATHER" = true ]; then
     gather/setup.sh
