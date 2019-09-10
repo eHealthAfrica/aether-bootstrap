@@ -200,9 +200,9 @@ ZOOKEEPER_ROOT_USER=zk-admin
 ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
 
 
-------------------------------------------------------------------
-Confluent Cloud Admin (optional)
-==================================================================
+# ------------------------------------------------------------------
+# Confluent Cloud Admin (optional)
+# ==================================================================
 CC_API_USER=${CC_API_USER}
 CC_API_PASSWORD=${CC_API_PASSWORD}
 CC_CLUSTER_NAME=${CC_CLUSTER_NAME}
