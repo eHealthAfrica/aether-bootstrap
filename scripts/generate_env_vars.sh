@@ -55,7 +55,6 @@ KAFKA_CONSUMER_PASSWORD=${CC_SU_PASSWORD}
 # # ZK settings (local only)
 # ZOOKEEPER_ROOT_USER=zk-admin
 # ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
-
 # ------------------------------------------------------------------
 EOF1
     else
@@ -77,7 +76,6 @@ KAFKA_SECRET=$(gen_random_string)
 # ZK settings (local only)
 ZOOKEEPER_ROOT_USER=zk-admin
 ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
-
 # ------------------------------------------------------------------
 EOF2
 fi
@@ -213,6 +211,7 @@ TEST_PRODUCER_ADMIN_PASSWORD=testingtesting
 # ==================================================================
 # General Settings
 $(kafka_settings)
+
 
 # ------------------------------------------------------------------
 # Confluent Cloud Admin (optional)
