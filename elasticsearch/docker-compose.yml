@@ -68,7 +68,7 @@ services:
       ELASTICSEARCH_USER: admin
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
 
-      LOG_LEVEL: DEBUG
+      LOG_LEVEL: INFO
 
       CONSUMER_PORT: 9099
       ES_CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
