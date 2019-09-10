@@ -55,11 +55,11 @@ services:
     # demo version without job handling!
     image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190816-01
     environment:
-      KAFKA_URL: kafka:29092
-      SECURITY_PROTOCOL: SASL_PLAINTEXT
+      KAFKA_URL: ${KAFKA_URL}
+      SECURITY_PROTOCOL: ${KAFKA_SECURITY}
       SASL_MECHANISM: PLAIN
-      SASL_PLAIN_USERNAME: ${KAFKA_ROOT_USER}
-      SASL_PLAIN_PASSWORD: ${KAFKA_ROOT_PASSWORD}
+      SASL_PLAIN_USERNAME: ${KAFKA_CONSUMER_USER}
+      SASL_PLAIN_PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
 
       KIBANA_URL: http://kibana:5601/kibana-app
 
