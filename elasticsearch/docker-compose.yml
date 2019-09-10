@@ -56,10 +56,10 @@ services:
     image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190816-01
     environment:
       KAFKA_URL: ${KAFKA_URL}
-      SECURITY_PROTOCOL: SASL_PLAINTEXT
+      SECURITY_PROTOCOL: ${KAFKA_SECURITY}
       SASL_MECHANISM: PLAIN
-      SASL_PLAIN_USERNAME: ${KAFKA_SU_USER}
-      SASL_PLAIN_PASSWORD: ${KAFKA_SU_PASSWORD}
+      SASL_PLAIN_USERNAME: ${KAFKA_CONSUMER_USER}
+      SASL_PLAIN_PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
 
       KIBANA_URL: http://kibana:5601/kibana-app
 
@@ -68,7 +68,7 @@ services:
       ELASTICSEARCH_USER: admin
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
 
-      LOG_LEVEL: INFO
+      LOG_LEVEL: DEBUG
 
       CONSUMER_PORT: 9099
       ES_CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
