@@ -56,10 +56,10 @@ services:
     image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190913-01
     environment:
       KAFKA_URL: ${KAFKA_URL}
-      SECURITY_PROTOCOL: ${KAFKA_SECURITY}
-      SASL_MECHANISM: PLAIN
-      SASL_PLAIN_USERNAME: ${KAFKA_CONSUMER_USER}
-      SASL_PLAIN_PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
+      SECURITY.PROTOCOL: ${KAFKA_SECURITY}
+      SASL.MECHANISM: PLAIN
+      SASL.USERNAME: ${KAFKA_CONSUMER_USER}
+      SASL.PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
 
       KIBANA_URL: http://kibana:5601/kibana-app
 
