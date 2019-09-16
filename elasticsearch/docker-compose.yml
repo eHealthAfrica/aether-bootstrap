@@ -1,22 +1,20 @@
-version: "2.1"
+version: '3'
 
 networks:
   aether:
     external:
       name: aether_bootstrap_net
 
-
 volumes:
   elasticsearch-data:
-
 
 services:
 
   elasticsearch:
-    image: amazon/opendistro-for-elasticsearch:0.9.0
+    image: amazon/opendistro-for-elasticsearch:1.1.0
     environment:
       discovery.type: single-node
-      opendistro_security.ssl.http.enabled: "false"
+      opendistro_security.ssl.http.enabled: 'false'
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
       - ./conf/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
@@ -28,17 +26,17 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
     # ports:
-    #   - "9200:9200"
+    #   - 9200:9200
 
 
   kibana:
-    image: amazon/opendistro-for-elasticsearch-kibana:0.9.0
+    image: amazon/opendistro-for-elasticsearch-kibana:1.1.0
     environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-      ELASTICSEARCH_PRESERVEHOST: "false"
-      SERVER_BASEPATH: "/kibana-app"
-      SERVER_REWRITEBASEPATH: "true"
-      opendistro_security.ssl.http.enabled: "false"
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      ELASTICSEARCH_PRESERVEHOST: 'false'
+      SERVER_BASEPATH: /kibana-app
+      SERVER_REWRITEBASEPATH: 'true'
+      opendistro_security.ssl.http.enabled: 'false'
     volumes:
       - ./conf/security.yml:/usr/share/kibana/plugins/opendistro_security/securityconfig/config.yml
       - ./conf/kibana.yml:/usr/share/kibana/config/kibana.yml
@@ -50,25 +48,28 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
     # ports:
-    #   - "5601:5601"
+    #   - 5601:5601
 
 
   consumer:
     # demo version without job handling!
-    image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190625-01
+    image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190816-01
     environment:
-      PYTHONUNBUFFERED: 0
-      KAFKA_URL: kafka:29092
-      SECURITY_PROTOCOL: SASL_PLAINTEXT
+      KAFKA_URL: ${KAFKA_URL}
+      SECURITY_PROTOCOL: ${KAFKA_SECURITY}
       SASL_MECHANISM: PLAIN
-      SASL_PLAIN_USERNAME: ${KAFKA_ROOT_USER}
-      SASL_PLAIN_PASSWORD: ${KAFKA_ROOT_PASSWORD}
-      KIBANA_URL: http://kibana:5601
+      SASL_PLAIN_USERNAME: ${KAFKA_CONSUMER_USER}
+      SASL_PLAIN_PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
+
+      KIBANA_URL: http://kibana:5601/kibana-app
+
       ELASTICSEARCH_URL: elasticsearch
       ELASTICSEARCH_PORT: 9200
       ELASTICSEARCH_USER: admin
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
-      LOG_LEVEL: ERROR
+
+      LOG_LEVEL: INFO
+
       CONSUMER_PORT: 9099
       ES_CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
       ES_CONSUMER_KAFKA_CONFIG_PATH: /code/conf/consumer/kafka.json
@@ -82,4 +83,4 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
     # ports:
-    #   - "9009:9009"
+    #   - 9009:9009

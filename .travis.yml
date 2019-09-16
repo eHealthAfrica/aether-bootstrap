@@ -10,13 +10,13 @@ services:
 install: true
 
 script:
-  - ./scripts/travis_tests.sh $TEST_MODE
+  - ./scripts/travis/tests.sh $TEST_MODE
 
 after_script:
-  - ./scripts/travis_tests_teardown.sh
+  - ./scripts/travis/teardown.sh
 
 after_failure:
-  - ./scripts/travis_tests_failure.sh
+  - ./scripts/travis/failure.sh
 
 matrix:
   fast_finish: true
@@ -24,8 +24,5 @@ matrix:
     - name: "Set up"
       env: 'TEST_MODE=setup'
 
-    # - name: "CKAN + assets"
-    #   env: 'TEST_MODE=ckan'
-
-    # - name: "Integration tests"
-    #   env: 'TEST_MODE=integration'
+    - name: "Integration tests"
+      env: 'TEST_MODE=integration'

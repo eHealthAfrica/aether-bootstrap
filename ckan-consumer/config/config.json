@@ -1,27 +1,27 @@
 {
-    "database": {
-        "url": "sqlite:////srv/app/db/consumer.db"
-    },
-    "kafka": {
-        "bootstrap_servers": "kafka:29092",
-        "aether_emit_flag_required": false,
-        "aether_emit_flag_field_path": "$.approved",
-        "aether_emit_flag_values": [
-            true
-        ],
-        "aether_masking_schema_levels": [
-            "false",
-            "true"
-        ],
-        "aether_masking_schema_emit_level": "true"
-    },
-    "ckan_servers": [
-        {
-            "title": "CKAN Demo portal",
-            "url": "http://ckan:5000",
-            "api_key": "affd808c-ac5a-44fa-b180-c493057f2d34",
-            "autoconfig_datasets": true,
-            "autoconfig_owner_org": "ehademo"
-        }
-    ]
+  "database": {
+    "url": "sqlite:////srv/app/db/consumer.db"
+  },
+  "kafka": {
+    "bootstrap_servers": "kafka:29092",
+    "aether_emit_flag_required": false,
+    "aether_emit_flag_field_path": "$.approved",
+    "aether_emit_flag_values": [
+      true
+    ],
+    "aether_masking_schema_levels": [
+      "false",
+      "true"
+    ],
+    "aether_masking_schema_emit_level": "true"
+  },
+  "ckan_servers": [
+    {
+      "title": "CKAN Demo portal",
+      "url": "http://ckan:5000",
+      "api_key": "affd808c-ac5a-44fa-b180-c493057f2d34",
+      "autoconfig_datasets": true,
+      "autoconfig_owner_org": "ehademo"
+    }
+  ]
 }

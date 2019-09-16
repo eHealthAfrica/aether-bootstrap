@@ -1,0 +1,57 @@
+##
+# Setup Options
+##
+
+# Pull latest images from dockerhub
+PULL_IMAGES=true
+
+# Initial tenants to create
+INITIAL_TENANTS="dev;prod;test;"
+
+##
+# Services Options
+##
+
+## Keycloak Settings
+KEYCLOAK_GLOBAL_ADMIN=admin
+KEYCLOAK_GLOBAL_PASSWORD=password
+KEYCLOAK_INITIAL_USER_USERNAME=user
+KEYCLOAK_INITIAL_USER_PASSWORD=password
+KEYCLOAK_AETHER_CLIENT=aether
+KEYCLOAK_KONG_CLIENT=kong
+KEYCLOAK_LOGIN_THEME=aether
+
+## Routing Settings
+BASE_PROTOCOL=http
+
+# Host from which all services will be served
+LOCAL_HOST=aether.local
+
+## Services Settings
+# Password for user "admin"
+SERVICES_DEFAULT_ADMIN_PASSWORD=adminadmin
+
+
+##
+# Enable Services
+##
+
+# Kafka
+ENABLE_CONNECT=true
+AETHER_CONNECT_MODE='LOCAL'
+
+# ODK & Gather3
+ENABLE_GATHER=true
+
+# ElasticSearch
+ENABLE_ELASTICSEARCH=true
+
+
+# Confluent Cloud
+# SET `AETHER_CONNECT_MODE='CONFLUENT'` and the following...
+# CC_URL=               # CCloud cluster access url
+# CC_SU_USER=           # API Keyname for Service account with full RW on cluster
+# CC_SU_PASSWORD=       # API Secret for Service account with full RW on cluster
+# CC_API_USER=          # Web based user (adminstrative)
+# CC_API_PASSWORD=      # password for admin user
+# CC_CLUSTER_NAME=      # name of cluster in CCloud

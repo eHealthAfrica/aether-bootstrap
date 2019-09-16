@@ -1,4 +1,8 @@
-opendistro_security:
+_meta:
+  type: "config"
+  config_version: 2
+
+config:
   dynamic:
     kibana:
       multitenancy_enabled: true
@@ -6,10 +10,8 @@ opendistro_security:
       anonymous_auth_enabled: false
       xff:
         enabled: true
-        trustedProxies: '.*'
-        remoteIpHeader:  'x-forwarded-for'
-        proxiesHeader:   'x-forwarded-by'
         internalProxies: '.*' # trust all internal proxies, regex pattern
+        remoteIpHeader:  'x-forwarded-for'
 
     authc:
       basic_internal_auth_domain:

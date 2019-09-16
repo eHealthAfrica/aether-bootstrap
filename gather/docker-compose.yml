@@ -1,4 +1,4 @@
-version: "2.1"
+version: '3'
 
 networks:
   aether:
@@ -8,16 +8,80 @@ networks:
 services:
 
   # ---------------------------------
+  # Aether ODK Module
+  # ---------------------------------
+
+  odk:
+    image: ehealthafrica/aether-odk:${AETHER_VERSION}
+    environment:
+      CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
+      DJANGO_SECRET_KEY: ${ODK_DJANGO_SECRET_KEY}
+      LOGGING_FORMATTER: verbose
+      HTML_SELECT_CUTOFF: 10
+      PROFILING_ENABLED: 'true'
+
+      BUCKET_NAME: odk
+      DJANGO_STORAGE_BACKEND: minio
+      MINIO_STORAGE_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
+      MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
+      MINIO_STORAGE_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
+      MINIO_STORAGE_MEDIA_URL: http://${MINIO_ENDPOINT}/odk
+      MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: 'true'
+      MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: 'true'
+
+      APP_NAME: Aether ODK
+
+      ADMIN_USERNAME: ${ODK_ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ODK_ADMIN_PASSWORD}
+      ADMIN_TOKEN: ${ODK_ADMIN_TOKEN}
+
+      AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
+      AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/kernel
+      AETHER_KERNEL_URL_TEST: http://kernel-test:9000
+
+      DB_NAME: odk
+      PGHOST: db
+      PGPASSWORD: ${ODK_DB_PASSWORD}
+      PGPORT: 5432
+      PGUSER: postgres
+
+      # Kong requirements
+      GATEWAY_SERVICE_ID: odk
+      GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
+
+      KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
+
+      MULTITENANCY: 'true'
+      DEFAULT_REALM: ${DEFAULT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
+
+      UWSGI_BUFFER_SIZE: 32768
+      CUSTOM_UWSGI_SERVE_STATIC: 'true'
+
+      WEB_SERVER_PORT: 8002
+    volumes:
+      # backup folder
+      - ../.persistent_data/backups/odk:/backups
+    command: start
+    networks:
+      - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
+
+
+  # ---------------------------------
   # Gather container
   # ---------------------------------
 
   gather:
-    image: ehealthafrica/gather:${GATHER_VERSION:-3.2.0}
+    image: ehealthafrica/gather:${GATHER_VERSION}
     environment:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${GATHER_DJANGO_SECRET_KEY}
       LOGGING_FORMATTER: verbose
-      PROFILING_ENABLED: "true"
+      PROFILING_ENABLED: 'true'
 
       APP_NAME: Gather
 
@@ -47,12 +111,12 @@ services:
       KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_AETHER_CLIENT}
 
-      MULTITENANCY: "true"
+      MULTITENANCY: 'true'
       DEFAULT_REALM: ${DEFAULT_REALM}
       REALM_COOKIE: ${REALM_COOKIE}
 
       UWSGI_BUFFER_SIZE: 32768
-      CUSTOM_UWSGI_SERVE_STATIC: "true"
+      CUSTOM_UWSGI_SERVE_STATIC: 'true'
 
       WEB_SERVER_PORT: 8105
     command: start

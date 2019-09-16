@@ -1,12 +1,24 @@
 {
-    "private": false,
-    "author": "Aleksandar Jovanov",
-    "author_email": "ajovanov@viderum.com",
-    "maintainer": "John Smith",
-    "maintainer_email": "john.smith@email.com",
-    "license_id": "cc-by",
-    "url": "https://google.com",
-    "version": "1.0",
-    "tags": [{"name": "pollution"}, {"name": "population"}],
-    "extras": [{"key": "custom_field", "value": "Some text here"}]
+  "private": false,
+  "author": "Aleksandar Jovanov",
+  "author_email": "ajovanov@viderum.com",
+  "maintainer": "John Smith",
+  "maintainer_email": "john.smith@email.com",
+  "license_id": "cc-by",
+  "url": "https://google.com",
+  "version": "1.0",
+  "tags": [
+    {
+      "name": "pollution"
+    },
+    {
+      "name": "population"
+    }
+  ],
+  "extras": [
+    {
+      "key": "custom_field",
+      "value": "Some text here"
+    }
+  ]
 }

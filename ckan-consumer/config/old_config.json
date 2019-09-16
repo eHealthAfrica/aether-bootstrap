@@ -1,91 +1,91 @@
 {
-    "database": {
-        "url": "sqlite:////srv/app/db/consumer.db"
-    },
-    "kafka": {
-        "bootstrap_servers": "kafka:29092",
-        "auto_offset_reset": "earliest",
-        "aether_emit_flag_required": false,
-        "aether_emit_flag_field_path": "$.approved",
-        "aether_emit_flag_values": [
-            true
-        ],
-        "aether_masking_schema_levels": [
-            "false",
-            "true"
-        ],
-        "aether_masking_schema_emit_level": "false"
-    },
-    "ckan_servers": [
+  "database": {
+    "url": "sqlite:////srv/app/db/consumer.db"
+  },
+  "kafka": {
+    "bootstrap_servers": "kafka:29092",
+    "auto_offset_reset": "earliest",
+    "aether_emit_flag_required": false,
+    "aether_emit_flag_field_path": "$.approved",
+    "aether_emit_flag_values": [
+      true
+    ],
+    "aether_masking_schema_levels": [
+      "false",
+      "true"
+    ],
+    "aether_masking_schema_emit_level": "false"
+  },
+  "ckan_servers": [
+    {
+      "title": "CKAN Demo portal",
+      "url": "http://ckan:5000",
+      "api_key": "9759d30d-cb9e-4897-b683-0eb9be2aeb17",
+      "datasets": [
         {
-            "title": "CKAN Demo portal",
-            "url": "http://ckan:5000",
-            "api_key": "9759d30d-cb9e-4897-b683-0eb9be2aeb17",
-            "datasets": [
+          "metadata": {
+            "title": "Microcensus",
+            "name": "microcensus-001",
+            "owner_org": "ehademo",
+            "notes": "Small Household Microcensus",
+            "author": "Field overriden from default_metadata.json"
+          },
+          "resources": [
+            {
+              "metadata": {
+                "title": "Survey",
+                "description": "a Survey",
+                "name": "survey-data1"
+              },
+              "topics": [
                 {
-                    "metadata": {
-                        "title": "Microcensus",
-                        "name": "microcensus-001",
-                        "owner_org": "ehademo",
-                        "notes": "Small Household Microcensus",
-                        "author": "Field overriden from default_metadata.json"
-                    },
-                    "resources": [
-                        {
-                            "metadata": {
-                                "title": "Survey",
-                                "description": "a Survey",
-                                "name": "survey-data1"
-                            },
-                            "topics": [
-                                {
-                                    "name": "Survey",
-                                    "number_of_consumers": 1
-                                }
-                            ]
-                        },
-                        {
-                            "metadata": {
-                                "title": "Person",
-                                "description": "Person",
-                                "name": "person-data1"
-                            },
-                            "topics": [
-                                {
-                                    "name": "Person",
-                                    "number_of_consumers": 1
-                                }
-                            ]
-                        },
-                        {
-                            "metadata": {
-                                "title": "Household",
-                                "description": "a Household",
-                                "name": "household-data1"
-                            },
-                            "topics": [
-                                {
-                                    "name": "Household",
-                                    "number_of_consumers": 1
-                                }
-                            ]
-                        },
-                        {
-                            "metadata": {
-                                "title": "Building",
-                                "description": "a Building",
-                                "name": "building-data1"
-                            },
-                            "topics": [
-                                {
-                                    "name": "Building",
-                                    "number_of_consumers": 1
-                                }
-                            ]
-                        }
-                    ]
+                  "name": "Survey",
+                  "number_of_consumers": 1
                 }
-            ]
+              ]
+            },
+            {
+              "metadata": {
+                "title": "Person",
+                "description": "Person",
+                "name": "person-data1"
+              },
+              "topics": [
+                {
+                  "name": "Person",
+                  "number_of_consumers": 1
+                }
+              ]
+            },
+            {
+              "metadata": {
+                "title": "Household",
+                "description": "a Household",
+                "name": "household-data1"
+              },
+              "topics": [
+                {
+                  "name": "Household",
+                  "number_of_consumers": 1
+                }
+              ]
+            },
+            {
+              "metadata": {
+                "title": "Building",
+                "description": "a Building",
+                "name": "building-data1"
+              },
+              "topics": [
+                {
+                  "name": "Building",
+                  "number_of_consumers": 1
+                }
+              ]
+            }
+          ]
         }
-    ]
+      ]
+    }
+  ]
 }

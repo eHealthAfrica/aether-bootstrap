@@ -40,10 +40,13 @@ Session.vim
 *.p12
 *.keystore
 *.truststore
+*_server_jaas.conf
+*kafkacat.conf
 
 # Environment variables
 .env
 .env.*
+options.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
