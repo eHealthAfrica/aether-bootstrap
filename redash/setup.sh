@@ -19,7 +19,6 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
 set -eu
 
 gen_random_string () {
@@ -27,7 +26,6 @@ gen_random_string () {
 }
 
 create_config() {
-
     COOKIE_SECRET=$(gen_random_string)
     POSTGRES_PASSWORD=$(gen_random_string)
     REDASH_DATABASE_URL="postgresql://postgres:${POSTGRES_PASSWORD}@postgres/postgres"
@@ -46,6 +44,6 @@ if [ ! -f ./.env ]; then
 fi
 
 echo "___________________________________________________ Preparing Redash Database"
-docker-compose run server python ./manage.py database create_tables
+docker-compose run --rm server python ./manage.py database create_tables
 docker-compose kill
 echo "___________________________________________________ Done"

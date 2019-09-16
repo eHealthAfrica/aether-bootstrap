@@ -20,14 +20,19 @@
 #
 set -Eeuo pipefail
 
-source ./.env || \
-    ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/demo" && \
-      exit 1 )
-source ./scripts/aether_functions.sh
+if [ -z "${1:-}" ]; then
+    echo -e "\033[91mPlease, indicate tenant!\033[0m"
+    exit 1
+fi
 
-echo_message "You services must be running!"
-echo_message "REST PROXY IS NOT MULTI-TENANT!!!"
-echo_message "ONLY ONE REALM SHOULD BE GRANTED ACCESS"
+source scripts/lib.sh || \
+    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
+      exit 1 )
+source .env
+
+echo_warning "You services must be running!"
+echo_warning "REST PROXY IS NOT MULTI-TENANT!!!"
+echo_warning "ONLY ONE REALM SHOULD BE GRANTED ACCESS"
 echo_message "Adding rest-proxy service tenant $1..."
 
-$AUTH_RUN add_service rest-proxy $1 $KEYCLOAK_KONG_CLIENT
+$GWM_RUN add_service rest-proxy $1 $KEYCLOAK_KONG_CLIENT

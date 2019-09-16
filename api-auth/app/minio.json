@@ -1,5 +1,0 @@
-{
-  "name": "minio",
-  "host": "http://minio:9100",
-  "paths": [ "/minio/kernel/", "/minio/odk/" ]
-}

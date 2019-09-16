@@ -1,0 +1,10 @@
+{
+  "themes": [
+    {
+      "name": "ehealth",
+      "types": [
+        "login"
+      ]
+    }
+  ]
+}

@@ -20,7 +20,6 @@
 #
 set -Eeuo pipefail
 
-
 function show_help {
     echo """
     Commands
@@ -51,11 +50,11 @@ case "$1" in
         python3 /code/src/populate.py "${@:2}"
     ;;
 
-    help)
+    help )
         show_help
     ;;
 
-    *)
+    * )
         show_help
     ;;
 esac

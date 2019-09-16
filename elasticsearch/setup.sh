@@ -20,23 +20,14 @@
 #
 set -Eeuo pipefail
 
-source ./.env || \
-    ( echo "Run this script from /aether-bootstrap not from /aether-bootstrap/elasticsearch" && \
+source scripts/lib.sh || \
+    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
-source ./scripts/aether_functions.sh
+source .env
 
-DCES="docker-compose -f ./elasticsearch/docker-compose.yml"
-
-$DCES pull elasticsearch kibana
-$DCES up -d elasticsearch
-
-start_container kong     $KONG_INTERNAL
-start_container keycloak $KEYCLOAK_INTERNAL
-
-
-$AUTH_RUN setup_elasticsearch
-
-# From aether_functions.sh
-add_es_tenant "dev"
-add_es_tenant "prod"
-add_es_tenant "test"
+ES_URL="http://admin:${ELASTICSEARCH_PASSWORD}@elasticsearch:9200"
+start_container elasticsearch elasticsearch $ES_URL
+# use mounted configs to initialize security
+docker-compose -f elasticsearch/docker-compose.yml exec elasticsearch sh securityadmin_demo.sh
+# sometimes the "own_index" does not exists
+$GWM_RUN setup_elasticsearch || true

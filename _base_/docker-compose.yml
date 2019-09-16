@@ -1,0 +1,42 @@
+version: '3'
+
+networks:
+  aether:
+    external:
+      name: aether_bootstrap_net
+
+volumes:
+  database_data:
+    external:
+      name: aether_database_data
+
+services:
+
+  # ---------------------------------
+  # Databases
+  # ---------------------------------
+
+  db:
+    image: postgres:10-alpine
+    environment:
+      PGUSER: postgres
+    healthcheck:
+      test: pg_isready
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    networks:
+      - aether
+
+  minio:
+    image: minio/minio:latest
+    volumes:
+      - ../.persistent_data/media:/data
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
+    command: minio server --quiet --address ${MINIO_ENDPOINT} /data
+    networks:
+      - aether
