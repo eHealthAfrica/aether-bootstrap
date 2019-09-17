@@ -5,7 +5,8 @@
     "index_name_template": "aet_%s_1",
     "enabled": true,
     "ignored_topics": [
-      "__confluent.support.metrics"
+      "__confluent.support.metrics",
+      "__consumer_offsets"
     ],
     "geo_point_creation": true,
     "geo_point_name": "geo_point"
@@ -14,6 +15,7 @@
     "(aet_auto_)(\\w*)(_1)": "route1"
   },
   "kibana_auto_timestamp": "aet_ts",
+  "create_visualizations": true,
   "consumer_port": 9009,
   "connect_retry_wait": 30,
   "startup_connection_retry": 3,
