@@ -34,16 +34,3 @@ echo_warning "ERASING PREVIOUS KONG & KEYCLOAK DATA!!!"
 rebuild_database kong     kong     ${KONG_PG_PASSWORD}
 rebuild_database keycloak keycloak ${KEYCLOAK_PG_PASSWORD}
 echo_message ""
-
-#
-# https://docs.konghq.com/install/docker/
-#
-# Note for Kong < 0.15: with Kong versions below 0.15 (up to 0.14),
-# use the up sub-command instead of bootstrap.
-# Also note that with Kong < 0.15, migrations should never be run concurrently;
-# only one Kong node should be performing migrations at a time.
-# This limitation is lifted for Kong 0.15, 1.0, and above.
-DC_KONG="docker-compose -f auth/docker-compose.yml run --rm kong kong"
-$DC_KONG migrations bootstrap
-$DC_KONG migrations up
-echo_message ""
