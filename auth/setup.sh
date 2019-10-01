@@ -25,6 +25,21 @@ source scripts/lib.sh || \
       exit 1 )
 
 start_db
+
+#
+# https://docs.konghq.com/install/docker/
+#
+# Note for Kong < 0.15: with Kong versions below 0.15 (up to 0.14),
+# use the up sub-command instead of bootstrap.
+# Also note that with Kong < 0.15, migrations should never be run concurrently;
+# only one Kong node should be performing migrations at a time.
+# This limitation is lifted for Kong 0.15, 1.0, and above.
+DC_KONG="docker-compose -f auth/docker-compose.yml run --rm kong kong"
+$DC_KONG migrations bootstrap
+$DC_KONG migrations up
+$DC_KONG migrations finish
+echo_message ""
+
 start_auth_container kong
 
 $GWM_RUN add_app keycloak
