@@ -33,38 +33,67 @@ function gen_random_string {
     openssl rand -hex 16 | tr -d "\n"
 }
 
-
 function kafka_settings {
     KAFKA_ROOT_PW=$(gen_random_string)
     if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
         cat << EOF1
+# Confluent Cloud setup
+# ------------------------------------------------------------------
 KAFKA_URL=${CC_URL}
 KAFKA_SECURITY=SASL_SSL
+
 # kafka all-tenant Superuser
 KAFKA_SU_USER=${CC_SU_USER}
 KAFKA_SU_PASSWORD=${CC_SU_PASSWORD}
+
 # default number of replicas to maintain
 KAFKA_REPLICAS=3
 KAFKA_CONSUMER_USER=${CC_SU_USER}
 KAFKA_CONSUMER_PASSWORD=${CC_SU_PASSWORD}
-# # Internal Root User (local only)
-KAFKA_ROOT_USER=root
-KAFKA_ROOT_PASSWORD=${KAFKA_ROOT_PW}
+
+# Local setup
+# ------------------------------------------------------------------
+# KAFKA_URL=kafka:29092
+# KAFKA_SECURITY=SASL_PLAINTEXT
+
+# # kafka all-tenant Superuser
+# KAFKA_SU_USER=master
+# KAFKA_SU_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
+
+# # default number of replicas to maintain
+# KAFKA_REPLICAS=1
+# KAFKA_CONSUMER_USER=root
+# KAFKA_CONSUMER_PASSWORD=${KAFKA_ROOT_PW}
 EOF1
     else
         cat << EOF2
+# Confluent Cloud setup
+# ------------------------------------------------------------------
+# KAFKA_URL=${CC_URL}
+# KAFKA_SECURITY=SASL_SSL
+
+# # kafka all-tenant Superuser
+# KAFKA_SU_USER=${CC_SU_USER}
+# KAFKA_SU_PASSWORD=${CC_SU_PASSWORD}
+
+# # default number of replicas to maintain
+# KAFKA_REPLICAS=3
+# KAFKA_CONSUMER_USER=${CC_SU_USER}
+# KAFKA_CONSUMER_PASSWORD=${CC_SU_PASSWORD}
+
+# Local setup
+# ------------------------------------------------------------------
 KAFKA_URL=kafka:29092
 KAFKA_SECURITY=SASL_PLAINTEXT
+
 # kafka all-tenant Superuser
 KAFKA_SU_USER=master
 KAFKA_SU_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
+
 # default number of replicas to maintain
 KAFKA_REPLICAS=1
 KAFKA_CONSUMER_USER=root
 KAFKA_CONSUMER_PASSWORD=${KAFKA_ROOT_PW}
-# Internal Root User (local only)
-KAFKA_ROOT_USER=root
-KAFKA_ROOT_PASSWORD=${KAFKA_ROOT_PW}
 EOF2
 fi
 }
@@ -199,12 +228,19 @@ TEST_PRODUCER_ADMIN_PASSWORD=testingtesting
 # ==================================================================
 # General Settings
 $(kafka_settings)
-# # secret to generate tenant specific passwords (local only)
+
+# Internal Root User
+KAFKA_ROOT_USER=root
+KAFKA_ROOT_PASSWORD=${KAFKA_ROOT_PW}
+
+# secret to generate tenant specific passwords
 KAFKA_SECRET=$(gen_random_string)
-# ZK settings (local only)
+
+# ZK settings
 ZOOKEEPER_ROOT_USER=zk-admin
 ZOOKEEPER_ROOT_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
+
 
 # ------------------------------------------------------------------
 # Confluent Cloud Admin (optional)
