@@ -98,7 +98,7 @@ GATHER_VERSION=3.2.1
 GATEWAY_VERSION=latest
 KONG_VERSION=1.3
 KEYCLOAK_VERSION=latest
-CONFLUENTINC_VERSION=5.2.1
+CONFLUENTINC_VERSION=5.3.1
 # ------------------------------------------------------------------
 
 
