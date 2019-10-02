@@ -27,6 +27,7 @@ BASE_PROTOCOL=http
 LOCAL_HOST=demo.server
 
 PULL_IMAGES=true
+WIPE_ON_INIT=false
 INITIAL_TENANTS="dev;"
 
 ## Keycloak Settings

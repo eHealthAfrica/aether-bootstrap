@@ -40,6 +40,7 @@ if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
     $GWM_RUN grant_kafka_su $KAFKA_ROOT_USER
     echo_message ""
 fi
+
 if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
     echo_message "Using Confluent Cloud, no additional cluster setup required..."
     echo_message ""

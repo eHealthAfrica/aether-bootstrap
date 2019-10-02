@@ -35,17 +35,19 @@ source options.txt
 echo_message ""
 echo_message "Initializing installation for host: \\033[1m$LOCAL_HOST\\033[0m"
 echo_message ""
+echo_warning "This can take up to 15 minutes depending on bandwidth."
+echo_message ""
+
+if [ "$WIPE_ON_INIT" = true ]; then
+    ./scripts/wipe.sh
+else
+    # stop and remove all containers or the network cannot be recreated
+    ./scripts/stop.sh 2>/dev/null
+fi
 
 ./scripts/generate_env_vars.sh
 source .env
 
-echo_message ""
-echo_warning "Initializing Aether environment,"
-echo_warning " this may take 15 minutes depending on bandwidth."
-echo_message ""
-
-# stop and remove all containers or the network cannot be recreated
-./scripts/stop.sh 2>/dev/null
 docker network rm aether_bootstrap_net || true
 create_docker_assets
 
@@ -53,14 +55,18 @@ if [ "$PULL_IMAGES" = true ]; then
     ./scripts/pull.sh
 fi
 
-./auth/init.sh
-./scripts/setup.sh
+if [ "$WIPE_ON_INIT" = true ]; then
+    ./auth/init.sh
+fi
 
+./scripts/setup.sh
 ./scripts/start.sh
+
 IFS=';' read -a tenants <<< "$INITIAL_TENANTS"
 for tenant in "${tenants[@]}"; do
     ./scripts/add_tenant.sh "$tenant"
 done
+
 ./scripts/stop.sh 2>/dev/null
 
 echo_message ""
