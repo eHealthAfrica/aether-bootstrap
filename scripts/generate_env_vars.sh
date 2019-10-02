@@ -137,6 +137,7 @@ GATEWAY_VERSION=latest
 KONG_VERSION=1.3
 KEYCLOAK_VERSION=latest
 CONFLUENTINC_VERSION=5.3.1
+AMAZON_ES_VERSION=1.2.0
 # ------------------------------------------------------------------
 
 
