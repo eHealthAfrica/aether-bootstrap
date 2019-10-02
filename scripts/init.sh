@@ -35,7 +35,7 @@ source options.txt
 echo_message ""
 echo_message "Initializing installation for host: \\033[1m$LOCAL_HOST\\033[0m"
 echo_message ""
-echo_warning " This may take 15 minutes depending on bandwidth."
+echo_warning "This can take up to 15 minutes depending on bandwidth."
 echo_message ""
 
 if [ "$WIPE_ON_INIT" = true ]; then
