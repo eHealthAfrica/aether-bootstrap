@@ -5,6 +5,9 @@
 # Pull latest images from dockerhub
 PULL_IMAGES=true
 
+# Remove previous data
+WIPE_ON_INIT=true
+
 # Initial tenants to create
 INITIAL_TENANTS="dev;prod;test;"
 
