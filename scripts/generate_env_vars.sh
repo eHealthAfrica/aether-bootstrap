@@ -34,21 +34,22 @@ function gen_random_string {
 }
 
 function kafka_settings {
-    KAFKA_ROOT_PW=$(gen_random_string)
+    local kafka_consumer_pw=$(gen_random_string)
 
-    if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
+    if [ "$AETHER_CONNECT_MODE" = "CONFLUENT" ]; then
         cat << EOF1
 # Confluent Cloud setup
 # ------------------------------------------------------------------
 KAFKA_URL=${CC_URL}
 KAFKA_SECURITY=SASL_SSL
+# default number of replicas to maintain
+KAFKA_REPLICAS=3
 
 # kafka all-tenant Superuser
 KAFKA_SU_USER=${CC_SU_USER}
 KAFKA_SU_PASSWORD=${CC_SU_PASSWORD}
 
-# default number of replicas to maintain
-KAFKA_REPLICAS=3
+# kafka consumer user
 KAFKA_CONSUMER_USER=${CC_SU_USER}
 KAFKA_CONSUMER_PASSWORD=${CC_SU_PASSWORD}
 
@@ -56,19 +57,16 @@ KAFKA_CONSUMER_PASSWORD=${CC_SU_PASSWORD}
 # # ------------------------------------------------------------------
 # KAFKA_URL=kafka:29092
 # KAFKA_SECURITY=SASL_PLAINTEXT
+# # default number of replicas to maintain
+# KAFKA_REPLICAS=1
 
 # # kafka all-tenant Superuser
 # KAFKA_SU_USER=master
-# KAFKA_SU_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
+# KAFKA_SU_PASSWORD=${admin_password}
 
-# # default number of replicas to maintain
-# KAFKA_REPLICAS=1
+# # kafka consumer user
 # KAFKA_CONSUMER_USER=root
-# KAFKA_CONSUMER_PASSWORD=${KAFKA_ROOT_PW}
-
-# # Internal Root User
-# KAFKA_ROOT_USER=root
-# KAFKA_ROOT_PASSWORD=${KAFKA_ROOT_PW}
+# KAFKA_CONSUMER_PASSWORD=${kafka_consumer_pw}
 EOF1
     else
         cat << EOF2
@@ -76,13 +74,14 @@ EOF1
 # # ------------------------------------------------------------------
 # KAFKA_URL=${CC_URL}
 # KAFKA_SECURITY=SASL_SSL
+# # default number of replicas to maintain
+# KAFKA_REPLICAS=3
 
 # # kafka all-tenant Superuser
 # KAFKA_SU_USER=${CC_SU_USER}
 # KAFKA_SU_PASSWORD=${CC_SU_PASSWORD}
 
-# # default number of replicas to maintain
-# KAFKA_REPLICAS=3
+# # kafka all-tenant Superuser
 # KAFKA_CONSUMER_USER=${CC_SU_USER}
 # KAFKA_CONSUMER_PASSWORD=${CC_SU_PASSWORD}
 
@@ -90,24 +89,23 @@ EOF1
 # ------------------------------------------------------------------
 KAFKA_URL=kafka:29092
 KAFKA_SECURITY=SASL_PLAINTEXT
+# default number of replicas to maintain
+KAFKA_REPLICAS=1
 
 # kafka all-tenant Superuser
 KAFKA_SU_USER=master
-KAFKA_SU_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
+KAFKA_SU_PASSWORD=${admin_password}
 
-# default number of replicas to maintain
-KAFKA_REPLICAS=1
+# kafka consumer user
 KAFKA_CONSUMER_USER=root
-KAFKA_CONSUMER_PASSWORD=${KAFKA_ROOT_PW}
-
-# Internal Root User
-KAFKA_ROOT_USER=root
-KAFKA_ROOT_PASSWORD=${KAFKA_ROOT_PW}
+KAFKA_CONSUMER_PASSWORD=${kafka_consumer_pw}
 EOF2
 fi
 }
 
 function gen_env_file {
+    admin_password="${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}"
+
     cat << EOF
 #
 # USE THIS ONLY LOCALLY
@@ -195,7 +193,7 @@ MINIO_ENDPOINT=minio:9100
 # Aether Kernel
 # ==================================================================
 KERNEL_ADMIN_USERNAME=admin
-KERNEL_ADMIN_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
+KERNEL_ADMIN_PASSWORD=${admin_password}
 KERNEL_ADMIN_TOKEN=$(gen_random_string)
 KERNEL_DJANGO_SECRET_KEY=$(gen_random_string)
 KERNEL_DB_PASSWORD=$(gen_random_string)
@@ -224,7 +222,7 @@ TEST_KERNEL_CLIENT_REALM=test
 # Aether Producer
 # ==================================================================
 PRODUCER_ADMIN_USER=admin
-PRODUCER_ADMIN_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
+PRODUCER_ADMIN_PASSWORD=${admin_password}
 
 # TEST Aether Producer
 # ------------------------------------------------------------------
@@ -271,7 +269,7 @@ ELASTICSEARCH_PASSWORD=admin
 # Aether ODK Module
 # ==================================================================
 ODK_ADMIN_USERNAME=admin
-ODK_ADMIN_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
+ODK_ADMIN_PASSWORD=${admin_password}
 ODK_ADMIN_TOKEN=$(gen_random_string)
 ODK_DJANGO_SECRET_KEY=$(gen_random_string)
 ODK_DB_PASSWORD=$(gen_random_string)
@@ -282,7 +280,7 @@ ODK_DB_PASSWORD=$(gen_random_string)
 # Aether UI
 # ==================================================================
 UI_ADMIN_USERNAME=admin
-UI_ADMIN_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
+UI_ADMIN_PASSWORD=${admin_password}
 UI_DJANGO_SECRET_KEY=$(gen_random_string)
 UI_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
@@ -292,7 +290,7 @@ UI_DB_PASSWORD=$(gen_random_string)
 # Gather
 # ==================================================================
 GATHER_ADMIN_USERNAME=admin
-GATHER_ADMIN_PASSWORD=${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}
+GATHER_ADMIN_PASSWORD=${admin_password}
 GATHER_DJANGO_SECRET_KEY=$(gen_random_string)
 GATHER_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------

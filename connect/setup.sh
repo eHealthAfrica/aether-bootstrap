@@ -30,18 +30,17 @@ connect/make_credentials.sh
 
 DCC="docker-compose -f connect/docker-compose.yml"
 
-if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
+if [ "$AETHER_CONNECT_MODE" = "LOCAL" ]; then
     echo_message "Starting Kafka & Zookeper containers..."
     $DCC up -d zookeeper kafka
     $DCC run --rm --no-deps kafka dub wait kafka 9092 60
 
     echo_message "Creating Kafka Superuser..."
     $GWM_RUN add_kafka_su   $KAFKA_SU_USER $KAFKA_SU_PASSWORD
-    $GWM_RUN grant_kafka_su $KAFKA_ROOT_USER
+    $GWM_RUN grant_kafka_su $KAFKA_CONSUMER_USER
     echo_message ""
-fi
 
-if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
+elif [ "$AETHER_CONNECT_MODE" = "CONFLUENT" ]; then
     echo_message "Using Confluent Cloud, no additional cluster setup required..."
     echo_message ""
 fi

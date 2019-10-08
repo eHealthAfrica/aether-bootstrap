@@ -30,9 +30,9 @@ function gen_kafka_creds {
 KafkaServer {
     org.apache.kafka.common.security.scram.ScramLoginModule required;
     org.apache.kafka.common.security.plain.PlainLoginModule required
-    username="$KAFKA_ROOT_USER"
-    password="$KAFKA_ROOT_PASSWORD"
-    user_$KAFKA_ROOT_USER="$KAFKA_ROOT_PASSWORD";
+    username="$KAFKA_CONSUMER_USER"
+    password="$KAFKA_CONSUMER_PASSWORD"
+    user_$KAFKA_CONSUMER_USER="$KAFKA_CONSUMER_PASSWORD";
 };
 Client {
     org.apache.zookeeper.server.auth.DigestLoginModule required
@@ -52,28 +52,24 @@ EOF
 }
 
 function gen_kafkacat_creds {
-    if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
-        cat << EOF1
-bootstrap.servers=$KAFKA_URL
-sasl.username=$KAFKA_SU_USER
-sasl.password=$KAFKA_SU_PASSWORD
-sasl.mechanism=SCRAM-SHA-512
-security.protocol=sasl_plaintext
-EOF1
+    if [ "$AETHER_CONNECT_MODE" = "LOCAL" ]; then
+        local sasl_mechanism="SCRAM-SHA-512"
+        local security_protocol="sasl_plaintext"
+    elif [ "$AETHER_CONNECT_MODE" = "CONFLUENT" ]; then
+        local sasl_mechanism="PLAIN"
+        local security_protocol="sasl_ssl"
     fi
 
-    if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
-        cat << EOF2
+    cat << EOF
 bootstrap.servers=$KAFKA_URL
 sasl.username=$KAFKA_SU_USER
 sasl.password=$KAFKA_SU_PASSWORD
-sasl.mechanism=PLAIN
-security.protocol=sasl_ssl
-EOF2
-    fi
+sasl.mechanism=$sasl_mechanism
+security.protocol=$security_protocol
+EOF
 }
 
-if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
+if [ "$AETHER_CONNECT_MODE" = "LOCAL" ]; then
     gen_kafka_creds > connect/kafka_server_jaas.conf
     echo -e "\033[92m[connect/kafka_server_jaas.conf] security file generated!\033[0m"
 

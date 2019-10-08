@@ -24,7 +24,7 @@ source options.txt || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
 
-if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
+if [ "$AETHER_CONNECT_MODE" = "LOCAL" ]; then
     docker-compose -f connect/docker-compose.yml up -d kafka zookeeper
 fi
 docker-compose -f connect/docker-compose.yml up -d producer
