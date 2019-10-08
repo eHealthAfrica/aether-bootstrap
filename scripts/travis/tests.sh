@@ -30,7 +30,7 @@ LOCAL_HOST=travis.test.server
 
 PULL_IMAGES=true
 WIPE_ON_INIT=true
-INITIAL_TENANTS="test;"
+INITIAL_TENANTS="travis;"
 
 ## Keycloak Settings
 KEYCLOAK_GLOBAL_ADMIN=admin-travis

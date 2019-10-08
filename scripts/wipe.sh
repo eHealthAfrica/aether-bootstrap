@@ -25,11 +25,22 @@ for dc_file in $(find docker-compose*.yml */docker-compose*.yml 2> /dev/null); d
     docker-compose -f $dc_file down -v 2>/dev/null
 done
 
-docker volume  rm aether_database_data -f || true
+VOLUMES=( aether_database_data )
+for volume in "${VOLUMES[@]}"; do
+    {
+        docker network rm -f $volume 2>/dev/null
+    } || true
+done
 
-docker network rm aether_bootstrap_net    || true
-docker network rm ckan_bootstrap_net      || true
+NETWORKS=( aether_bootstrap_net ckan_bootstrap_net )
+for network in "${NETWORKS[@]}"; do
+    {
+        docker network rm $network 2>/dev/null
+    } || true
+done
+
+rm -f .env
+rm -Rf ./connect/*.conf
 
 sudo rm -Rf ./.persistent_data
 sudo rm -f ckan-consumer/db/consumer.db
-rm -f .env

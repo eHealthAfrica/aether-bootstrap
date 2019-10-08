@@ -30,9 +30,8 @@ source scripts/lib.sh || \
       exit 1 )
 source options.txt
 
-if [ "$AETHER_CONNECT_MODE" = 'LOCAL' ]; then
+if [ "$AETHER_CONNECT_MODE" = "LOCAL" ]; then
     $GWM_RUN add_kafka_tenant "$1"
-fi
-if [ "$AETHER_CONNECT_MODE" = 'CONFLUENT' ]; then
+elif [ "$AETHER_CONNECT_MODE" = "CONFLUENT" ]; then
     $GWM_RUN add_ccloud_tenant "$1" || true
 fi
