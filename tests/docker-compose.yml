@@ -70,6 +70,12 @@ services:
       DEFAULT_REALM: ${TEST_KERNEL_CLIENT_REALM}
       REALM_COOKIE: ${REALM_COOKIE}
 
+      REDIS_DB: 0
+      REDIS_HOST: redis-test
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+      WRITE_ENTITIES_TO_REDIS: ${WRITE_ENTITIES_TO_REDIS}
+
       WEB_SERVER_PORT: 9000
     depends_on:
       - db-test
