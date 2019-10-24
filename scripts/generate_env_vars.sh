@@ -129,7 +129,7 @@ function gen_env_file {
 # ------------------------------------------------------------------
 # Releases
 # ==================================================================
-AETHER_VERSION=1.5.5
+AETHER_VERSION=2.0.0-rc
 GATHER_VERSION=3.2.1
 GATEWAY_VERSION=latest
 KONG_VERSION=1.3
@@ -180,6 +180,14 @@ KONG_IP=192.168.9.10
 
 
 # ------------------------------------------------------------------
+# Databases
+# ==================================================================
+REDIS_PASSWORD=$(gen_random_string)
+# ------------------------------------------------------------------
+
+
+
+# ------------------------------------------------------------------
 # Minio storage
 # ==================================================================
 MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
@@ -200,6 +208,7 @@ KERNEL_DB_PASSWORD=$(gen_random_string)
 
 KERNEL_READONLY_DB_USERNAME=readonlyuser
 KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
+WRITE_ENTITIES_TO_REDIS=
 
 # TEST Aether Kernel
 # ------------------------------------------------------------------

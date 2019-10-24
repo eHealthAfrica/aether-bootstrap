@@ -26,10 +26,11 @@ source scripts/lib.sh || \
 source .env
 
 start_db
+start_redis
 
 # setup container (model migration, admin user, static content...)
 DCA="docker-compose -f aether/docker-compose.yml"
-AETHER_CONTAINERS=( kernel ui )
+AETHER_CONTAINERS=( exm kernel ui )
 for container in "${AETHER_CONTAINERS[@]}"; do
     $DCA run --rm $container setup
 done

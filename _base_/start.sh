@@ -25,4 +25,5 @@ source scripts/lib.sh || \
       exit 1 )
 
 start_db
+start_redis
 docker-compose -f _base_/docker-compose.yml up -d minio

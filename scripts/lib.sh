@@ -79,6 +79,11 @@ function start_db {
 }
 
 
+function start_redis {
+    docker-compose -f _base_/docker-compose.yml up -d redis
+}
+
+
 # Usage:    start_container <container-module> <container-name> <container-health-url>
 function start_container {
     local dc="${1}/docker-compose.yml"

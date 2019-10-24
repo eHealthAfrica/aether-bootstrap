@@ -65,11 +65,47 @@ services:
       UWSGI_BUFFER_SIZE: 32768
       CUSTOM_UWSGI_SERVE_STATIC: 'true'
 
+      REDIS_DB: 0
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+      WRITE_ENTITIES_TO_REDIS: ${WRITE_ENTITIES_TO_REDIS}
+
+
       WEB_SERVER_PORT: 8000
     volumes:
       # backup folder
       - ../.persistent_data/backups/kernel:/backups
     command: start
+    networks:
+      - aether
+    extra_hosts:
+      - ${BASE_DOMAIN}:${KONG_IP}
+
+
+  # ---------------------------------
+  # Aether Entity Extractor
+  # ---------------------------------
+
+  exm:
+    image: ehealthafrica/aether-exm:${AETHER_VERSION}
+    environment:
+      DEFAULT_REALM: ${DEFAULT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
+      GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
+
+      AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
+      AETHER_KERNEL_URL: http://kernel:8000
+
+      REDIS_DB: 0
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+
+      SERVER_PORT: 5007
+      LOG_LEVEL: ERROR
+    command: start
+    restart: on-failure
     networks:
       - aether
     extra_hosts:
