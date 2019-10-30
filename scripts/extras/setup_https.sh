@@ -50,7 +50,7 @@ function gen_local_cert {
     # workaround for self signed certificates
     # include our certificate in the official certificate authority (CA) bundle
     echo_message "Creating workaround for self-signed certificates and python containers..."
-    pip3 install -q --upgrade --target=${CERT_FOLDER} certifi
+    python3 -m pip install -q --upgrade --target=${CERT_FOLDER} certifi
     PY_CERT="${CERT_FOLDER}/certifi/cacert.pem"
     mv ${PY_CERT} ${PY_CERT}.original
     cat ${CERT_NAME}.crt ${PY_CERT}.original > ${PY_CERT}
@@ -60,35 +60,33 @@ function gen_local_cert {
     start_auth_container kong
 
     echo_message "Installing self-signed certificate in kong..."
-    curl -i -X POST http://localhost:8001/certificates/ \
+    curl -i -X PUT "http://localhost:8001/certificates/00000000-0000-0000-0000-000000000000" \
         -H 'Content-Type: application/json' \
         -d "{\"cert\":\"$(cat ${CERT_NAME}.crt)\",\"key\":\"$(cat ${CERT_NAME}.key)\",\"snis\":[\"${BASE_DOMAIN}\"]}"
 }
 
 function instructions {
     cat << EOF
---------------------------------------------------------------------------------
-
-1. Execute the following in bash:
-
-source .env
-source scripts/extras/setup_https.sh
-
-gen_local_cert
 
 --------------------------------------------------------------------------------
 
-2. Change in your [.env] file the following:
+The self-signed certificate for ${BASE_DOMAIN} was included in the certificates
+list stored in [${PY_CERT}] and installed in kong.
+Please follow the next points to finish the local setup.
+
+--------------------------------------------------------------------------------
+
+1. Change in your [.env] file the following:
 
 BASE_PROTOCOL=https
-
-KEYCLOAK_SERVER_URL=https://.../auth/realms
+CERT_FOLDER=${CERT_FOLDER}
+KEYCLOAK_SERVER_URL=https://${BASE_DOMAIN}/auth/realms
 
 --------------------------------------------------------------------------------
 
-3. Add in your connect/docker-compose.yml file in the kong service the following:
+2. Add in your auth/docker-compose.yml file in the kong service the following:
 
-  kong-base:
+  kong:
     environment:
       KONG_PROXY_LISTEN: 0.0.0.0:80, ssl 0.0.0.0:443
     ports:
@@ -96,9 +94,9 @@ KEYCLOAK_SERVER_URL=https://.../auth/realms
 
 --------------------------------------------------------------------------------
 
-4. Add to your {module}/docker-compose.yml file the following volume entry
+3. Add to your {module}/docker-compose.yml file the following volume entry
 in each service that uses https to communicate internally with
-the rest of services (kernel, odk, ui,...):
+the rest of services (kernel, odk, ui, gather):
 
     volumes:
       # -------------------------------------------------------------
@@ -108,12 +106,16 @@ the rest of services (kernel, odk, ui,...):
 
 --------------------------------------------------------------------------------
 
-5. Install the [${BASE_DOMAIN}.crt] file in your Android device certificates list
+OPTIONAL
+
+4. Install the [${BASE_DOMAIN}.crt] file in your Android device certificates list
 Follow this link instructions: https://support.google.com/nexus/answer/2844832
 Maybe you'll need to reboot the device afterwards.
+Most probably this doesn't work at all.
 
 --------------------------------------------------------------------------------
 EOF
 }
 
+gen_local_cert
 instructions
