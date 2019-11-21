@@ -12,7 +12,7 @@ services:
   # ---------------------------------
 
   odk:
-    image: ehealthafrica/aether-odk:${AETHER_VERSION}
+    image: ehealthafrica/aether-odk:${AETHER_VERSION:-alpha}
     environment:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${ODK_DJANGO_SECRET_KEY}
@@ -76,7 +76,7 @@ services:
   # ---------------------------------
 
   gather:
-    image: ehealthafrica/gather:${GATHER_VERSION}
+    image: ehealthafrica/gather:${GATHER_VERSION:-alpha}
     environment:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
       DJANGO_SECRET_KEY: ${GATHER_DJANGO_SECRET_KEY}

@@ -12,7 +12,7 @@ services:
   # ---------------------------------
 
   kong:
-    image: ehealthafrica/kong:${KONG_VERSION:-1.1}
+    image: ehealthafrica/kong:${KONG_VERSION:-latest}
     environment:
       KONG_DATABASE: postgres
       KONG_PG_HOST: db

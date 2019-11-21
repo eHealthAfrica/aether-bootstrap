@@ -17,7 +17,7 @@ services:
   # ---------------------------------
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:${CONFLUENTINC_VERSION:-5.3.1}
+    image: confluentinc/cp-zookeeper:${CONFLUENTINC_VERSION:-latest}
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
@@ -45,7 +45,7 @@ services:
   # ---------------------------------
 
   kafka:
-    image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-5.3.1}
+    image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-latest}
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
@@ -118,7 +118,7 @@ services:
   # ---------------------------------
 
   producer:
-    image: ehealthafrica/aether-producer:${AETHER_VERSION}
+    image: ehealthafrica/aether-producer:${AETHER_VERSION:-alpha}
     environment:
       # default settings file
       PRODUCER_SETTINGS_FILE: /code/producer/settings.json
