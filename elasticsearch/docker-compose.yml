@@ -52,35 +52,39 @@ services:
 
 
   consumer:
-    # demo version without job handling!
-    image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190817-01
+    # alpha version with job handling!
+    image: ehealthafrica/aether-elasticsearch-consumer:alpha-20191230-01
     environment:
+      TENANCY_HEADER: x-oauth-realm
+      REDIS_DB: 1
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+      CONSUMER_NAME: 'ES-CONSUMER'
+
+      # local ES/Kibana
+      KIBANA_URL: http://kibana:5601/kibana-app
+      ELASTICSEARCH_URL: elasticsearch:9200
+      ELASTICSEARCH_USER: admin
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+
+      # kafka
       KAFKA_URL: ${KAFKA_URL}
       SECURITY.PROTOCOL: ${KAFKA_SECURITY}
       SASL.MECHANISM: PLAIN
       SASL.USERNAME: ${KAFKA_CONSUMER_USER}
       SASL.PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
 
-      KIBANA_URL: http://kibana:5601/kibana-app
+      EXPOSE_PORT: 9099
+      LOG_LEVEL: "DEBUG"
 
-      ELASTICSEARCH_URL: elasticsearch
-      ELASTICSEARCH_PORT: 9200
-      ELASTICSEARCH_USER: admin
-      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
-
-      LOG_LEVEL: ERROR
-
-      CONSUMER_PORT: 9099
-      ES_CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
-      ES_CONSUMER_KAFKA_CONFIG_PATH: /code/conf/consumer/kafka.json
-    volumes:
-      - ./conf:/code/conf/consumer
-      - ./es_index:/code/es_index
     command: start
     networks:
       - aether
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
-    # ports:
-    #   - 9009:9009
+    ports:
+      - 9013:9013
+      - 9099:9099
