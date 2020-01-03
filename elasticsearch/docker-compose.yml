@@ -11,7 +11,7 @@ volumes:
 services:
 
   elasticsearch:
-    image: amazon/opendistro-for-elasticsearch:${AMAZON_ES_VERSION:-1.2.0}
+    image: amazon/opendistro-for-elasticsearch:${AMAZON_ES_VERSION:-1.2.1}
     environment:
       discovery.type: single-node
       opendistro_security.ssl.http.enabled: 'false'
@@ -25,12 +25,12 @@ services:
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
-    # ports:
-    #   - 9200:9200
+    ports:
+      - 9200:9200
 
 
   kibana:
-    image: amazon/opendistro-for-elasticsearch-kibana:${AMAZON_ES_VERSION:-1.2.0}
+    image: amazon/opendistro-for-elasticsearch-kibana:${AMAZON_ES_VERSION:-1.2.1}
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
       ELASTICSEARCH_PRESERVEHOST: 'false'
@@ -55,13 +55,12 @@ services:
     # alpha version with job handling!
     image: ehealthafrica/aether-elasticsearch-consumer:alpha-20191230-01
     environment:
-      TENANCY_HEADER: x-oauth-realm
+
+      # redis
       REDIS_DB: 1
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-
-      CONSUMER_NAME: 'ES-CONSUMER'
 
       # local ES/Kibana
       KIBANA_URL: http://kibana:5601/kibana-app
@@ -76,8 +75,18 @@ services:
       SASL.USERNAME: ${KAFKA_CONSUMER_USER}
       SASL.PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
 
+      # consumer settings
+      TENANCY_HEADER: x-oauth-realm
+      CONSUMER_NAME: 'ES-CONSUMER'
+      ES_CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
+      ES_CONSUMER_KAFKA_CONFIG_PATH: /code/conf/consumer/kafka.json
       EXPOSE_PORT: 9099
+      # STACKDRIVER_LOGGING: 0
       LOG_LEVEL: "DEBUG"
+
+    volumes:
+      - ./conf/consumer.json:/code/conf/consumer/consumer.json
+      - ./conf/kafka.json:/code/conf/consumer/kafka.json
 
     command: start
     networks:
@@ -86,5 +95,4 @@ services:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
     ports:
-      - 9013:9013
       - 9099:9099
