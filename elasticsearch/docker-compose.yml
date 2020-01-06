@@ -25,8 +25,8 @@ services:
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
-    ports:
-      - 9200:9200
+    # ports:
+    #   - 9200:9200
 
 
   kibana:
@@ -51,7 +51,7 @@ services:
     #   - 5601:5601
 
 
-  consumer:
+  elasticsearch-consumer:
     image: ehealthafrica/aether-elasticsearch-consumer:2.0.0
     environment:
 
@@ -76,7 +76,7 @@ services:
 
       # consumer settings
       TENANCY_HEADER: x-oauth-realm
-      CONSUMER_NAME: 'ES-CONSUMER'
+      CONSUMER_NAME: 'ES.CONSUMER'
       ES_CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
       ES_CONSUMER_KAFKA_CONFIG_PATH: /code/conf/consumer/kafka.json
       EXPOSE_PORT: 9099
@@ -93,5 +93,5 @@ services:
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
-    ports:
-      - 9099:9099
+    # ports:
+    #   - 9099:9099

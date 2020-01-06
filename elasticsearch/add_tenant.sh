@@ -31,5 +31,6 @@ source scripts/lib.sh || \
 source .env
 
 $GWM_RUN add_service elasticsearch "$1" $KEYCLOAK_KONG_CLIENT
+$GWM_RUN add_service es-consumer   "$1" $KEYCLOAK_KONG_CLIENT
 $GWM_RUN add_service kibana        "$1" $KEYCLOAK_KONG_CLIENT
 $GWM_RUN add_elasticsearch_tenant  "$1" 7
