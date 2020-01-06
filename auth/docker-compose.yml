@@ -12,7 +12,7 @@ services:
   # ---------------------------------
 
   kong:
-    image: ehealthafrica/kong:${KONG_VERSION:-1.1}
+    image: ehealthafrica/kong:${KONG_VERSION:-latest}
     environment:
       KONG_DATABASE: postgres
       KONG_PG_HOST: db
@@ -24,7 +24,7 @@ services:
       KONG_NGINX_PROXY_PROXY_BUFFERS: 16 128k
       KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 128k
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
-      KONG_PROXY_LISTEN: 0.0.0.0:80
+      KONG_PROXY_LISTEN: 0.0.0.0:80, ssl 0.0.0.0:443
 
       KONG_PLUGINS: bundled,kong-oidc-auth
     # uncomment to mount logs outside of docker volume
@@ -32,6 +32,7 @@ services:
     #   - ../.persistent_data/logs/kong:/usr/local/kong/logs/
     ports:
       - 80:80
+      - 443:443
       - 8001:8001  # open this port to access to kong admin
     command: ['kong', 'start', '--v']
     networks:

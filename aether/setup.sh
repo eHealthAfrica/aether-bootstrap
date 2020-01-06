@@ -25,7 +25,7 @@ source scripts/lib.sh || \
       exit 1 )
 source .env
 
-start_db
+_base_/start.sh
 start_redis
 
 # setup container (model migration, admin user, static content...)
