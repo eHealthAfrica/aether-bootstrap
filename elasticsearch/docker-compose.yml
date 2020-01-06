@@ -52,8 +52,7 @@ services:
 
 
   consumer:
-    # alpha version with job handling!
-    image: ehealthafrica/aether-elasticsearch-consumer:alpha-20191230-01
+    image: ehealthafrica/aether-elasticsearch-consumer:2.0.0
     environment:
 
       # redis
