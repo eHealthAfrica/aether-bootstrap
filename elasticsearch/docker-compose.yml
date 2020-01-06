@@ -93,5 +93,5 @@ services:
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
     # this is private to the cluster, only open for debugging
-    ports:
-      - 9099:9099
+    # ports:
+    #   - 9099:9099
