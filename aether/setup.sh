@@ -25,7 +25,7 @@ source scripts/lib.sh || \
       exit 1 )
 source .env
 
-start_db
+_base_/start.sh
 
 # setup container (model migration, admin user, static content...)
 DCA="docker-compose -f aether/docker-compose.yml"

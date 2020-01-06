@@ -16,6 +16,16 @@ services:
     networks:
       - test
 
+  minio-test:
+    image: minio/minio:latest
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
+    command: minio server --quiet --address minio-test:9900 /data
+    networks:
+      - test
+
+
   # ---------------------------------
   # Aether kernel
   # ---------------------------------
@@ -29,13 +39,13 @@ services:
       CSRF_COOKIE_DOMAIN: kernel-test
       LOGGING_FORMATTER: verbose
 
-      BUCKET_NAME: kernel
+      BUCKET_NAME: kernel-test
       DJANGO_STORAGE_BACKEND: minio
       MINIO_STORAGE_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
       MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
-      MINIO_STORAGE_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_STORAGE_ENDPOINT: minio-test:9900
       MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
-      MINIO_STORAGE_MEDIA_URL: http://${MINIO_ENDPOINT}/kernel
+      MINIO_STORAGE_MEDIA_URL: http://minio-test:9900/kernel-test
       MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: 'true'
       MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: 'true'
 

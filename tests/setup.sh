@@ -59,6 +59,7 @@ source .env
 $DC_TEST pull
 
 start_db_test
+$DC_TEST up -d minio-test
 
 $DC_KERNEL setup
 
