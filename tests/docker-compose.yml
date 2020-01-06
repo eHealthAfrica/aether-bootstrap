@@ -28,12 +28,21 @@ services:
     networks:
       - test
 
+  minio-test:
+    image: minio/minio:latest
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
+    command: minio server --quiet --address minio-test:9900 /data
+    networks:
+      - test
+
   # ---------------------------------
   # Aether kernel
   # ---------------------------------
 
   kernel-test:
-    image: ehealthafrica/aether-kernel:${AETHER_VERSION}
+    image: ehealthafrica/aether-kernel:${AETHER_VERSION:-alpha}
     environment:
       TESTING: 'true'
       DJANGO_SECRET_KEY: ${TEST_KERNEL_DJANGO_SECRET_KEY}
@@ -41,13 +50,13 @@ services:
       CSRF_COOKIE_DOMAIN: kernel-test
       LOGGING_FORMATTER: verbose
 
-      BUCKET_NAME: kernel
+      BUCKET_NAME: kernel-test
       DJANGO_STORAGE_BACKEND: minio
       MINIO_STORAGE_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
       MINIO_STORAGE_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
-      MINIO_STORAGE_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_STORAGE_ENDPOINT: minio-test:9900
       MINIO_STORAGE_MEDIA_USE_PRESIGNED: null
-      MINIO_STORAGE_MEDIA_URL: http://${MINIO_ENDPOINT}/kernel
+      MINIO_STORAGE_MEDIA_URL: http://minio-test:9900/kernel-test
       MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET: 'true'
       MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY: 'true'
 
@@ -89,7 +98,7 @@ services:
   # ---------------------------------
 
   zookeeper-test:
-    image: confluentinc/cp-zookeeper:${CONFLUENTINC_VERSION:-5.2.1}
+    image: confluentinc/cp-zookeeper:${CONFLUENTINC_VERSION:-latest}
     environment:
       ZOOKEEPER_CLIENT_PORT: 32189
       ZOOKEEPER_TICK_TIME: 2000
@@ -99,7 +108,7 @@ services:
       - test
 
   kafka-test:
-    image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-5.2.1}
+    image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION:-latest}
     depends_on:
       - zookeeper-test
     environment:
@@ -116,7 +125,7 @@ services:
   # ---------------------------------
 
   producer-test:
-    image: ehealthafrica/aether-producer:${AETHER_VERSION}
+    image: ehealthafrica/aether-producer:${AETHER_VERSION:-alpha}
     environment:
       # default settings file
       PRODUCER_SETTINGS_FILE: /code/tests/conf/producer.json
@@ -156,7 +165,7 @@ services:
   # ---------------------------------
 
   integration-test:
-    image: ehealthafrica/aether-integration-test:${AETHER_VERSION}
+    image: ehealthafrica/aether-integration-test:${AETHER_VERSION:-alpha}
     environment:
       KERNEL_URL: http://kernel-test:9000
       KERNEL_USERNAME: ${TEST_KERNEL_CLIENT_USERNAME}

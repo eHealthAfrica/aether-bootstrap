@@ -11,7 +11,7 @@ volumes:
 services:
 
   elasticsearch:
-    image: amazon/opendistro-for-elasticsearch:${AMAZON_ES_VERSION:-1.2.0}
+    image: amazon/opendistro-for-elasticsearch:${AMAZON_ES_VERSION:-latest}
     environment:
       discovery.type: single-node
       opendistro_security.ssl.http.enabled: 'false'
@@ -30,7 +30,7 @@ services:
 
 
   kibana:
-    image: amazon/opendistro-for-elasticsearch-kibana:${AMAZON_ES_VERSION:-1.2.0}
+    image: amazon/opendistro-for-elasticsearch-kibana:${AMAZON_ES_VERSION:-latest}
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
       ELASTICSEARCH_PRESERVEHOST: 'false'

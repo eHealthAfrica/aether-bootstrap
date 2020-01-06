@@ -26,28 +26,6 @@ Session.vim
 .netrwhist
 *~
 
-
-### Aether specific ###
-
-# Persistent volumes
-.persistent_data
-
-# secrets
-*.crt
-*.csr
-*.key
-*.pem
-*.p12
-*.keystore
-*.truststore
-*_server_jaas.conf
-*kafkacat.conf
-
-# Environment variables
-.env
-.env.*
-options.txt
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -69,3 +47,26 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+*.log
+
+
+### Aether specific ###
+
+# Persistent volumes
+.persistent_data
+
+# secrets
+*.crt
+*.csr
+*.key
+*.pem
+*.p12
+*.keystore
+*.truststore
+*_server_jaas.conf
+*kafkacat.conf
+
+# Environment variables
+.env
+.env.*
+options.txt
