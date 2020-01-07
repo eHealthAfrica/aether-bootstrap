@@ -42,13 +42,16 @@ services:
       - aether
 
   redis:
-    image: redis:alpine
-    command: >
-      redis-server
-      --requirepass ${REDIS_PASSWORD}
-      --notify-keyspace-events KEA
-      --appendonly yes
-      --auto-aof-rewrite-percentage 100
-      --auto-aof-rewrite-min-size 64mb
+    image: ehealthafrica/ardb
+    build: ardb
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      EXPOSE_PORT: 6379
+      LOG_LEVEL: debug
     networks:
       - aether
+    volumes:
+      - ./ardb/ardb.conf:/usr/src/ardb/ardb.conf
+    command: /usr/src/ardb/src/ardb-server /usr/src/ardb/ardb.conf
+    ports:
+      - 6379:6379
