@@ -42,16 +42,13 @@ services:
       - aether
 
   redis:
-    image: ehealthafrica/ardb
-    build: ardb
+    image: ehealthafrica/ardb:0.10
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       EXPOSE_PORT: 6379
       LOG_LEVEL: debug
+      DATA_DIR: /opt/ardb/data
     networks:
       - aether
     volumes:
-      - ./ardb/ardb.conf:/usr/src/ardb/ardb.conf
-    command: /usr/src/ardb/src/ardb-server /usr/src/ardb/ardb.conf
-    ports:
-      - 6379:6379
+      - ../.persistent_data/backups/ardb:/opt/ardb/data
