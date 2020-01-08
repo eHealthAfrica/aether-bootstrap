@@ -52,7 +52,7 @@ services:
 
 
   elasticsearch-consumer:
-    image: ehealthafrica/aether-elasticsearch-consumer:2.0.0
+    image: ehealthafrica/aether-elasticsearch-consumer:2.0.1
     environment:
 
       # redis
