@@ -24,6 +24,7 @@ source options.txt || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
 
+_base_/start.sh
 auth/setup.sh
 aether/setup.sh
 
