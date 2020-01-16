@@ -9,6 +9,11 @@ services:
 
 install: true
 
+# build only the master branch
+branches:
+  only:
+    - master
+
 script:
   - ./scripts/travis/tests.sh $TEST_MODE
 
