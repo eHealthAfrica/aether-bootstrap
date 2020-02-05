@@ -1,9 +1,8 @@
-dist: xenial
-
+os: linux
+dist: bionic
 language: python
 python:
   - '3.7'
-
 services:
   - docker
 
@@ -23,7 +22,7 @@ after_script:
 after_failure:
   - ./scripts/travis/failure.sh
 
-matrix:
+jobs:
   fast_finish: true
   include:
     - name: "Set up"
