@@ -40,7 +40,7 @@ pushd ckan
 docker-compose up -d
 
 retries=1
-until docker exec -it ckan /usr/local/bin/ckan-paster --plugin=ckan sysadmin -c /etc/ckan/production.ini add admin | tee creds.txt && echo "done"
+until docker exec -it ckan_ckan_1 /usr/local/bin/ckan-paster --plugin=ckan sysadmin -c /etc/ckan/production.ini add admin | tee creds.txt && echo "done"
 do
     echo "waiting for ckan container to be ready... $retries"
     sleep 5

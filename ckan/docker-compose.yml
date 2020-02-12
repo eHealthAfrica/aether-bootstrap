@@ -8,20 +8,19 @@ networks:
     external:
       name: aether_bootstrap_net
 
-  ckan-net:
+volumes:
+  database_data:
     external:
-      name: ckan_bootstrap_net
+      name: aether_database_data
 
 
 services:
   ckan:
-    container_name: ckan
     image: ehealthafrica/ckan:2.8.0-rc
     environment:
       # Defaults work with linked containers, change to use own Postgres, SolR, Redis or Datapusher
       - DATASTORE_READONLY_PASSWORD=datastore
       - DS_RO_PASS=datastore
-      - POSTGRES_PASSWORD=ckan
       - CKAN_SITE_URL=http://localhost:5000
       - CKAN_PORT=5000
       - CKAN_MAX_UPLOAD_SIZE_MB=20000
@@ -29,34 +28,28 @@ services:
       - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:ckan@ckanpg/datastore
       - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:datastore@ckanpg/datastore
       - CKAN_SOLR_URL=http://solr:8983/solr/ckan
-      - CKAN_REDIS_URL=redis://redis:6379/1
+      - CKAN_REDIS_URL=redis://redis:6379/2
       - CKAN_DATAPUSHER_URL=http://datapusher:8800
-      #- CKAN_MAX_UPLOAD_SIZE_MB=${CKAN_MAX_UPLOAD_SIZE_MB}
-      #- POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      #- DS_RO_PASS=${DATASTORE_READONLY_PASSWORD}
+      - POSTGRES_PASSWORD=44f2ba3fad249b8acd88335ee74c0ac2
     volumes:
       - ./ckan:/etc/ckan
     depends_on:
       - ckanpg
       - solr
-      - redis
     ports:
-      - 0.0.0.0:5000:5000
+      - 5000:5000
     networks:
       - aether
-      - ckan-net
     restart: on-failure
 
   datapusher:
-    container_name: datapusher
     image: clementmouchet/datapusher
     ports:
       - 8800:8800
     networks:
-      - ckan-net
+      - aether
 
   ckanpg:
-    container_name: ckanpg
     build:
       context: .
       dockerfile: postgresql/Dockerfile
@@ -67,18 +60,44 @@ services:
       - DS_RO_PASS=datastore
       - POSTGRES_PASSWORD=ckan
     networks:
-      - ckan-net
+      - aether
 
   solr:
-    container_name: solr
     build:
       context: .
       dockerfile: solr/Dockerfile
     networks:
-      - ckan-net
+      - aether
 
-  redis:
-    container_name: redis
-    image: redis:latest
+  ckan-consumer:
+    image: aether-ckan-consumer
+    stdin_open: true
+    environment:
+
+      TENANCY_HEADER: x-oauth-realm
+      CKAN_CONSUMER_CONFIG_PATH: "/code/conf/consumer/consumer.json"
+      CKAN_CONSUMER_KAFKA_CONFIG_PATH: "/code/conf/consumer/kafka.json"
+      LOG_LEVEL: "DEBUG"
+      EXPOSE_PORT: 9009
+
+      CONSUMER_NAME: 'CKAN-CONSUMER'
+
+      # redis
+      REDIS_DB: 2
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: 73c04fcdbc38bf435e2efd3f191dca6b
+
+      # kafka
+      KAFKA_URL: kafka:29092
+      SECURITY.PROTOCOL: SASL_PLAINTEXT
+      SASL.MECHANISM: PLAIN
+      SASL.USERNAME: root
+      SASL.PASSWORD: e32aa8f838a4b8ae1de0796aa46e1f27
+    # volumes:
+    #   - ${AETHER_CONSUMER_PATH:-../aether-consumer-sdk}/aet:/usr/local/lib/python3.7/site-packages/aet
+    command: start
     networks:
-      - ckan-net
+      - aether
+    ports:
+      - 9009:9009
