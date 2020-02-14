@@ -25,19 +25,7 @@ source scripts/lib.sh || \
       exit 1 )
 source .env
 
-create_docker_assets
-
-docker network create ckan_bootstrap_net || true
-
-pushd ckan
-
-{ # try
-    docker-compose build --pull --force-rm
-} || { # catch
-    echo 'not ready...'
-}
-
-docker-compose up -d
+docker-compose -f ckan/docker-compose.yml up -d
 
 retries=1
 until docker exec -it ckan_ckan_1 /usr/local/bin/ckan-paster --plugin=ckan sysadmin -c /etc/ckan/production.ini add admin | tee creds.txt && echo "done"
@@ -51,5 +39,3 @@ do
             exit 1
         fi
 done
-
-popd

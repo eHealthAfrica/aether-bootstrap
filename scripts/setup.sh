@@ -37,3 +37,6 @@ fi
 if [ "$ENABLE_ELASTICSEARCH" = true ]; then
     elasticsearch/setup.sh
 fi
+if [ "$ENABLE_CKAN" = true ]; then
+    ckan/setup.sh
+fi
