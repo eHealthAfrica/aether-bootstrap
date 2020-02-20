@@ -90,7 +90,7 @@ services:
       - aether
 
   ckan-consumer:
-    image: aether-ckan-consumer
+    image: ehealthafrica/aether-ckan-consumer:1.0.1
     stdin_open: true
     environment:
 
