@@ -1,0 +1,15 @@
+{
+    "name": "CKAN_CONSUMER",
+    "metadata": {
+        "author": "eHealth Africa",
+        "author_email": "info@ehealthafrica.org",
+        "maintainer": "eHealth Africa",
+        "maintainer_email": "info@ehealthafrica.org",
+        "license_id": "cc-by",
+        "url": "https://www.ehealthafrica.org",
+        "version": "1.0",
+        "owner_org": "eHA",
+        "name": "demo-dataset-1",
+        "title": "Demo Dataset"
+    }
+}

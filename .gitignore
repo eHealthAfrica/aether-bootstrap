@@ -70,3 +70,4 @@ var/
 .env
 .env.*
 options.txt
+creds.txt

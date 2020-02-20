@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -20,7 +20,5 @@
 #
 set -Eeuo pipefail
 
-pushd ckan
-docker-compose kill
-docker-compose down
-popd
+docker-compose -f ckan/docker-compose.yml kill
+docker-compose -f ckan/docker-compose.yml down

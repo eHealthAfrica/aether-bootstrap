@@ -1,0 +1,12 @@
+{
+    "auto.offset.reset" : "latest",
+    "group.id": "ckan-metadataonly",
+    "enable.auto.commit": true,
+    "auto.commit.interval.ms": 2500,
+    "aether_emit_flag_required" : false,
+    "aether_masking_schema_levels" : ["false", "true"],
+    "aether_masking_schema_emit_level": "false",
+    "heartbeat.interval.ms": 2500,
+    "session.timeout.ms": 18000,
+    "request.timeout.ms": 20000
+}
