@@ -11,7 +11,7 @@ volumes:
 services:
 
   elasticsearch:
-    image: amazon/opendistro-for-elasticsearch:1.1.0
+    image: amazon/opendistro-for-elasticsearch:${AMAZON_ES_VERSION:-latest}
     environment:
       discovery.type: single-node
       opendistro_security.ssl.http.enabled: 'false'
@@ -30,7 +30,7 @@ services:
 
 
   kibana:
-    image: amazon/opendistro-for-elasticsearch-kibana:1.1.0
+    image: amazon/opendistro-for-elasticsearch-kibana:${AMAZON_ES_VERSION:-latest}
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
       ELASTICSEARCH_PRESERVEHOST: 'false'
@@ -53,13 +53,13 @@ services:
 
   consumer:
     # demo version without job handling!
-    image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190816-01
+    image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190817-01
     environment:
       KAFKA_URL: ${KAFKA_URL}
-      SECURITY_PROTOCOL: ${KAFKA_SECURITY}
-      SASL_MECHANISM: PLAIN
-      SASL_PLAIN_USERNAME: ${KAFKA_CONSUMER_USER}
-      SASL_PLAIN_PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
+      SECURITY.PROTOCOL: ${KAFKA_SECURITY}
+      SASL.MECHANISM: PLAIN
+      SASL.USERNAME: ${KAFKA_CONSUMER_USER}
+      SASL.PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
 
       KIBANA_URL: http://kibana:5601/kibana-app
 
@@ -68,7 +68,7 @@ services:
       ELASTICSEARCH_USER: admin
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
 
-      LOG_LEVEL: INFO
+      LOG_LEVEL: ERROR
 
       CONSUMER_PORT: 9099
       ES_CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json

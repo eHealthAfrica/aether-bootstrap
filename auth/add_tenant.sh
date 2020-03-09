@@ -50,4 +50,7 @@ $GWM_RUN add_oidc_client \
 $GWM_RUN add_user \
     $REALM \
     $KEYCLOAK_INITIAL_USER_USERNAME \
-    $KEYCLOAK_INITIAL_USER_PASSWORD
+    $KEYCLOAK_INITIAL_USER_PASSWORD \
+    true \
+    $KEYCLOAK_INITIAL_USER_USERNAME@$REALM.aether.org \
+    true

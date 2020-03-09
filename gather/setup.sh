@@ -24,7 +24,7 @@ source scripts/lib.sh || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
 
-start_db
+_base_/start.sh
 
 GATHER_CONTAINERS=( odk gather )
 for container in "${GATHER_CONTAINERS[@]}"; do
