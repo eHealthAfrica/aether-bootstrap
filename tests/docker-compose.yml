@@ -29,12 +29,28 @@ services:
     networks:
       - test
 
-  minio-test:
-    image: minio/minio:latest
+  # ---------------------------------
+  # Aether Entity Extractor Test
+  # ---------------------------------
+
+  exm-test:
+    image: ehealthafrica/aether-exm:${AETHER_VERSION}
     environment:
-      MINIO_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
-    command: minio server --quiet --address minio-test:9900 /data
+      DEFAULT_REALM: ${TEST_KERNEL_CLIENT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
+
+      AETHER_KERNEL_TOKEN: ${TEST_KERNEL_ADMIN_TOKEN}
+      AETHER_KERNEL_URL: http://kernel-test:9000
+
+      REDIS_DB: 0
+      REDIS_HOST: redis-test
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+
+      LOG_LEVEL: DEBUG
+    command: start
+    depends_on:
+      - redis-test
     networks:
       - test
 
@@ -137,25 +153,27 @@ services:
 
       KAFKA_URL: kafka-test:29092
 
-      KERNEL_URL: http://kernel-test:9000
-      KERNEL_USERNAME: ${TEST_KERNEL_ADMIN_USERNAME}
-      KERNEL_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
+      AETHER_KERNEL_TOKEN: ${TEST_KERNEL_ADMIN_TOKEN}
+      AETHER_KERNEL_URL: http://kernel-test:9000
+      DEFAULT_REALM: ${TEST_KERNEL_CLIENT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
 
       POSTGRES_HOST: db-test
       POSTGRES_DBNAME: aether-kernel-test
-      POSTGRES_USER: ${TEST_KERNEL_READONLY_DB_USERNAME}
-      POSTGRES_PASSWORD: ${TEST_KERNEL_READONLY_DB_PASSWORD}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${TEST_KERNEL_DB_PASSWORD}
 
       OFFSET_DB_HOST: db-test
       OFFSET_DB_USER: postgres
       OFFSET_DB_PORT: 5432
-      OFFSET_DB_PASSWORD: ${TEST_KERNEL_DB_PASSWORD}
+      OFFSET_DB_PASSWORD: ${TEST_PRODUCER_DB_PASSWORD}
       OFFSET_DB_NAME: producer_offset_db_test
 
       SERVER_PORT: 9005
       LOG_LEVEL: ERROR
     command: start
     depends_on:
+      - kernel-test
       - kafka-test
       - zookeeper-test
     networks:
@@ -180,29 +198,3 @@ services:
     networks:
       - test
     command: test
-
-  # ---------------------------------
-  # Aether Entity Extractor Test
-  # ---------------------------------
-
-  exm-test:
-    image: ehealthafrica/aether-exm:${AETHER_VERSION}
-    environment:
-      DEFAULT_REALM: ${TEST_KERNEL_CLIENT_REALM}
-      REALM_COOKIE: ${REALM_COOKIE}
-
-      AETHER_KERNEL_TOKEN: ${TEST_KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: http://kernel-test:9000
-
-      REDIS_DB: 0
-      REDIS_HOST: redis-test
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
-      REDIS_PORT: 6379
-
-      SERVER_PORT: 5007
-      LOG_LEVEL: DEBUG
-    command: start
-    depends_on:
-      - redis-test
-    networks:
-      - test

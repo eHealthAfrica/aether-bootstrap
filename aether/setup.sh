@@ -34,8 +34,3 @@ AETHER_CONTAINERS=( exm kernel kernel-ui )
 for container in "${AETHER_CONTAINERS[@]}"; do
     $DCA run --rm $container setup
 done
-
-$DCA run --rm kernel eval \
-    python3 /code/sql/create_readonly_user.py \
-    "$KERNEL_READONLY_DB_USERNAME" \
-    "$KERNEL_READONLY_DB_PASSWORD"

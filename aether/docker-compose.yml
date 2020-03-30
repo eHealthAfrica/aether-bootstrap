@@ -92,7 +92,6 @@ services:
     environment:
       DEFAULT_REALM: ${DEFAULT_REALM}
       REALM_COOKIE: ${REALM_COOKIE}
-      GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
       AETHER_KERNEL_URL: http://kernel:8000
@@ -102,14 +101,12 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: 6379
 
-      SERVER_PORT: 5007
       LOG_LEVEL: ERROR
     command: start
     restart: on-failure
     networks:
       - aether
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}
+
 
   # ---------------------------------
   # Aether UI

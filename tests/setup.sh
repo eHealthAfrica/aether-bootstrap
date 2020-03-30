@@ -50,7 +50,7 @@ function start_db_test {
 }
 
 function start_kernel_test {
-    _wait_for "kernel" "$DC_KERNEL manage check_url -u http://kernel-test:9000/health"
+    _wait_for "kernel" "$DC_KERNEL manage eval wget -q --spider http://kernel-test:9000/health"
 }
 
 ./scripts/generate_env_vars.sh
@@ -59,14 +59,9 @@ source .env
 $DC_TEST pull
 
 start_db_test
-$DC_TEST up -d minio-test
+$DC_TEST up -d redis-test
 
 $DC_KERNEL setup
-
-$DC_KERNEL eval \
-    python3 /code/sql/create_readonly_user.py \
-    "$TEST_KERNEL_READONLY_DB_USERNAME" \
-    "$TEST_KERNEL_READONLY_DB_PASSWORD"
 
 $DC_KERNEL manage create_user \
     -u=$TEST_KERNEL_CLIENT_USERNAME \

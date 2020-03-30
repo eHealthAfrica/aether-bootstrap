@@ -59,7 +59,8 @@ function parse_options {
 
 
 function create_docker_assets {
-    echo_message "Generating docker network and database volume..."
+    echo_message "Generating docker network and volumes..."
+
     {
         docker network create aether_bootstrap_net \
             --attachable \
@@ -67,8 +68,11 @@ function create_docker_assets {
     } || true
     echo_success "aether_bootstrap_net network is ready"
 
-    docker volume create aether_database_data || true
-    echo_success "aether_database_data volume is ready"
+    VOLUMES=( aether_database_data aether_minio_data )
+    for volume in "${VOLUMES[@]}"; do
+        docker network create $volume || true
+        echo_success "$volume volume is ready"
+    done
 }
 
 
@@ -88,7 +92,7 @@ function start_redis {
 function start_container {
     local dc="${1}/docker-compose.yml"
     local container=$2
-    local is_ready="docker-compose -f aether/docker-compose.yml run --rm kernel manage check_url -u $3"
+    local is_ready="docker-compose -f aether/docker-compose.yml run --rm kernel manage eval wget -q --spider $3"
 
     docker-compose -f $dc up -d $container
     _wait_for "$container" "$is_ready"
@@ -141,8 +145,8 @@ function rebuild_database {
         UPDATE pg_database SET datallowconn = 'false' WHERE datname = '${DB_NAME}';
         SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${DB_NAME}';
 
-        DROP DATABASE ${DB_NAME};
-        DROP USER ${DB_USER};
+        DROP DATABASE IF EXISTS ${DB_NAME};
+        DROP USER IF EXISTS ${DB_USER};
 
         CREATE USER ${DB_USER} PASSWORD '${DB_PWD}';
         CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};
