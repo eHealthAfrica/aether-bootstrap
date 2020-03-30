@@ -29,7 +29,7 @@ _base_/start.sh
 
 # setup container (model migration, admin user, static content...)
 DCA="docker-compose -f aether/docker-compose.yml"
-AETHER_CONTAINERS=( kernel ui )
+AETHER_CONTAINERS=( kernel kernel-ui )
 for container in "${AETHER_CONTAINERS[@]}"; do
     $DCA run --rm $container setup
 done
