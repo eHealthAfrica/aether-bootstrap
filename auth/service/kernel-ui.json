@@ -1,6 +1,6 @@
 {
-  "name": "ui",
-  "host": "http://ui:8004",
+  "name": "kernel-ui",
+  "host": "http://kernel-ui:8004",
   "paths": [
     "/{public_realm}/{name}"
   ],
