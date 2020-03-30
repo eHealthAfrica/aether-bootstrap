@@ -21,10 +21,8 @@ def arg_list():
         ['-e', '--environment', 'Specify environment'],
         ['-g', '--gather', 'enable Gather yes or no'],
         ['--cm', '--cert-manager', 'Using cert manager?'],
-        ['-m', '--modules', 'Aether modules i.e odk,ui,sync'],
-        ['-r', '--redis-url', 'Redis endpoint for CouchDB sync'],
-        ['-cdb', '--couchdb-url', 'Redis endpoint for CouchDB sync'],
-        ['-gc', '--google-client-id', ' Google client ID for CouchDB sync']
+        ['-m', '--modules', 'Aether modules i.e odk,kernel-ui'],
+        ['-r', '--redis-url', 'Redis endpoint'],
     ]
     return arg_list
 
@@ -41,16 +39,11 @@ def test_args(args):
         if not 'gcp' or 'aws' in args['cloud_platform']:
             print('Please specify AWS or GCP for --cloud-platform')
             sys.exit(2)
-        if 'couchdb-sync' in modules:
-            if not args['google_client_id']:
-                print('Please specify a Google client ID with \
-                      --google-client-id')
-                sys.exit(2)
 
 
 def test_module_names(modules):
     """Test module name."""
-    valid_modules = ['couchdb-sync', 'kernel', 'odk']
+    valid_modules = ['kernel-ui', 'kernel', 'odk']
     for module in modules:
         if module not in valid_modules:
             print('{} is not a valid Aether module'.format(module))
@@ -71,6 +64,7 @@ def arg_options():
         modules = arg_dict['modules'].split(',')
         test_module_names(modules)
     return arg_dict
+
 
 if __name__ == '__main__':
     arg_options()
