@@ -25,9 +25,20 @@ source scripts/lib.sh || \
       exit 1 )
 source .env
 
-ES_URL="http://admin:${ELASTICSEARCH_PASSWORD}@elasticsearch:9200"
-start_container elasticsearch elasticsearch $ES_URL
+function start_es {
+    local container=elasticsearch
+
+    $DC_ES up -d $container
+    _wait_for "$container" "$GWM_RUN ${container}_ready" || {
+        $DC_ES logs $container
+        exit 1
+    }
+}
+
+DC_ES="docker-compose -f elasticsearch/docker-compose.yml"
+
+start_es
 # use mounted configs to initialize security
-docker-compose -f elasticsearch/docker-compose.yml exec elasticsearch sh securityadmin_demo.sh
+$DC_ES exec elasticsearch sh securityadmin_demo.sh
 # sometimes the "own_index" does not exists
 $GWM_RUN setup_elasticsearch || true

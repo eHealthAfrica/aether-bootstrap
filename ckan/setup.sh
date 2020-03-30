@@ -34,6 +34,7 @@ do
     ((retries++))
     if [[ $retries -gt 30 ]]; then
         echo "It was not possible to start CKAN"
+        docker-compose -f ckan/docker-compose.yml logs ckan
         exit 1
     fi
 
