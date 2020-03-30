@@ -189,8 +189,8 @@ REDIS_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 # Minio storage
 # ==================================================================
-MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
-MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
+MINIO_STORAGE_ACCESS_KEY=${MINIO_ACCESS_KEY:-minio-key}
+MINIO_STORAGE_SECRET_KEY=${MINIO_SECRET_KEY:-minio-secret-123}
 
 MINIO_ENDPOINT=minio:9100
 # ------------------------------------------------------------------

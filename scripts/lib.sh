@@ -21,9 +21,11 @@
 set -Eeuo pipefail
 
 LINE=`printf -v row "%${COLUMNS:-$(tput cols)}s"; echo ${row// /=}`
+MAX_RETRIES=20
 
 DC_AUTH="docker-compose -f auth/docker-compose.yml"
 GWM_RUN="$DC_AUTH run --rm gateway-manager"
+KERNEL_EVAL="docker-compose -f aether/docker-compose.yml run --rm kernel eval"
 
 
 function echo_message {
@@ -70,16 +72,19 @@ function create_docker_assets {
 
     VOLUMES=( aether_database_data aether_minio_data )
     for volume in "${VOLUMES[@]}"; do
-        docker network create $volume || true
+        docker volume create $volume || true
         echo_success "$volume volume is ready"
     done
 }
 
 
 function start_db {
-    local is_ready="docker-compose -f aether/docker-compose.yml run --rm kernel eval pg_isready -q"
+    local is_ready="$KERNEL_EVAL pg_isready -q"
     docker-compose -f _base_/docker-compose.yml up -d db
-    _wait_for "database" "$is_ready"
+    _wait_for "database" "$is_ready" || {
+        docker-compose -f _base_/docker-compose.yml logs db
+        exit 1
+    }
 }
 
 
@@ -92,17 +97,23 @@ function start_redis {
 function start_container {
     local dc="${1}/docker-compose.yml"
     local container=$2
-    local is_ready="docker-compose -f aether/docker-compose.yml run --rm kernel manage eval wget -q --spider $3"
+    local is_ready="$KERNEL_EVAL wget -q --spider $3"
 
     docker-compose -f $dc up -d $container
-    _wait_for "$container" "$is_ready"
+    _wait_for "$container" "$is_ready" || {
+        docker-compose -f $dc logs $container
+        exit 1
+    }
 }
 
 
 function start_auth_container {
     local container=$1
     $DC_AUTH up -d $container
-    _wait_for "$container" "$GWM_RUN ${container}_ready"
+    _wait_for "$container" "$GWM_RUN ${container}_ready" || {
+        $DC_AUTH logs $container
+        exit 1
+    }
 }
 
 
@@ -118,7 +129,7 @@ function _wait_for {
         >&2 echo "Waiting for $container... $retries"
 
         ((retries++))
-        if [[ $retries -gt 30 ]]; then
+        if [[ $retries -gt $MAX_RETRIES ]]; then
             echo_error "It was not possible to start $container"
             exit 1
         fi

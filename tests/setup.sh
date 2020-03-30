@@ -35,7 +35,7 @@ function _wait_for {
         >&2 echo "Waiting for $container... $retries"
 
         ((retries++))
-        if [[ $retries -gt 30 ]]; then
+        if [[ $retries -gt 10 ]]; then
             echo "It was not possible to start $container"
             exit 1
         fi
@@ -50,7 +50,7 @@ function start_db_test {
 }
 
 function start_kernel_test {
-    _wait_for "kernel" "$DC_KERNEL manage eval wget -q --spider http://kernel-test:9000/health"
+    _wait_for "kernel" "$DC_KERNEL eval wget -q --spider http://kernel-test:9000/health"
 }
 
 ./scripts/generate_env_vars.sh
