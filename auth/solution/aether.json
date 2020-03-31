@@ -1,7 +1,7 @@
 {
   "name": "aether",
   "services": [
-    "kernel",
-    "kernel-ui"
+    "kernel-ui",
+    "kernel"
   ]
 }

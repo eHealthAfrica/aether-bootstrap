@@ -2,13 +2,15 @@
   "name": "kernel-ui",
   "host": "http://kernel-ui:8004",
   "paths": [
-    "/{public_realm}/{name}"
+    "/{public_realm}/{name}$",
+    "/{public_realm}/{name}/"
   ],
   "oidc_endpoints": [
     {
       "name": "protected",
       "paths": [
-        "/{realm}/{name}"
+        "/{realm}/{name}$",
+        "/{realm}/{name}/"
       ]
     }
   ]
