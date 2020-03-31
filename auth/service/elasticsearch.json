@@ -5,7 +5,8 @@
     {
       "name": "protected",
       "paths": [
-        "/{realm}/{name}"
+        "/{realm}/{name}$",
+        "/{realm}/{name}/"
       ],
       "strip_path": "true",
       "oidc_override": {
