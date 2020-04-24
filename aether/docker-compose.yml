@@ -95,7 +95,6 @@ services:
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
       AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/kernel
-      AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: kernel-ui
       PGHOST: db

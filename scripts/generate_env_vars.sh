@@ -198,9 +198,6 @@ KERNEL_ADMIN_TOKEN=$(gen_random_string)
 KERNEL_DJANGO_SECRET_KEY=$(gen_random_string)
 KERNEL_DB_PASSWORD=$(gen_random_string)
 
-KERNEL_READONLY_DB_USERNAME=readonlyuser
-KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
-
 # TEST Aether Kernel
 # ------------------------------------------------------------------
 TEST_KERNEL_ADMIN_USERNAME=admin-test
@@ -208,9 +205,6 @@ TEST_KERNEL_ADMIN_PASSWORD=testingtesting
 TEST_KERNEL_ADMIN_TOKEN=$(gen_random_string)
 TEST_KERNEL_DJANGO_SECRET_KEY=$(gen_random_string)
 TEST_KERNEL_DB_PASSWORD=$(gen_random_string)
-
-TEST_KERNEL_READONLY_DB_USERNAME=readonlytest
-TEST_KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
 
 TEST_KERNEL_CLIENT_USERNAME=user-test
 TEST_KERNEL_CLIENT_PASSWORD=$(gen_random_string)
@@ -223,11 +217,13 @@ TEST_KERNEL_CLIENT_REALM=test
 # ==================================================================
 PRODUCER_ADMIN_USER=admin
 PRODUCER_ADMIN_PASSWORD=${admin_password}
+PRODUCER_DB_PASSWORD=$(gen_random_string)
 
 # TEST Aether Producer
 # ------------------------------------------------------------------
 TEST_PRODUCER_ADMIN_USER=admin-test
 TEST_PRODUCER_ADMIN_PASSWORD=testingtesting
+TEST_PRODUCER_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 
 

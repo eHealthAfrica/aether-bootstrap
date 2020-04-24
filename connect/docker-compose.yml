@@ -127,19 +127,25 @@ services:
       PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PASSWORD}
 
-      KERNEL_URL: http://kernel:8000
-      KERNEL_USERNAME: ${KERNEL_ADMIN_USERNAME}
-      KERNEL_PASSWORD: ${KERNEL_ADMIN_PASSWORD}
+      # Access via RESTful API
+      KERNEL_ACCESS_TYPE: api
+      AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
+      # private access (behind kong)
+      AETHER_KERNEL_URL: http://kernel:8000
+      # public access (through kong)
+      # AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/${PUBLIC_REALM}/kernel
 
-      POSTGRES_HOST: db
-      POSTGRES_DBNAME: aether
-      POSTGRES_USER: ${KERNEL_READONLY_DB_USERNAME}
-      POSTGRES_PASSWORD: ${KERNEL_READONLY_DB_PASSWORD}
+      # # Only with access via DB
+      # KERNEL_ACCESS_TYPE: db
+      # POSTGRES_HOST: db
+      # POSTGRES_DBNAME: aether
+      # POSTGRES_USER: postgres
+      # POSTGRES_PASSWORD: ${KERNEL_DB_PASSWORD}
 
       OFFSET_DB_HOST: db
       OFFSET_DB_USER: postgres
       OFFSET_DB_PORT: 5432
-      OFFSET_DB_PASSWORD: ${KERNEL_DB_PASSWORD}
+      OFFSET_DB_PASSWORD: ${PRODUCER_DB_PASSWORD}
       OFFSET_DB_NAME: producer_offset_db
 
       KAFKA_URL: ${KAFKA_URL}
