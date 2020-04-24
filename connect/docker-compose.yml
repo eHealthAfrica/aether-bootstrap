@@ -127,16 +127,17 @@ services:
       PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PASSWORD}
 
-      # Access via RESTful API
+      # Possible values "api" or "db"
       KERNEL_ACCESS_TYPE: api
+
+      # Access via RESTful API
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
       # private access (behind kong)
       AETHER_KERNEL_URL: http://kernel:8000
       # public access (through kong)
       # AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/${PUBLIC_REALM}/kernel
 
-      # # Only with access via DB
-      # KERNEL_ACCESS_TYPE: db
+      # # Access via DB
       # POSTGRES_HOST: db
       # POSTGRES_DBNAME: aether
       # POSTGRES_USER: postgres

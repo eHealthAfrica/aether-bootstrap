@@ -117,6 +117,9 @@ services:
       PRODUCER_ADMIN_USER: ${TEST_PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${TEST_PRODUCER_ADMIN_PASSWORD}
 
+      # Possible values "api" (default) or "db"
+      KERNEL_ACCESS_TYPE: api
+
       AETHER_KERNEL_TOKEN: ${TEST_KERNEL_ADMIN_TOKEN}
       AETHER_KERNEL_URL: http://kernel-test:9000
       DEFAULT_REALM: ${TEST_KERNEL_CLIENT_REALM}
@@ -157,6 +160,7 @@ services:
       PRODUCER_ADMIN_USER: ${TEST_PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${TEST_PRODUCER_ADMIN_PASSWORD}
       PRODUCER_URL: http://producer-test:9005
+      PRODUCER_MODE: api
     networks:
       - test
     command: test
