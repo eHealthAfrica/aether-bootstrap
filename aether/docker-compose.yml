@@ -71,7 +71,6 @@ services:
       REDIS_PORT: 6379
       WRITE_ENTITIES_TO_REDIS: ${WRITE_ENTITIES_TO_REDIS}
 
-
       WEB_SERVER_PORT: 8000
     volumes:
       # backup folder
@@ -92,7 +91,6 @@ services:
     environment:
       DEFAULT_REALM: ${DEFAULT_REALM}
       REALM_COOKIE: ${REALM_COOKIE}
-      GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
       AETHER_KERNEL_URL: http://kernel:8000
@@ -102,20 +100,18 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: 6379
 
-      SERVER_PORT: 5007
       LOG_LEVEL: ERROR
     command: start
     restart: on-failure
     networks:
       - aether
-    extra_hosts:
-      - ${BASE_DOMAIN}:${KONG_IP}
+
 
   # ---------------------------------
   # Aether UI
   # ---------------------------------
 
-  ui:
+  kernel-ui:
     image: ehealthafrica/aether-ui:${AETHER_VERSION:-alpha}
     environment:
       CSRF_COOKIE_DOMAIN: ${BASE_DOMAIN}
@@ -133,14 +129,14 @@ services:
       AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/kernel
       AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
-      DB_NAME: ui
+      DB_NAME: kernel-ui
       PGHOST: db
       PGPASSWORD: ${UI_DB_PASSWORD}
       PGPORT: 5432
       PGUSER: postgres
 
       # Kong requirements
-      GATEWAY_SERVICE_ID: ui
+      GATEWAY_SERVICE_ID: kernel-ui
       GATEWAY_PUBLIC_REALM: ${PUBLIC_REALM}
 
       KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
@@ -156,7 +152,7 @@ services:
       WEB_SERVER_PORT: 8004
     volumes:
       # backup folder
-      - ../.persistent_data/backups/ui:/backups
+      - ../.persistent_data/backups/kernel-ui:/backups
     command: start
     networks:
       - aether

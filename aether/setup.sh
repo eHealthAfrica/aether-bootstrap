@@ -30,12 +30,7 @@ start_redis
 
 # setup container (model migration, admin user, static content...)
 DCA="docker-compose -f aether/docker-compose.yml"
-AETHER_CONTAINERS=( exm kernel ui )
+AETHER_CONTAINERS=( kernel kernel-ui )
 for container in "${AETHER_CONTAINERS[@]}"; do
     $DCA run --rm $container setup
 done
-
-$DCA run --rm kernel eval \
-    python3 /code/sql/create_readonly_user.py \
-    "$KERNEL_READONLY_DB_USERNAME" \
-    "$KERNEL_READONLY_DB_PASSWORD"

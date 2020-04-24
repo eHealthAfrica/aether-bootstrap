@@ -130,12 +130,12 @@ function gen_env_file {
 # Releases
 # ==================================================================
 AETHER_VERSION=2.0.0-rc
-GATHER_VERSION=3.3.0
+GATHER_VERSION=3.4.0
 GATEWAY_VERSION=latest
-KONG_VERSION=1.3
-KEYCLOAK_VERSION=8.0.1
-CONFLUENTINC_VERSION=5.3.2
-AMAZON_ES_VERSION=1.3.0
+KONG_VERSION=2.0
+KEYCLOAK_VERSION=9.0.2
+CONFLUENTINC_VERSION=5.4.0
+AMAZON_ES_VERSION=1.4.0
 # ------------------------------------------------------------------
 
 
@@ -186,12 +186,11 @@ REDIS_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 
 
-
 # ------------------------------------------------------------------
 # Minio storage
 # ==================================================================
-MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
-MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
+MINIO_STORAGE_ACCESS_KEY=${MINIO_ACCESS_KEY:-minio-key}
+MINIO_STORAGE_SECRET_KEY=${MINIO_SECRET_KEY:-minio-secret-123}
 
 MINIO_ENDPOINT=minio:9100
 # ------------------------------------------------------------------
@@ -206,8 +205,6 @@ KERNEL_ADMIN_TOKEN=$(gen_random_string)
 KERNEL_DJANGO_SECRET_KEY=$(gen_random_string)
 KERNEL_DB_PASSWORD=$(gen_random_string)
 
-KERNEL_READONLY_DB_USERNAME=readonlyuser
-KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
 WRITE_ENTITIES_TO_REDIS=
 
 # TEST Aether Kernel
@@ -217,9 +214,6 @@ TEST_KERNEL_ADMIN_PASSWORD=testingtesting
 TEST_KERNEL_ADMIN_TOKEN=$(gen_random_string)
 TEST_KERNEL_DJANGO_SECRET_KEY=$(gen_random_string)
 TEST_KERNEL_DB_PASSWORD=$(gen_random_string)
-
-TEST_KERNEL_READONLY_DB_USERNAME=readonlytest
-TEST_KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
 
 TEST_KERNEL_CLIENT_USERNAME=user-test
 TEST_KERNEL_CLIENT_PASSWORD=$(gen_random_string)
@@ -232,11 +226,13 @@ TEST_KERNEL_CLIENT_REALM=test
 # ==================================================================
 PRODUCER_ADMIN_USER=admin
 PRODUCER_ADMIN_PASSWORD=${admin_password}
+PRODUCER_DB_PASSWORD=$(gen_random_string)
 
 # TEST Aether Producer
 # ------------------------------------------------------------------
 TEST_PRODUCER_ADMIN_USER=admin-test
 TEST_PRODUCER_ADMIN_PASSWORD=testingtesting
+TEST_PRODUCER_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 
 

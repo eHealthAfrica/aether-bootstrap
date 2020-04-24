@@ -10,6 +10,10 @@ volumes:
     external:
       name: aether_database_data
 
+  minio_data:
+    external:
+      name: aether_minio_data
+
 services:
 
   # ---------------------------------
@@ -34,7 +38,7 @@ services:
   minio:
     image: minio/minio:latest
     volumes:
-      - ../.persistent_data/media:/data
+      - minio_data:/data
     environment:
       MINIO_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
@@ -51,7 +55,5 @@ services:
       --appendonly yes
       --auto-aof-rewrite-percentage 100
       --auto-aof-rewrite-min-size 64mb
-    volumes:
-      - ../.persistent_data/backups/redis:/data
     networks:
       - aether
