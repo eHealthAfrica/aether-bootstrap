@@ -120,16 +120,24 @@ services:
       # Possible values "api" (default) or "db"
       KERNEL_ACCESS_TYPE: api
 
+      # Access via RESTful API
       AETHER_KERNEL_TOKEN: ${TEST_KERNEL_ADMIN_TOKEN}
       AETHER_KERNEL_URL: http://kernel-test:9000
       DEFAULT_REALM: ${TEST_KERNEL_CLIENT_REALM}
       REALM_COOKIE: ${REALM_COOKIE}
 
+      # # Access via DB
+      POSTGRES_DBNAME: aether-kernel-test
+      POSTGRES_HOST: db-test
+      POSTGRES_PASSWORD: ${TEST_KERNEL_DB_PASSWORD}
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+
       OFFSET_DB_HOST: db-test
-      OFFSET_DB_USER: postgres
-      OFFSET_DB_PORT: 5432
-      OFFSET_DB_PASSWORD: ${TEST_PRODUCER_DB_PASSWORD}
       OFFSET_DB_NAME: producer_offset_db_test
+      OFFSET_DB_PASSWORD: ${TEST_PRODUCER_DB_PASSWORD}
+      OFFSET_DB_PORT: 5432
+      OFFSET_DB_USER: postgres
 
       KAFKA_URL: kafka-test:29092
 
