@@ -137,7 +137,7 @@ services:
       # public access (through kong)
       # AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/${PUBLIC_REALM}/kernel
 
-      # # Access via DB
+      # Access via DB
       POSTGRES_DBNAME: aether
       POSTGRES_HOST: db
       POSTGRES_PASSWORD: ${KERNEL_DB_PASSWORD}
