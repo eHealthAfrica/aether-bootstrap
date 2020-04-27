@@ -118,7 +118,7 @@ services:
       PRODUCER_ADMIN_PW: ${TEST_PRODUCER_ADMIN_PASSWORD}
 
       # Possible values "api" (default) or "db"
-      KERNEL_ACCESS_TYPE: api
+      KERNEL_ACCESS_TYPE: ${TEST_PRODUCER_KERNEL_ACCESS_TYPE}
 
       # Access via RESTful API
       AETHER_KERNEL_TOKEN: ${TEST_KERNEL_ADMIN_TOKEN}
@@ -168,7 +168,7 @@ services:
       PRODUCER_ADMIN_USER: ${TEST_PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${TEST_PRODUCER_ADMIN_PASSWORD}
       PRODUCER_URL: http://producer-test:9005
-      PRODUCER_MODE: api
+      PRODUCER_MODE: ${TEST_PRODUCER_KERNEL_ACCESS_TYPE}
     networks:
       - test
     command: test

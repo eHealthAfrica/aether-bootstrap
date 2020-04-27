@@ -20,8 +20,16 @@
 #
 set -Eeuo pipefail
 
+# check producer access to kernel via RESTful API
+export TEST_PRODUCER_KERNEL_ACCESS_TYPE=api
+
 ./tests/setup.sh
-
 docker-compose -f tests/docker-compose.yml run --rm integration-test test
+./tests/wipe.sh
 
+# check producer access to kernel via database
+export TEST_PRODUCER_KERNEL_ACCESS_TYPE=db
+
+./tests/setup.sh
+docker-compose -f tests/docker-compose.yml run --rm integration-test test
 ./tests/wipe.sh
