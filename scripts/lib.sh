@@ -73,20 +73,12 @@ function create_docker_assets {
 
 
 function start_db {
-    local is_ready="docker-compose -f aether/docker-compose.yml run --rm kernel eval pg_isready -q"
     docker-compose -f _base_/docker-compose.yml up -d db
+
+    local DB_ID=$(docker-compose -f _base_/docker-compose.yml ps -q db)
+    local is_ready="docker container exec -i $DB_ID pg_isready -q"
+
     _wait_for "database" "$is_ready"
-}
-
-
-# Usage:    start_container <container-module> <container-name> <container-health-url>
-function start_container {
-    local dc="${1}/docker-compose.yml"
-    local container=$2
-    local is_ready="docker-compose -f aether/docker-compose.yml run --rm kernel manage check_url -u $3"
-
-    docker-compose -f $dc up -d $container
-    _wait_for "$container" "$is_ready"
 }
 
 
@@ -136,11 +128,11 @@ function rebuild_database {
         UPDATE pg_database SET datallowconn = 'false' WHERE datname = '${DB_NAME}';
         SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${DB_NAME}';
 
-        DROP DATABASE ${DB_NAME};
-        DROP USER ${DB_USER};
+        DROP DATABASE IF EXISTS "${DB_NAME}";
+        DROP USER IF EXISTS "${DB_USER}";
 
-        CREATE USER ${DB_USER} PASSWORD '${DB_PWD}';
-        CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};
+        CREATE USER "${DB_USER}" PASSWORD '${DB_PWD}';
+        CREATE DATABASE "${DB_NAME}" OWNER "${DB_USER}";
 EOSQL
     echo_success "$1 database is ready"
 }
