@@ -142,13 +142,13 @@ services:
       POSTGRES_HOST: db
       POSTGRES_PASSWORD: ${KERNEL_DB_PASSWORD}
       POSTGRES_PORT: 5432
-      POSTGRES_USER: postgres
+      POSTGRES_USER: kernel
 
       OFFSET_DB_HOST: db
       OFFSET_DB_NAME: producer_offset_db
       OFFSET_DB_PASSWORD: ${PRODUCER_DB_PASSWORD}
       OFFSET_DB_PORT: 5432
-      OFFSET_DB_USER: postgres
+      OFFSET_DB_USER: producer
 
       KAFKA_URL: ${KAFKA_URL}
       KAFKA_SU_USER: ${KAFKA_SU_USER}

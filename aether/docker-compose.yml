@@ -40,7 +40,7 @@ services:
       PGHOST: db
       PGPASSWORD: ${KERNEL_DB_PASSWORD}
       PGPORT: 5432
-      PGUSER: postgres
+      PGUSER: kernel
 
       # Export
       EXPORT_CSV_ESCAPE: "\\"
@@ -100,7 +100,7 @@ services:
       PGHOST: db
       PGPASSWORD: ${UI_DB_PASSWORD}
       PGPORT: 5432
-      PGUSER: postgres
+      PGUSER: ui
 
       # Kong requirements
       GATEWAY_SERVICE_ID: kernel-ui

@@ -43,7 +43,7 @@ services:
       PGHOST: db
       PGPASSWORD: ${ODK_DB_PASSWORD}
       PGPORT: 5432
-      PGUSER: postgres
+      PGUSER: odk
 
       # Kong requirements
       GATEWAY_SERVICE_ID: odk
@@ -99,7 +99,7 @@ services:
       PGHOST: db # This matches the DB service name
       PGPASSWORD: ${GATHER_DB_PASSWORD}
       PGPORT: 5432
-      PGUSER: postgres
+      PGUSER: gather
 
       EXPORT_MAX_ROWS_SIZE: 2500
 
