@@ -6,16 +6,12 @@
         "elasticsearch": {
           "id": "elasticsearch-id-1",
           "name": "ES Instance",
-          "url": "http://elasticsearch:9200",
-          "user": "admin",
-          "password": "admin"
+          "url": "http://elasticsearch:9200"
         },
         "kibana": {
           "id": "kibana-id-1",
           "name": "Kibana Instance",
-          "url": "http://kibana:5601/kibana-app",
-          "user": "admin",
-          "password": "admin"
+          "url": "http://kibana:5601/kibana-app"
         }
       },
       "subscription": {
