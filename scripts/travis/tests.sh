@@ -68,6 +68,7 @@ case "$1" in
     ;;
 
     integration )
+        ./tests/init.sh
         ./tests/run.sh
     ;;
 

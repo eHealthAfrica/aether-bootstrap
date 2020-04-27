@@ -20,18 +20,5 @@
 #
 set -Eeuo pipefail
 
-# check producer access to kernel via RESTful API / database
-_types=( api db )
-
-for _type in "${_types[@]}"; do
-    echo "====================================================================="
-    echo "== Integration tests with Producer Kernel access type:  ${_type}"
-    echo "====================================================================="
-
-    export TEST_PRODUCER_KERNEL_ACCESS_TYPE=${_type}
-    ./tests/setup.sh
-
-    docker-compose -f tests/docker-compose.yml run --rm integration-test test
-
-    ./tests/wipe.sh
-done
+./scripts/generate_env_vars.sh
+docker-compose -f tests/docker-compose.yml pull
