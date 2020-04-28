@@ -60,6 +60,17 @@ services:
       UWSGI_BUFFER_SIZE: 32768
       CUSTOM_UWSGI_SERVE_STATIC: 'true'
 
+      # Uncomment the following to activate auto consumer subscription
+
+      # ES_KIBANA_USERNAME: 'admin'
+      # ES_KIBANA_PASSWORD: 'admin'
+
+      # ES_ELASTICSEARCH_USERNAME: 'admin'
+      # ES_ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+
+      # CKAN_CKAN_USERNAME: ${CKAN_SYSADMIN_NAME}
+      # CKAN_CKAN_PASSWORD: ${CKAN_SYSADMIN_PASSWORD}
+
       WEB_SERVER_PORT: 8002
     volumes:
       # backup folder
@@ -118,8 +129,16 @@ services:
       UWSGI_BUFFER_SIZE: 32768
       CUSTOM_UWSGI_SERVE_STATIC: 'true'
 
+      CONSUMERS_CONFIG_FILE: '/code/conf/consumers.json'
+      AUTO_CONFIG_CONSUMERS: 'true'
+      TENANCY_HEADER: 'X-Oauth-realm'
+
+      ES_CONSUMER_URL: 'http://elasticsearch-consumer:9099'
+
       WEB_SERVER_PORT: 8105
     command: start
+    volumes:
+      - ./conf/consumers.json:/code/conf/consumers.json
     networks:
       - aether
     extra_hosts:
