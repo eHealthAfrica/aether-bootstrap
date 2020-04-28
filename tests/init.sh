@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -20,14 +20,5 @@
 #
 set -Eeuo pipefail
 
-source scripts/lib.sh || \
-    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
-      exit 1 )
-source .env
-
-docker-compose -f elasticsearch/docker-compose.yml up -d elasticsearch
-_wait_for "elasticsearch" "$GWM_RUN elasticsearch_ready"
-# use mounted configs to initialize security
-docker-compose -f elasticsearch/docker-compose.yml exec elasticsearch sh securityadmin_demo.sh
-# sometimes the "own_index" does not exists
-$GWM_RUN setup_elasticsearch || true
+./scripts/generate_env_vars.sh
+docker-compose -f tests/docker-compose.yml pull

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -25,9 +25,12 @@ source scripts/lib.sh || \
       exit 1 )
 source .env
 
-docker-compose -f elasticsearch/docker-compose.yml up -d elasticsearch
-_wait_for "elasticsearch" "$GWM_RUN elasticsearch_ready"
-# use mounted configs to initialize security
-docker-compose -f elasticsearch/docker-compose.yml exec elasticsearch sh securityadmin_demo.sh
-# sometimes the "own_index" does not exists
-$GWM_RUN setup_elasticsearch || true
+start_db
+
+# Initialize the kernel & kernel-ui databases in the postgres instance
+
+# THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
+echo_warning "ERASING PREVIOUS KERNEL & KERNEL-UI DATA!!!"
+rebuild_database aether    kernel ${KERNEL_DB_PASSWORD}
+rebuild_database kernel-ui ui     ${UI_DB_PASSWORD}
+echo_message ""

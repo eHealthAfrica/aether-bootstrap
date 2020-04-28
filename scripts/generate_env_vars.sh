@@ -129,11 +129,11 @@ function gen_env_file {
 # ------------------------------------------------------------------
 # Releases
 # ==================================================================
-AETHER_VERSION=1.7.0
-GATHER_VERSION=3.4.0
+AETHER_VERSION=1.7.2
+GATHER_VERSION=3.4.2
 GATEWAY_VERSION=latest
 KONG_VERSION=2.0
-KEYCLOAK_VERSION=9.0.2
+KEYCLOAK_VERSION=9.0.3
 CONFLUENTINC_VERSION=5.4.0
 AMAZON_ES_VERSION=1.4.0
 # ------------------------------------------------------------------
@@ -198,9 +198,6 @@ KERNEL_ADMIN_TOKEN=$(gen_random_string)
 KERNEL_DJANGO_SECRET_KEY=$(gen_random_string)
 KERNEL_DB_PASSWORD=$(gen_random_string)
 
-KERNEL_READONLY_DB_USERNAME=readonlyuser
-KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
-
 # TEST Aether Kernel
 # ------------------------------------------------------------------
 TEST_KERNEL_ADMIN_USERNAME=admin-test
@@ -208,9 +205,6 @@ TEST_KERNEL_ADMIN_PASSWORD=testingtesting
 TEST_KERNEL_ADMIN_TOKEN=$(gen_random_string)
 TEST_KERNEL_DJANGO_SECRET_KEY=$(gen_random_string)
 TEST_KERNEL_DB_PASSWORD=$(gen_random_string)
-
-TEST_KERNEL_READONLY_DB_USERNAME=readonlytest
-TEST_KERNEL_READONLY_DB_PASSWORD=$(gen_random_string)
 
 TEST_KERNEL_CLIENT_USERNAME=user-test
 TEST_KERNEL_CLIENT_PASSWORD=$(gen_random_string)
@@ -223,11 +217,13 @@ TEST_KERNEL_CLIENT_REALM=test
 # ==================================================================
 PRODUCER_ADMIN_USER=admin
 PRODUCER_ADMIN_PASSWORD=${admin_password}
+PRODUCER_DB_PASSWORD=$(gen_random_string)
 
 # TEST Aether Producer
 # ------------------------------------------------------------------
 TEST_PRODUCER_ADMIN_USER=admin-test
 TEST_PRODUCER_ADMIN_PASSWORD=testingtesting
+TEST_PRODUCER_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 
 
