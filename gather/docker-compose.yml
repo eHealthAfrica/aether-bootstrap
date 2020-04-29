@@ -45,9 +45,9 @@ services:
       PGPORT: 5432
       PGUSER: odk
 
-      DJANGO_USE_CACHE: "true"
-      REDIS_DJANGO_CACHE: "true"
-      REDIS_SESSION_CACHE: "true"
+      DJANGO_USE_CACHE: 'true'
+      REDIS_DJANGO_CACHE: 'true'
+      REDIS_SESSION_CACHE: 'true'
       REDIS_HOST: redis
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: 6379
@@ -109,15 +109,13 @@ services:
       PGPORT: 5432
       PGUSER: gather
 
-      DJANGO_USE_CACHE: "true"
-      REDIS_DJANGO_CACHE: "true"
-      REDIS_SESSION_CACHE: "true"
+      DJANGO_USE_CACHE: 'true'
+      REDIS_DJANGO_CACHE: 'true'
+      REDIS_SESSION_CACHE: 'true'
       REDIS_HOST: redis
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: 6379
       REDIS_DB: 12
-
-      EXPORT_MAX_ROWS_SIZE: 2500
 
       # Kong requirements
       GATEWAY_SERVICE_ID: gather

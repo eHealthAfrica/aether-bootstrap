@@ -42,9 +42,9 @@ services:
       PGPORT: 5432
       PGUSER: kernel
 
-      DJANGO_USE_CACHE: "true"
-      REDIS_DJANGO_CACHE: "true"
-      REDIS_SESSION_CACHE: "true"
+      DJANGO_USE_CACHE: 'true'
+      REDIS_DJANGO_CACHE: 'true'
+      REDIS_SESSION_CACHE: 'true'
       REDIS_HOST: redis
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: 6379
@@ -110,9 +110,9 @@ services:
       PGPORT: 5432
       PGUSER: ui
 
-      DJANGO_USE_CACHE: "true"
-      REDIS_DJANGO_CACHE: "true"
-      REDIS_SESSION_CACHE: "true"
+      DJANGO_USE_CACHE: 'true'
+      REDIS_DJANGO_CACHE: 'true'
+      REDIS_SESSION_CACHE: 'true'
       REDIS_HOST: redis
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: 6379
