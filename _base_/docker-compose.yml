@@ -41,3 +41,15 @@ services:
     command: minio server --quiet --address ${MINIO_ENDPOINT} /data
     networks:
       - aether
+
+  redis:
+    image: redis:alpine
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --notify-keyspace-events KEA
+      --appendonly yes
+      --auto-aof-rewrite-percentage 100
+      --auto-aof-rewrite-min-size 64mb
+    networks:
+      - aether
