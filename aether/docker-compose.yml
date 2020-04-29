@@ -42,6 +42,14 @@ services:
       PGPORT: 5432
       PGUSER: kernel
 
+      DJANGO_USE_CACHE: "true"
+      REDIS_DJANGO_CACHE: "true"
+      REDIS_SESSION_CACHE: "true"
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+
       # Export
       EXPORT_CSV_ESCAPE: "\\"
       EXPORT_CSV_QUOTES: "\""
@@ -101,6 +109,14 @@ services:
       PGPASSWORD: ${UI_DB_PASSWORD}
       PGPORT: 5432
       PGUSER: ui
+
+      DJANGO_USE_CACHE: "true"
+      REDIS_DJANGO_CACHE: "true"
+      REDIS_SESSION_CACHE: "true"
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+      REDIS_DB: 4
 
       # Kong requirements
       GATEWAY_SERVICE_ID: kernel-ui
