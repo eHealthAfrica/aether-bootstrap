@@ -8,6 +8,17 @@ networks:
 services:
 
   # ---------------------------------
+  # Redis for Aether ODK Module
+  # ---------------------------------
+
+  redis-odk:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    networks:
+      - aether
+
+
+  # ---------------------------------
   # Aether ODK Module
   # ---------------------------------
 
@@ -48,10 +59,10 @@ services:
       DJANGO_USE_CACHE: 'true'
       REDIS_DJANGO_CACHE: 'true'
       REDIS_SESSION_CACHE: 'true'
-      REDIS_HOST: redis
+      REDIS_HOST: redis-odk
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: 6379
-      REDIS_DB: 8
+      REDIS_DB: 0
 
       # Kong requirements
       GATEWAY_SERVICE_ID: odk
@@ -76,6 +87,17 @@ services:
       - aether
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
+
+
+  # ---------------------------------
+  # Redis for Gather
+  # ---------------------------------
+
+  redis-gather:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    networks:
+      - aether
 
 
   # ---------------------------------
@@ -112,10 +134,10 @@ services:
       DJANGO_USE_CACHE: 'true'
       REDIS_DJANGO_CACHE: 'true'
       REDIS_SESSION_CACHE: 'true'
-      REDIS_HOST: redis
+      REDIS_HOST: redis-gather
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: 6379
-      REDIS_DB: 12
+      REDIS_DB: 0
 
       # Kong requirements
       GATEWAY_SERVICE_ID: gather
