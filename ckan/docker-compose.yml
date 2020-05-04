@@ -48,11 +48,11 @@ services:
       context: .
       dockerfile: postgresql/Dockerfile
       args:
-        - DS_RO_PASS=${CKAN_DATASTORE_READONLY_PASSWORD}
-        - POSTGRES_PASSWORD=${CKAN_PG_PASSWORD}
+        DS_RO_PASS: ${CKAN_DATASTORE_READONLY_PASSWORD}
+        POSTGRES_PASSWORD: ${CKAN_PG_PASSWORD}
     environment:
-      - DS_RO_PASS=${CKAN_DATASTORE_READONLY_PASSWORD}
-      - POSTGRES_PASSWORD=${CKAN_PG_PASSWORD}
+      DS_RO_PASS: ${CKAN_DATASTORE_READONLY_PASSWORD}
+      POSTGRES_PASSWORD: ${CKAN_PG_PASSWORD}
     networks:
       - aether
 
