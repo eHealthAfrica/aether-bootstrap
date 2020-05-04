@@ -18,7 +18,7 @@ services:
       CKAN_DATASTORE_WRITE_URL: postgresql://ckan:${CKAN_PG_PASSWORD}@ckanpg/datastore
       CKAN_DATASTORE_READ_URL: postgresql://datastore_ro:${CKAN_DATASTORE_READONLY_PASSWORD}@ckanpg/datastore
       CKAN_SOLR_URL: http://solr:8983/solr/ckan
-      CKAN_REDIS_URL: redis://user:{REDIS_PASSWORD}@redis:6379/2
+      CKAN_REDIS_URL: redis://user:{REDIS_PASSWORD}@redis-ckan:6379/0
       CKAN_DATAPUSHER_URL: http://datapusher:8800
       POSTGRES_PASSWORD: ${CKAN_PG_PASSWORD}
 
@@ -56,6 +56,12 @@ services:
     networks:
       - aether
 
+  redis-ckan:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    networks:
+      - aether
+
   solr:
     build:
       context: .
@@ -77,8 +83,8 @@ services:
       CONSUMER_NAME: 'CKAN-CONSUMER'
 
       # redis
-      REDIS_DB: 2
-      REDIS_HOST: redis
+      REDIS_DB: 0
+      REDIS_HOST: redis-ckan
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 

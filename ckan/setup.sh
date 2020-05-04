@@ -28,16 +28,11 @@ source .env
 docker-compose -f ckan/docker-compose.yml up -d
 CKAN_ID=$(docker-compose -f ckan/docker-compose.yml ps -q ckan)
 
-retries=1
-until docker exec -it $CKAN_ID /usr/local/bin/ckan-paster --plugin=ckan sysadmin -c /etc/ckan/production.ini add admin | tee creds.txt && echo "done"
-do
-    echo "waiting for ckan container to be ready... $retries"
-    ((retries++))
-    if [[ $retries -gt 30 ]]; then
-        echo_error "It was not possible to start CKAN"
-        docker-compose -f ckan/docker-compose.yml logs ckan
-        exit 1
-    fi
-
-    sleep 5
-done
+# Create CKAN sysadmin
+docker exec -it $CKAN_ID /usr/local/bin/ckan-paster \
+    --plugin=ckan \
+    sysadmin add $CKAN_SYSADMIN_NAME \
+    email=$CKAN_SYSADMIN_EMAIL \
+    name=$CKAN_SYSADMIN_NAME \
+    password=$CKAN_SYSADMIN_PASSWORD \
+    -c /etc/ckan/production.ini
