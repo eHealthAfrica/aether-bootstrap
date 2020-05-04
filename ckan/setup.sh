@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -26,14 +26,15 @@ source scripts/lib.sh || \
 source .env
 
 docker-compose -f ckan/docker-compose.yml up -d
+CKAN_ID=$(docker-compose -f ckan/docker-compose.yml ps -q ckan)
 
 retries=1
-until docker exec -it ckan_ckan_1 /usr/local/bin/ckan-paster --plugin=ckan sysadmin -c /etc/ckan/production.ini add admin | tee creds.txt && echo "done"
+until docker exec -it $CKAN_ID /usr/local/bin/ckan-paster --plugin=ckan sysadmin -c /etc/ckan/production.ini add admin | tee creds.txt && echo "done"
 do
     echo "waiting for ckan container to be ready... $retries"
     ((retries++))
     if [[ $retries -gt 30 ]]; then
-        echo "It was not possible to start CKAN"
+        echo_error "It was not possible to start CKAN"
         docker-compose -f ckan/docker-compose.yml logs ckan
         exit 1
     fi
