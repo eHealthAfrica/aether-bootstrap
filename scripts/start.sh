@@ -37,3 +37,7 @@ fi
 if [ "$ENABLE_ELASTICSEARCH" = true ]; then
     elasticsearch/start.sh
 fi
+if [ "$ENABLE_CKAN" = true ]; then
+    ckan/start.sh
+    ckan-consumer/start.sh
+fi

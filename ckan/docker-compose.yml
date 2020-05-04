@@ -8,10 +8,6 @@ networks:
     external:
       name: aether_bootstrap_net
 
-  ckan-net:
-    external:
-      name: ckan_bootstrap_net
-
 
 services:
   ckan:
@@ -29,7 +25,7 @@ services:
       - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:ckan@ckanpg/datastore
       - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:datastore@ckanpg/datastore
       - CKAN_SOLR_URL=http://solr:8983/solr/ckan
-      - CKAN_REDIS_URL=redis://redis:6379/1
+      - CKAN_REDIS_URL=redis-ckan://redis-ckan:6379/2
       - CKAN_DATAPUSHER_URL=http://datapusher:8800
       #- CKAN_MAX_UPLOAD_SIZE_MB=${CKAN_MAX_UPLOAD_SIZE_MB}
       #- POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -39,12 +35,11 @@ services:
     depends_on:
       - ckanpg
       - solr
-      - redis
+      - redis-ckan
     ports:
       - 0.0.0.0:5000:5000
     networks:
       - aether
-      - ckan-net
     restart: on-failure
 
   datapusher:
@@ -53,7 +48,7 @@ services:
     ports:
       - 8800:8800
     networks:
-      - ckan-net
+      - aether
 
   ckanpg:
     container_name: ckanpg
@@ -67,7 +62,7 @@ services:
       - DS_RO_PASS=datastore
       - POSTGRES_PASSWORD=ckan
     networks:
-      - ckan-net
+      - aether
 
   solr:
     container_name: solr
@@ -75,10 +70,10 @@ services:
       context: .
       dockerfile: solr/Dockerfile
     networks:
-      - ckan-net
+      - aether
 
-  redis:
-    container_name: redis
+  redis-ckan:
+    container_name: redis-ckan
     image: redis:latest
     networks:
-      - ckan-net
+      - aether

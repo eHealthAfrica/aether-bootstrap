@@ -5,10 +5,6 @@ networks:
     external:
       name: aether_bootstrap_net
 
-  ckan-net:
-    external:
-      name: ckan_bootstrap_net
-
 services:
   app:
     image: ehealthafrica/aether-ckan-consumer:0.8.2-rc
@@ -21,7 +17,6 @@ services:
       - ENVIRONMENT=development
     networks:
       - aether
-      - ckan-net
     volumes:
       - ./config:/srv/app/example/ckan-consumer/config
       - ./db:/srv/app/db
