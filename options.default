@@ -45,6 +45,9 @@ ENABLE_GATHER=true
 # ElasticSearch
 ENABLE_ELASTICSEARCH=true
 
+# CKAN
+ENABLE_CKAN=true
+
 # Kafka
 ENABLE_CONNECT=true
 # LOCAL or CONFLUENT

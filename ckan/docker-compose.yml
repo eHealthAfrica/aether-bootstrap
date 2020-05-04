@@ -1,6 +1,3 @@
-# docker-compose build && docker-compose up -d
-# If "docker-compose logs ckan" shows DB not ready,
-# run "docker-compose restart ckan" a few times.
 version: '3'
 
 networks:
@@ -8,77 +5,101 @@ networks:
     external:
       name: aether_bootstrap_net
 
-  ckan-net:
-    external:
-      name: ckan_bootstrap_net
-
-
 services:
   ckan:
-    container_name: ckan
     image: ehealthafrica/ckan:2.8.0-rc
     environment:
       # Defaults work with linked containers, change to use own Postgres, SolR, Redis or Datapusher
-      - DATASTORE_READONLY_PASSWORD=datastore
-      - DS_RO_PASS=datastore
-      - POSTGRES_PASSWORD=ckan
-      - CKAN_SITE_URL=http://localhost:5000
-      - CKAN_PORT=5000
-      - CKAN_MAX_UPLOAD_SIZE_MB=20000
-      - CKAN_SQLALCHEMY_URL=postgresql://ckan:ckan@ckanpg/ckan
-      - CKAN_DATASTORE_WRITE_URL=postgresql://ckan:ckan@ckanpg/datastore
-      - CKAN_DATASTORE_READ_URL=postgresql://datastore_ro:datastore@ckanpg/datastore
-      - CKAN_SOLR_URL=http://solr:8983/solr/ckan
-      - CKAN_REDIS_URL=redis://redis:6379/1
-      - CKAN_DATAPUSHER_URL=http://datapusher:8800
-      #- CKAN_MAX_UPLOAD_SIZE_MB=${CKAN_MAX_UPLOAD_SIZE_MB}
-      #- POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      #- DS_RO_PASS=${DATASTORE_READONLY_PASSWORD}
+      DS_RO_PASS: ${CKAN_DATASTORE_READONLY_PASSWORD}
+      CKAN_SITE_URL: http://localhost:5000
+      CKAN_PORT: 5000
+      CKAN_MAX_UPLOAD_SIZE_MB: 20000
+      CKAN_SQLALCHEMY_URL: postgresql://ckan:${CKAN_PG_PASSWORD}@ckanpg/ckan
+      CKAN_DATASTORE_WRITE_URL: postgresql://ckan:${CKAN_PG_PASSWORD}@ckanpg/datastore
+      CKAN_DATASTORE_READ_URL: postgresql://datastore_ro:${CKAN_DATASTORE_READONLY_PASSWORD}@ckanpg/datastore
+      CKAN_SOLR_URL: http://solr:8983/solr/ckan
+      CKAN_REDIS_URL: redis://user:{REDIS_PASSWORD}@redis-ckan:6379/0
+      CKAN_DATAPUSHER_URL: http://datapusher:8800
+      POSTGRES_PASSWORD: ${CKAN_PG_PASSWORD}
+
+      CKAN_SYSADMIN_NAME: ${CKAN_SYSADMIN_NAME}
+      CKAN_SYSADMIN_PASSWORD: ${CKAN_SYSADMIN_PASSWORD}
+      CKAN_SYSADMIN_EMAIL: ${CKAN_SYSADMIN_EMAIL}
     volumes:
       - ./ckan:/etc/ckan
     depends_on:
       - ckanpg
       - solr
-      - redis
     ports:
-      - 0.0.0.0:5000:5000
+      - 5000:5000
     networks:
       - aether
-      - ckan-net
     restart: on-failure
 
   datapusher:
-    container_name: datapusher
     image: clementmouchet/datapusher
     ports:
       - 8800:8800
     networks:
-      - ckan-net
+      - aether
 
   ckanpg:
-    container_name: ckanpg
     build:
       context: .
       dockerfile: postgresql/Dockerfile
       args:
-        - DS_RO_PASS=datastore
-        - POSTGRES_PASSWORD=ckan
+        DS_RO_PASS: ${CKAN_DATASTORE_READONLY_PASSWORD}
+        POSTGRES_PASSWORD: ${CKAN_PG_PASSWORD}
     environment:
-      - DS_RO_PASS=datastore
-      - POSTGRES_PASSWORD=ckan
+      DS_RO_PASS: ${CKAN_DATASTORE_READONLY_PASSWORD}
+      POSTGRES_PASSWORD: ${CKAN_PG_PASSWORD}
     networks:
-      - ckan-net
+      - aether
+
+  redis-ckan:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    networks:
+      - aether
 
   solr:
-    container_name: solr
     build:
       context: .
       dockerfile: solr/Dockerfile
     networks:
-      - ckan-net
+      - aether
 
-  redis:
-    container_name: redis
-    image: redis:latest
+  ckan-consumer:
+    image: ehealthafrica/aether-ckan-consumer:1.0.1
+    stdin_open: true
+    environment:
+
+      TENANCY_HEADER: x-oauth-realm
+      CKAN_CONSUMER_CONFIG_PATH: "/code/conf/consumer/consumer.json"
+      CKAN_CONSUMER_KAFKA_CONFIG_PATH: "/code/conf/consumer/kafka.json"
+      LOG_LEVEL: "DEBUG"
+      EXPOSE_PORT: 9009
+
+      CONSUMER_NAME: 'CKAN-CONSUMER'
+
+      # redis
+      REDIS_DB: 0
+      REDIS_HOST: redis-ckan
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+       # kafka
+      KAFKA_URL: ${KAFKA_URL}
+      SECURITY.PROTOCOL: ${KAFKA_SECURITY}
+      SASL.MECHANISM: PLAIN
+      SASL.USERNAME: ${KAFKA_CONSUMER_USER}
+      SASL.PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
+
+    volumes:
+      - ./conf/consumer.json:/code/conf/consumer/consumer.json
+      - ./conf/kafka.json:/code/conf/consumer/kafka.json
+    command: start
     networks:
-      - ckan-net
+      - aether
+    ports:
+      - 9009:9009
