@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -32,7 +32,7 @@ for volume in "${VOLUMES[@]}"; do
     } || true
 done
 
-NETWORKS=( aether_bootstrap_net ckan_bootstrap_net )
+NETWORKS=( aether_bootstrap_net )
 for network in "${NETWORKS[@]}"; do
     {
         docker network rm $network 2>/dev/null
@@ -43,4 +43,3 @@ rm -f .env
 rm -Rf ./connect/*.conf
 
 sudo rm -Rf ./.persistent_data
-sudo rm -f ckan-consumer/db/consumer.db

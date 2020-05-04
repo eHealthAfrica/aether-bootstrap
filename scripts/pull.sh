@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -40,6 +40,11 @@ fi
 if [ "$ENABLE_GATHER" = true ]; then
     docker-compose -f gather/docker-compose.yml pull
 fi
+
 if [ "$ENABLE_ELASTICSEARCH" = true ]; then
     docker-compose -f elasticsearch/docker-compose.yml pull
+fi
+
+if [ "$ENABLE_CKAN" = true ]; then
+    docker-compose -f ckan/docker-compose.yml pull
 fi

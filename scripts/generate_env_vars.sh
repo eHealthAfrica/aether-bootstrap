@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -296,6 +296,16 @@ GATHER_ADMIN_USERNAME=admin
 GATHER_ADMIN_PASSWORD=${admin_password}
 GATHER_DJANGO_SECRET_KEY=$(gen_random_string)
 GATHER_DB_PASSWORD=$(gen_random_string)
+# ------------------------------------------------------------------
+
+# ------------------------------------------------------------------
+# CKAN
+# ==================================================================
+CKAN_DATASTORE_READONLY_PASSWORD=$(gen_random_string)
+CKAN_SYSADMIN_NAME=admin
+CKAN_SYSADMIN_PASSWORD=adminadmin
+CKAN_SYSADMIN_EMAIL=info@ehealthafrica.org
+CKAN_PG_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 EOF
 }
