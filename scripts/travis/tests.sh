@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -52,6 +52,7 @@ SERVICES_DEFAULT_ADMIN_PASSWORD=travis-password
 ENABLE_CONNECT=true
 ENABLE_GATHER=true
 ENABLE_ELASTICSEARCH=true
+ENABLE_CKAN=true
 
 AETHER_CONNECT_MODE=LOCAL
 EOF
