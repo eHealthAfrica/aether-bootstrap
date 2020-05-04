@@ -39,5 +39,4 @@ if [ "$ENABLE_ELASTICSEARCH" = true ]; then
 fi
 if [ "$ENABLE_CKAN" = true ]; then
     ckan/start.sh
-    ckan-consumer/start.sh
 fi

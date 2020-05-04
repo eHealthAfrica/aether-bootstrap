@@ -20,6 +20,4 @@
 #
 set -Eeuo pipefail
 
-pushd ckan
-docker-compose up -d
-popd
+docker-compose -f ckan/docker-compose.yml up -d

@@ -1,0 +1,21 @@
+User "admin" not found
+Create new user: admin? [y/n]y
+Email address: info@g ehealthafrig ca.org
+Password: 
+Confirm password: 
+Creating user: 'admin'
+{'about': None,
+ 'activity_streams_email_notifications': False,
+ 'apikey': u'cec6a77c-9afa-469f-b4eb-727403c99b3c',
+ 'created': '2020-05-04T11:28:54.092611',
+ 'display_name': u'admin',
+ 'email': u'info@ehealthafrica.org',
+ 'email_hash': '9ee57017af731191d5108c1e0e903bff',
+ 'fullname': None,
+ 'id': u'e5c13819-f297-45c7-9272-81d297dae96a',
+ 'name': u'admin',
+ 'number_created_packages': 0L,
+ 'number_of_edits': 1L,
+ 'state': u'active',
+ 'sysadmin': False}
+Added admin as sysadmin
