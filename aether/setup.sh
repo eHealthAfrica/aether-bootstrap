@@ -31,5 +31,6 @@ _base_/start.sh
 DCA="docker-compose -f aether/docker-compose.yml"
 AETHER_CONTAINERS=( kernel kernel-ui )
 for container in "${AETHER_CONTAINERS[@]}"; do
+    $DCA up -d redis-$container
     $DCA run --rm $container setup
 done

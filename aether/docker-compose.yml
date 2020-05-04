@@ -8,6 +8,23 @@ networks:
 services:
 
   # ---------------------------------
+  # Redis for Aether kernel
+  # ---------------------------------
+
+  redis-kernel:
+    image: redis:alpine
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --notify-keyspace-events KEA
+      --appendonly yes
+      --auto-aof-rewrite-percentage 100
+      --auto-aof-rewrite-min-size 64mb
+    networks:
+      - aether
+
+
+  # ---------------------------------
   # Aether kernel
   # ---------------------------------
 
@@ -45,7 +62,7 @@ services:
       DJANGO_USE_CACHE: 'true'
       REDIS_DJANGO_CACHE: 'true'
       REDIS_SESSION_CACHE: 'true'
-      REDIS_HOST: redis
+      REDIS_HOST: redis-kernel
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: 6379
       REDIS_DB: 0
@@ -83,6 +100,18 @@ services:
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
 
+
+  # ---------------------------------
+  # Redis for Aether UI
+  # ---------------------------------
+
+  redis-kernel-ui:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    networks:
+      - aether
+
+
   # ---------------------------------
   # Aether UI
   # ---------------------------------
@@ -113,10 +142,10 @@ services:
       DJANGO_USE_CACHE: 'true'
       REDIS_DJANGO_CACHE: 'true'
       REDIS_SESSION_CACHE: 'true'
-      REDIS_HOST: redis
+      REDIS_HOST: redis-kernel-ui
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: 6379
-      REDIS_DB: 4
+      REDIS_DB: 0
 
       # Kong requirements
       GATEWAY_SERVICE_ID: kernel-ui
