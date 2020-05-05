@@ -29,7 +29,7 @@ services:
       KONG_PLUGINS: bundled,kong-oidc-auth
     # uncomment to mount logs outside of docker volume
     # volumes:
-    #   - ../.persistent_data/logs/kong:/usr/local/kong/logs/
+    #   - ../temp/logs/kong:/usr/local/kong/logs/
     ports:
       - 80:80
       - 443:443

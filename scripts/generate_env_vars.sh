@@ -189,8 +189,9 @@ REDIS_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 # Minio storage
 # ==================================================================
-MINIO_STORAGE_ACCESS_KEY=$(gen_random_string)
-MINIO_STORAGE_SECRET_KEY=$(gen_random_string)
+# https://github.com/minio/minio/blob/master/docs/config/README.md#rotating-encryption-with-new-credentials
+MINIO_STORAGE_ACCESS_KEY=minio-access-key
+MINIO_STORAGE_SECRET_KEY=minio-secret-key
 
 MINIO_ENDPOINT=minio:9100
 # ------------------------------------------------------------------
