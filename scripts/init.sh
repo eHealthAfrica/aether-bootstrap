@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -56,7 +56,11 @@ if [ "$PULL_IMAGES" = true ]; then
 fi
 
 if [ "$WIPE_ON_INIT" = true ]; then
+    # create all databases even if the services will not be enabled later
     ./auth/init.sh
+    ./aether/init.sh
+    ./connect/init.sh
+    ./gather/init.sh
 fi
 
 ./scripts/setup.sh

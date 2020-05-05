@@ -1,29 +1,14 @@
-#!/usr/bin/env bash
-#
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
-#
-# See the NOTICE file distributed with this work for additional information
-# regarding copyright ownership.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
-
 version: '3'
 
 networks:
   aether:
     external:
       name: aether_bootstrap_net
+
+volumes:
+  database_data:
+    external:
+      name: aether_ckan_data
 
 services:
   ckan:
@@ -38,7 +23,7 @@ services:
       CKAN_DATASTORE_WRITE_URL: postgresql://ckan:${CKAN_PG_PASSWORD}@ckanpg/datastore
       CKAN_DATASTORE_READ_URL: postgresql://datastore_ro:${CKAN_DATASTORE_READONLY_PASSWORD}@ckanpg/datastore
       CKAN_SOLR_URL: http://solr:8983/solr/ckan
-      CKAN_REDIS_URL: redis://user:{REDIS_PASSWORD}@redis:6379/2
+      CKAN_REDIS_URL: redis://user:{REDIS_PASSWORD}@redis-ckan:6379/0
       CKAN_DATAPUSHER_URL: http://datapusher:8800
       POSTGRES_PASSWORD: ${CKAN_PG_PASSWORD}
 
@@ -68,11 +53,19 @@ services:
       context: .
       dockerfile: postgresql/Dockerfile
       args:
-        - DS_RO_PASS=${CKAN_DATASTORE_READONLY_PASSWORD}
-        - POSTGRES_PASSWORD=${CKAN_PG_PASSWORD}
+        DS_RO_PASS: ${CKAN_DATASTORE_READONLY_PASSWORD}
+        POSTGRES_PASSWORD: ${CKAN_PG_PASSWORD}
     environment:
-      - DS_RO_PASS=${CKAN_DATASTORE_READONLY_PASSWORD}
-      - POSTGRES_PASSWORD=${CKAN_PG_PASSWORD}
+      DS_RO_PASS: ${CKAN_DATASTORE_READONLY_PASSWORD}
+      POSTGRES_PASSWORD: ${CKAN_PG_PASSWORD}
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    networks:
+      - aether
+
+  redis-ckan:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     networks:
       - aether
 
@@ -97,8 +90,8 @@ services:
       CONSUMER_NAME: 'CKAN-CONSUMER'
 
       # redis
-      REDIS_DB: 2
-      REDIS_HOST: redis
+      REDIS_DB: 0
+      REDIS_HOST: redis-ckan
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 

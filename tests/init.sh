@@ -20,5 +20,5 @@
 #
 set -Eeuo pipefail
 
-docker-compose -f _base_/docker-compose.yml kill
-docker-compose -f _base_/docker-compose.yml down
+./scripts/generate_env_vars.sh
+docker-compose -f tests/docker-compose.yml pull

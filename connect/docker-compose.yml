@@ -96,7 +96,8 @@ services:
       - CONSUMER_CONFIG=/code/conf/consumer/consumer.json
     volumes:
       - ./kafka-viewer:/code/conf/consumer
-      - ../.persistent_data/logs/kafka-viewer:/code/logs
+      # uncomment to mount logs outside of docker volume
+      # - ../temp/logs/kafka-viewer:/code/logs
     command: start
     networks:
       - aether
@@ -124,21 +125,28 @@ services:
       PRODUCER_ADMIN_USER: ${PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${PRODUCER_ADMIN_PASSWORD}
 
-      AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      AETHER_KERNEL_URL: http://kernel:8100
-      DEFAULT_REALM: ${DEFAULT_REALM}
-      REALM_COOKIE: ${REALM_COOKIE}
+      # Possible values "api" or "db"
+      KERNEL_ACCESS_TYPE: api
 
-      POSTGRES_HOST: db
+      # Access via RESTful API
+      AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
+      # private access (behind kong)
+      AETHER_KERNEL_URL: http://kernel:8000
+      # public access (through kong)
+      # AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/${PUBLIC_REALM}/kernel
+
+      # Access via DB
       POSTGRES_DBNAME: aether
-      POSTGRES_USER: postgres
+      POSTGRES_HOST: db
       POSTGRES_PASSWORD: ${KERNEL_DB_PASSWORD}
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: kernel
 
       OFFSET_DB_HOST: db
-      OFFSET_DB_USER: postgres
-      OFFSET_DB_PORT: 5432
-      OFFSET_DB_PASSWORD: ${PRODUCER_DB_PASSWORD}
       OFFSET_DB_NAME: producer_offset_db
+      OFFSET_DB_PASSWORD: ${PRODUCER_DB_PASSWORD}
+      OFFSET_DB_PORT: 5432
+      OFFSET_DB_USER: producer
 
       KAFKA_URL: ${KAFKA_URL}
       KAFKA_SU_USER: ${KAFKA_SU_USER}

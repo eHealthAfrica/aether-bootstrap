@@ -67,7 +67,6 @@ services:
       CSRF_COOKIE_DOMAIN: kernel-test
       LOGGING_FORMATTER: verbose
 
-      BUCKET_NAME: kernel-test
       DJANGO_STORAGE_BACKEND: file
 
       APP_NAME: Aether Kernel (test)
@@ -99,6 +98,7 @@ services:
     depends_on:
       - db-test
       - exm-test
+      - redis-test
     command: start
     networks:
       - test
@@ -144,30 +144,37 @@ services:
       PRODUCER_ADMIN_USER: ${TEST_PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${TEST_PRODUCER_ADMIN_PASSWORD}
 
-      KAFKA_URL: kafka-test:29092
+      # Possible values "api" (default) or "db"
+      KERNEL_ACCESS_TYPE: ${TEST_PRODUCER_KERNEL_ACCESS_TYPE:-api}
 
+      # Access via RESTful API
       AETHER_KERNEL_TOKEN: ${TEST_KERNEL_ADMIN_TOKEN}
       AETHER_KERNEL_URL: http://kernel-test:9000
       DEFAULT_REALM: ${TEST_KERNEL_CLIENT_REALM}
       REALM_COOKIE: ${REALM_COOKIE}
 
-      POSTGRES_HOST: db-test
+      # Access via DB
       POSTGRES_DBNAME: aether-kernel-test
-      POSTGRES_USER: postgres
+      POSTGRES_HOST: db-test
       POSTGRES_PASSWORD: ${TEST_KERNEL_DB_PASSWORD}
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
 
       OFFSET_DB_HOST: db-test
-      OFFSET_DB_USER: postgres
-      OFFSET_DB_PORT: 5432
-      OFFSET_DB_PASSWORD: ${TEST_PRODUCER_DB_PASSWORD}
       OFFSET_DB_NAME: producer_offset_db_test
+      OFFSET_DB_PASSWORD: ${TEST_PRODUCER_DB_PASSWORD}
+      OFFSET_DB_PORT: 5432
+      OFFSET_DB_USER: postgres
+
+      KAFKA_URL: kafka-test:29092
 
       SERVER_PORT: 9005
       LOG_LEVEL: ERROR
     command: start
     depends_on:
-      - kernel-test
+      - db-test
       - kafka-test
+      - kernel-test
       - zookeeper-test
     networks:
       - test
@@ -179,6 +186,8 @@ services:
   integration-test:
     image: ehealthafrica/aether-integration-test:${AETHER_VERSION:-alpha}
     environment:
+      KAFKA_URL: kafka-test:29092
+
       KERNEL_URL: http://kernel-test:9000
       KERNEL_USERNAME: ${TEST_KERNEL_CLIENT_USERNAME}
       KERNEL_PASSWORD: ${TEST_KERNEL_CLIENT_PASSWORD}
@@ -188,6 +197,7 @@ services:
       PRODUCER_ADMIN_USER: ${TEST_PRODUCER_ADMIN_USER}
       PRODUCER_ADMIN_PW: ${TEST_PRODUCER_ADMIN_PASSWORD}
       PRODUCER_URL: http://producer-test:9005
+      PRODUCER_MODE: ${TEST_PRODUCER_KERNEL_ACCESS_TYPE:-api}
     networks:
       - test
     command: test

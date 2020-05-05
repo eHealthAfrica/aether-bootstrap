@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -130,10 +130,10 @@ function gen_env_file {
 # Releases
 # ==================================================================
 AETHER_VERSION=2.0.0-rc
-GATHER_VERSION=3.4.0
+GATHER_VERSION=3.4.3
 GATEWAY_VERSION=latest
 KONG_VERSION=2.0
-KEYCLOAK_VERSION=9.0.2
+KEYCLOAK_VERSION=9.0.3
 CONFLUENTINC_VERSION=5.4.0
 AMAZON_ES_VERSION=1.4.0
 # ------------------------------------------------------------------
@@ -189,8 +189,9 @@ REDIS_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
 # Minio storage
 # ==================================================================
-MINIO_STORAGE_ACCESS_KEY=${MINIO_ACCESS_KEY:-minio-key}
-MINIO_STORAGE_SECRET_KEY=${MINIO_SECRET_KEY:-minio-secret-123}
+# https://github.com/minio/minio/blob/master/docs/config/README.md#rotating-encryption-with-new-credentials
+MINIO_STORAGE_ACCESS_KEY=minio-access-key
+MINIO_STORAGE_SECRET_KEY=minio-secret-key
 
 MINIO_ENDPOINT=minio:9100
 # ------------------------------------------------------------------

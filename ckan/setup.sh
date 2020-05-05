@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -25,18 +25,32 @@ source scripts/lib.sh || \
       exit 1 )
 source .env
 
+function start_ckan_db {
+    docker-compose -f ckan/docker-compose.yml up -d ckanpg
+
+    local DB_ID=$(docker-compose -f ckan/docker-compose.yml ps -q ckanpg)
+    local is_ready="docker container exec -i $DB_ID pg_isready -q"
+
+    _wait_for "CKAN database" "$is_ready"
+}
+
+start_ckan_db
+
 docker-compose -f ckan/docker-compose.yml up -d
+sleep 10
+CKAN_ID=$(docker-compose -f ckan/docker-compose.yml ps -q ckan)
 
-retries=1
-until docker exec -it ckan_ckan_1 /usr/local/bin/ckan-paster --plugin=ckan sysadmin -c /etc/ckan/production.ini add admin | tee creds.txt && echo "done"
-do
-    echo "waiting for ckan container to be ready... $retries"
-    ((retries++))
-    if [[ $retries -gt 30 ]]; then
-        echo "It was not possible to start CKAN"
-        docker-compose -f ckan/docker-compose.yml logs ckan
-        exit 1
-    fi
+# Create user
+docker exec -it $CKAN_ID /usr/local/bin/ckan-paster \
+    --plugin=ckan \
+    user add $CKAN_SYSADMIN_NAME \
+    email=$CKAN_SYSADMIN_EMAIL \
+    name=$CKAN_SYSADMIN_NAME \
+    password=$CKAN_SYSADMIN_PASSWORD \
+    -c /etc/ckan/production.ini
 
-    sleep 5
-done
+# Promote as sysadmin
+docker exec -it $CKAN_ID /usr/local/bin/ckan-paster \
+    --plugin=ckan \
+    sysadmin add $CKAN_SYSADMIN_NAME \
+    -c /etc/ckan/production.ini

@@ -20,5 +20,16 @@
 #
 set -Eeuo pipefail
 
-docker-compose -f _base_/docker-compose.yml kill
-docker-compose -f _base_/docker-compose.yml down
+source scripts/lib.sh || \
+    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
+      exit 1 )
+source .env
+
+start_db
+
+# Initialize the producer offset database in the postgres instance
+
+# THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
+echo_warning "ERASING PREVIOUS PRODUCER DATA!!!"
+rebuild_database producer_offset_db producer ${PRODUCER_DB_PASSWORD}
+echo_message ""

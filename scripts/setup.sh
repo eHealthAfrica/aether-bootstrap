@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -31,12 +31,15 @@ aether/setup.sh
 if [ "$ENABLE_CONNECT" = true ]; then
     connect/setup.sh
 fi
+
 if [ "$ENABLE_GATHER" = true ]; then
     gather/setup.sh
 fi
+
 if [ "$ENABLE_ELASTICSEARCH" = true ]; then
     elasticsearch/setup.sh
 fi
+
 if [ "$ENABLE_CKAN" = true ]; then
     ckan/setup.sh
 fi
