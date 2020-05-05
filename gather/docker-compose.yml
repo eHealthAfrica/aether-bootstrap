@@ -8,6 +8,17 @@ networks:
 services:
 
   # ---------------------------------
+  # Redis for Aether ODK Module
+  # ---------------------------------
+
+  redis-odk:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    networks:
+      - aether
+
+
+  # ---------------------------------
   # Aether ODK Module
   # ---------------------------------
 
@@ -38,13 +49,20 @@ services:
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
       AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/kernel
-      AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: odk
       PGHOST: db
       PGPASSWORD: ${ODK_DB_PASSWORD}
       PGPORT: 5432
-      PGUSER: postgres
+      PGUSER: odk
+
+      DJANGO_USE_CACHE: 'true'
+      REDIS_DJANGO_CACHE: 'true'
+      REDIS_SESSION_CACHE: 'true'
+      REDIS_HOST: redis-odk
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+      REDIS_DB: 0
 
       # Kong requirements
       GATEWAY_SERVICE_ID: odk
@@ -83,6 +101,17 @@ services:
 
 
   # ---------------------------------
+  # Redis for Gather
+  # ---------------------------------
+
+  redis-gather:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    networks:
+      - aether
+
+
+  # ---------------------------------
   # Gather container
   # ---------------------------------
 
@@ -111,9 +140,15 @@ services:
       PGHOST: db # This matches the DB service name
       PGPASSWORD: ${GATHER_DB_PASSWORD}
       PGPORT: 5432
-      PGUSER: postgres
+      PGUSER: gather
 
-      EXPORT_MAX_ROWS_SIZE: 2500
+      DJANGO_USE_CACHE: 'true'
+      REDIS_DJANGO_CACHE: 'true'
+      REDIS_SESSION_CACHE: 'true'
+      REDIS_HOST: redis-gather
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+      REDIS_DB: 0
 
       # Kong requirements
       GATEWAY_SERVICE_ID: gather

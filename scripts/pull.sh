@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -28,7 +28,6 @@ docker-compose -f _base_/docker-compose.yml pull
 docker-compose -f auth/docker-compose.yml pull
 docker-compose -f aether/docker-compose.yml pull
 
-
 if [ "$ENABLE_CONNECT" = true ]; then
     if [ "$AETHER_CONNECT_MODE" = "LOCAL" ]; then
         docker-compose -f connect/docker-compose.yml pull
@@ -40,6 +39,11 @@ fi
 if [ "$ENABLE_GATHER" = true ]; then
     docker-compose -f gather/docker-compose.yml pull
 fi
+
 if [ "$ENABLE_ELASTICSEARCH" = true ]; then
     docker-compose -f elasticsearch/docker-compose.yml pull
+fi
+
+if [ "$ENABLE_CKAN" = true ]; then
+    docker-compose -f ckan/docker-compose.yml pull
 fi

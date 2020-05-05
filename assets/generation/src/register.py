@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -127,7 +127,7 @@ def register():
 
     schema_decorators = schema_decorator(project_id, schema_ids)
     LOGGER.debug(schema_decorators)
-    
+
     ps_ids = {ps.name: ps.id for ps in schema_decorators.values()}
     ms = mappingset(project_id)
     sub_id = mapping(project_id, ms.id, ps_ids)

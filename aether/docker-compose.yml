@@ -8,6 +8,23 @@ networks:
 services:
 
   # ---------------------------------
+  # Redis for Aether kernel
+  # ---------------------------------
+
+  redis-kernel:
+    image: redis:alpine
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --notify-keyspace-events KEA
+      --appendonly yes
+      --auto-aof-rewrite-percentage 100
+      --auto-aof-rewrite-min-size 64mb
+    networks:
+      - aether
+
+
+  # ---------------------------------
   # Aether kernel
   # ---------------------------------
 
@@ -40,7 +57,15 @@ services:
       PGHOST: db
       PGPASSWORD: ${KERNEL_DB_PASSWORD}
       PGPORT: 5432
-      PGUSER: postgres
+      PGUSER: kernel
+
+      DJANGO_USE_CACHE: 'true'
+      REDIS_DJANGO_CACHE: 'true'
+      REDIS_SESSION_CACHE: 'true'
+      REDIS_HOST: redis-kernel
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+      REDIS_DB: 0
 
       # Export
       EXPORT_CSV_ESCAPE: "\\"
@@ -96,13 +121,23 @@ services:
       AETHER_KERNEL_URL: http://kernel:8000
 
       REDIS_DB: 0
-      REDIS_HOST: redis
+      REDIS_HOST: redis-kernel
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: 6379
 
       LOG_LEVEL: ERROR
     command: start
     restart: on-failure
+    networks:
+      - aether
+
+
+  # Redis for Aether UI
+  # ---------------------------------
+
+  redis-kernel-ui:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     networks:
       - aether
 
@@ -127,13 +162,20 @@ services:
 
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
       AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/{realm}/kernel
-      AETHER_KERNEL_URL_TEST: http://kernel-test:9000
 
       DB_NAME: kernel-ui
       PGHOST: db
       PGPASSWORD: ${UI_DB_PASSWORD}
       PGPORT: 5432
-      PGUSER: postgres
+      PGUSER: ui
+
+      DJANGO_USE_CACHE: 'true'
+      REDIS_DJANGO_CACHE: 'true'
+      REDIS_SESSION_CACHE: 'true'
+      REDIS_HOST: redis-kernel-ui
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+      REDIS_DB: 0
 
       # Kong requirements
       GATEWAY_SERVICE_ID: kernel-ui

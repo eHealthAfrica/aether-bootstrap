@@ -20,5 +20,17 @@
 #
 set -Eeuo pipefail
 
-docker-compose -f _base_/docker-compose.yml kill
-docker-compose -f _base_/docker-compose.yml down
+source scripts/lib.sh || \
+    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
+      exit 1 )
+source .env
+
+start_db
+
+# Initialize the odk & gather databases in the postgres instance
+
+# THESE COMMANDS WILL ERASE PREVIOUS DATA!!!
+echo_warning "ERASING PREVIOUS ODK & GATHER DATA!!!"
+rebuild_database odk    odk    ${ODK_DB_PASSWORD}
+rebuild_database gather gather ${GATHER_DB_PASSWORD}
+echo_message ""

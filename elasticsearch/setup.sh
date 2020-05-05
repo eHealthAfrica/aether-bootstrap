@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -25,19 +25,8 @@ source scripts/lib.sh || \
       exit 1 )
 source .env
 
-function start_es {
-    local container=elasticsearch
-
-    $DC_ES up -d $container
-    _wait_for "$container" "$GWM_RUN ${container}_ready" || {
-        $DC_ES logs $container
-        exit 1
-    }
-}
-
-DC_ES="docker-compose -f elasticsearch/docker-compose.yml"
-
-start_es
+docker-compose -f elasticsearch/docker-compose.yml up -d elasticsearch
+_wait_for "elasticsearch" "$GWM_RUN elasticsearch_ready"
 # use mounted configs to initialize security
 $DC_ES exec elasticsearch sh securityadmin_demo.sh
 # sometimes the "own_index" does not exists

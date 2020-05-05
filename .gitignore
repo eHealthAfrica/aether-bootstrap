@@ -54,6 +54,7 @@ var/
 
 # Persistent volumes
 .persistent_data
+temp
 
 # secrets
 *.crt

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -25,5 +25,4 @@ source scripts/lib.sh || \
       exit 1 )
 
 start_db
-start_redis
 docker-compose -f _base_/docker-compose.yml up -d minio

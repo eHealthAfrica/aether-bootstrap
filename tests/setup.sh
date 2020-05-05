@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -20,8 +20,10 @@
 #
 set -Eeuo pipefail
 
+source .env
+
 DC_TEST="docker-compose -f tests/docker-compose.yml"
-DC_KERNEL="$DC_TEST run --rm --no-deps kernel-test"
+DC_KERNEL="$DC_TEST run --rm kernel-test"
 
 function _wait_for {
     local container=$1
@@ -37,6 +39,7 @@ function _wait_for {
         ((retries++))
         if [[ $retries -gt 10 ]]; then
             echo "It was not possible to start $container"
+            $DC_TEST logs "${container}-test"
             exit 1
         fi
 
@@ -52,11 +55,6 @@ function start_db_test {
 function start_kernel_test {
     _wait_for "kernel" "$DC_KERNEL eval wget -q --spider http://kernel-test:9000/health"
 }
-
-./scripts/generate_env_vars.sh
-source .env
-
-$DC_TEST pull
 
 start_db_test
 $DC_TEST up -d redis-test

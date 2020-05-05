@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2019 by eHealth Africa : http://www.eHealthAfrica.org
+# Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
 # regarding copyright ownership.
@@ -25,7 +25,7 @@ for dc_file in $(find docker-compose*.yml */docker-compose*.yml 2> /dev/null); d
     docker-compose -f $dc_file down -v 2>/dev/null
 done
 
-VOLUMES=( aether_database_data aether_minio_data )
+VOLUMES=( aether_database_data aether_minio_data aether_ckan_data )
 for volume in "${VOLUMES[@]}"; do
     {
         docker volume rm -f $volume 2>/dev/null
@@ -41,6 +41,3 @@ done
 
 rm -f .env
 rm -Rf ./connect/*.conf
-
-sudo rm -Rf ./.persistent_data
-sudo rm -f ckan-consumer/db/consumer.db
