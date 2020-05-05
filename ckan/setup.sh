@@ -30,8 +30,9 @@ function start_ckan_db {
 
     local DB_ID=$(docker-compose -f ckan/docker-compose.yml ps -q ckanpg)
     local is_ready="docker container exec -i $DB_ID pg_isready -q"
+    local on_error="docker-compose -f ckan/docker-compose.yml logs ckanpg"
 
-    _wait_for "CKAN database" "$is_ready"
+    _wait_for "CKAN database" "$is_ready" "$on_error"
 }
 
 start_ckan_db
