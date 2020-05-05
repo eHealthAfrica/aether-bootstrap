@@ -9,6 +9,9 @@ volumes:
   database_data:
     external:
       name: aether_database_data
+  minio_data:
+    external:
+      name: aether_minio_data
 
 services:
 
@@ -34,7 +37,7 @@ services:
   minio:
     image: minio/minio:latest
     volumes:
-      - ../.persistent_data/media:/data
+      - minio_data:/data
     environment:
       MINIO_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}

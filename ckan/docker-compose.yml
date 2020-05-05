@@ -5,6 +5,11 @@ networks:
     external:
       name: aether_bootstrap_net
 
+volumes:
+  database_data:
+    external:
+      name: aether_ckan_data
+
 services:
   ckan:
     image: ehealthafrica/ckan:2.8.0-rc
@@ -53,6 +58,8 @@ services:
     environment:
       DS_RO_PASS: ${CKAN_DATASTORE_READONLY_PASSWORD}
       POSTGRES_PASSWORD: ${CKAN_PG_PASSWORD}
+    volumes:
+      - database_data:/var/lib/postgresql/data
     networks:
       - aether
 

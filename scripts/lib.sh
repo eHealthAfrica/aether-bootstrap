@@ -67,8 +67,11 @@ function create_docker_assets {
     } || true
     echo_success "aether_bootstrap_net network is ready"
 
-    docker volume create aether_database_data || true
-    echo_success "aether_database_data volume is ready"
+    VOLUMES=( aether_database_data aether_minio_data aether_ckan_data )
+    for volume in "${VOLUMES[@]}"; do
+        docker volume create $volume || true
+        echo_success "$volume volume is ready"
+    done
 }
 
 
