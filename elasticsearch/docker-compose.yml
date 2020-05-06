@@ -53,7 +53,7 @@ services:
 
   consumer:
     # demo version without job handling!
-    image: ehealthafrica/aether-elasticsearch-consumer:alpha-20190817-01
+    image: ehealthafrica/aether-elasticsearch-consumer:2.1.1
     environment:
       KAFKA_URL: ${KAFKA_URL}
       SECURITY.PROTOCOL: ${KAFKA_SECURITY}
