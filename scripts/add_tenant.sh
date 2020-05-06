@@ -37,9 +37,11 @@ aether/add_tenant.sh "$1"
 if [ "$ENABLE_CONNECT" = true ]; then
     connect/add_tenant.sh "$1"
 fi
+
 if [ "$ENABLE_GATHER" = true ]; then
     gather/add_tenant.sh "$1"
 fi
+
 if [ "$ENABLE_ELASTICSEARCH" = true ]; then
     elasticsearch/add_tenant.sh "$1"
 fi
