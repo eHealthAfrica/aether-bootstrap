@@ -25,9 +25,11 @@ source scripts/lib.sh || \
       exit 1 )
 source .env
 
-docker-compose -f elasticsearch/docker-compose.yml up -d elasticsearch
-_wait_for "elasticsearch" "$GWM_RUN elasticsearch_ready"
+DCE="docker-compose -f elasticsearch/docker-compose.yml"
+
+$DCE up -d elasticsearch
+_wait_for "elasticsearch" "$GWM_RUN elasticsearch_ready" "$DCE logs elasticsearch"
 # use mounted configs to initialize security
-$DC_ES exec elasticsearch sh securityadmin_demo.sh
+$DCE exec elasticsearch sh securityadmin_demo.sh
 # sometimes the "own_index" does not exists
 $GWM_RUN setup_elasticsearch || true

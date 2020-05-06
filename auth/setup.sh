@@ -35,9 +35,9 @@ start_db
 # only one Kong node should be performing migrations at a time.
 # This limitation is lifted for Kong 0.15, 1.0, and above.
 DC_KONG="docker-compose -f auth/docker-compose.yml run --rm kong kong"
-$DC_KONG migrations bootstrap
-$DC_KONG migrations up
-$DC_KONG migrations finish
+$DC_KONG migrations -f -y -q bootstrap
+$DC_KONG migrations -f -y -q up
+$DC_KONG migrations -f -y -q finish
 echo_message ""
 
 start_auth_container kong
