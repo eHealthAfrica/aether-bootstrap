@@ -30,4 +30,6 @@ source scripts/lib.sh || \
       exit 1 )
 source .env
 
+start_add_tenant_dependencies
+
 $GWM_RUN add_solution gather "$1" $KEYCLOAK_KONG_CLIENT

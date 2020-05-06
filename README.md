@@ -19,6 +19,10 @@ If you are starting Aether for the first time, you will need to create some dock
 
 Take a look at file `options.default`, copy it as `options.txt` and change it with your desired options.
 
+```bash
+cp ./options.default ./options.txt
+```
+
 After that execute this command:
 
 ```bash
@@ -46,6 +50,8 @@ Use these credentials to log in:
 - *Password*: **password** (`KEYCLOAK_INITIAL_USER_PASSWORD`)
 
 
+# Add tenants
+
 If you want to add more tenants to your installation:
 
 ```bash
@@ -53,3 +59,8 @@ If you want to add more tenants to your installation:
 ```
 
 So far, the possible tenant themes are `ehealth` or `aether`.
+
+**IMPORTANT NOTE**
+
+If you enable a service after the tenant was added you **MUST** need to
+re-add it again to serve the new service under the tenant endpoint.
