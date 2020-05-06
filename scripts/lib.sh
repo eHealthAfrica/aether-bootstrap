@@ -80,22 +80,28 @@ function start_db {
 
     local DB_ID=$(docker-compose -f _base_/docker-compose.yml ps -q db)
     local is_ready="docker container exec -i $DB_ID pg_isready -q"
+    local on_error="docker-compose -f _base_/docker-compose.yml logs db"
 
-    _wait_for "database" "$is_ready"
+    _wait_for "database" "$is_ready" "$on_error"
 }
 
 
 function start_auth_container {
     local container=$1
     $DC_AUTH up -d $container
-    _wait_for "$container" "$GWM_RUN ${container}_ready"
+
+    local is_ready="$GWM_RUN ${container}_ready"
+    local on_error="$DC_AUTH logs $container"
+
+    _wait_for "$container" "$is_ready" "$on_error"
 }
 
 
-# Usage:    _wait_for <container-name> <is-ready-check>
+# Usage:    _wait_for <container-name> <is-ready-check> <on-error-action>
 function _wait_for {
     local container=$1
     local is_ready=$2
+    local on_error=$3
 
     echo_message "Starting $container server..."
 
@@ -106,6 +112,7 @@ function _wait_for {
         ((retries++))
         if [[ $retries -gt 30 ]]; then
             echo_error "It was not possible to start $container"
+            $on_error
             exit 1
         fi
 
