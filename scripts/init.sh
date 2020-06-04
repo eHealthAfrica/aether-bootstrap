@@ -66,10 +66,16 @@ fi
 ./scripts/setup.sh
 ./scripts/start.sh
 
+# always create default realm
+./scripts/add_tenant.sh "$DEFAULT_REALM"
+
 IFS=';' read -a tenants <<< "$INITIAL_TENANTS"
 for tenant in "${tenants[@]}"; do
-    ./scripts/add_tenant.sh "$tenant"
+    if [ "$tenant" != "$DEFAULT_REALM" ]; then
+        ./scripts/add_tenant.sh "$tenant"
+    fi
 done
+
 
 ./scripts/stop.sh 2>/dev/null
 
