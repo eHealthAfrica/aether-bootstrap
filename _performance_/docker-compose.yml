@@ -36,7 +36,6 @@ services:
     environment: *locust_env
     volumes: *locust_volumes
     command: -f /mnt/locust/locustfile.py --worker --master-host locust-master
-    scale: ${TEST_WORKERS:-5}
     networks:
       - aether
     extra_hosts:
