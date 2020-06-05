@@ -17,9 +17,21 @@
 # under the License.
 
 import random
+import uuid
+
 from locust import TaskSet, task
 
-from settings import *  # noqa
+from settings import (
+    NUMBER_OF_USERS,
+    KERNEL_URL,
+
+    TEST_USER,
+    TEST_PASSWORD,
+    TEST_REALM,
+
+    AVRO_SCHEMA,
+    SUBMISSION_PAYLOAD,
+)
 
 
 class KernelTaskSet(TaskSet):
@@ -29,7 +41,7 @@ class KernelTaskSet(TaskSet):
         user_name = f'{TEST_USER}-{user_id + 1}'
         print('Running with', user_name)
 
-        response = self.client.get(
+        self.client.get(
             url=f'{KERNEL_URL}/',
             name='/login',
             auth=(user_name, TEST_PASSWORD),
@@ -61,7 +73,7 @@ class KernelTaskSet(TaskSet):
         )
 
         csrftoken = response.cookies.get('csrftoken')
-        project_id = random_uuid()
+        project_id = uuid.uuid4()
         self.client.request(
             method='PATCH',
             url=f'{KERNEL_URL}/projects/{project_id}/avro-schemas',
@@ -102,7 +114,7 @@ class KernelTaskSet(TaskSet):
             url=f'{KERNEL_URL}/submissions.json',
             name='/submissions',
             json={
-                'payload': SUMBISSION_PAYLOAD,
+                'payload': SUBMISSION_PAYLOAD,
                 'mappingset': mappingset_id,
             },
             headers={'X-CSRFToken': csrftoken},

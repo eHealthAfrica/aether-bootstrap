@@ -18,7 +18,6 @@
 
 import json
 import os
-import uuid
 
 BASE_HOST = os.environ['BASE_HOST']
 NUMBER_OF_USERS = int(os.environ.get('TEST_NUMBER_OF_USERS', 100))
@@ -38,8 +37,4 @@ with open(_XFORM_AVRO_FILE, 'r') as fp:
     AVRO_SCHEMA = json.load(fp)
 
 with open(_JSON_DATA_FILE, 'r') as fp:
-    SUMBISSION_PAYLOAD = json.load(fp)
-
-
-def random_uuid():
-    return uuid.uuid4()
+    SUBMISSION_PAYLOAD = json.load(fp)

@@ -16,10 +16,10 @@ services:
     image: locustio/locust
     environment: &locust_env
       BASE_HOST: ${BASE_PROTOCOL}://${BASE_DOMAIN}
+      TEST_NUMBER_OF_USERS: ${TEST_NUMBER_OF_USERS:-100}
       TEST_USER: ${KEYCLOAK_INITIAL_USER_USERNAME}
       TEST_PASSWORD: ${KEYCLOAK_INITIAL_USER_PASSWORD}
       TEST_REALM: ${TEST_REALM:-_test_}
-      TEST_NUMBER_OF_USERS: ${TEST_NUMBER_OF_USERS:-100}
     volumes: &locust_volumes
       - ./data:/mnt/locust
     command: -f /mnt/locust/locustfile.py --master
@@ -36,6 +36,7 @@ services:
     environment: *locust_env
     volumes: *locust_volumes
     command: -f /mnt/locust/locustfile.py --worker --master-host locust-master
+    scale: ${TEST_WORKERS:-5}
     networks:
       - aether
     extra_hosts:

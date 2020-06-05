@@ -34,7 +34,7 @@ TEST_REALM=${TEST_REALM:-_test_}
 # create tenant for performance tests
 ./scripts/add_tenant.sh "${TEST_REALM}"
 
-# Create users
+# create test users
 NUMBER_OF_USERS=${TEST_NUMBER_OF_USERS:-100}
 for ((i=1;i<=$NUMBER_OF_USERS;i++)); do
     USER_NAME="${KEYCLOAK_INITIAL_USER_USERNAME}-${i}"

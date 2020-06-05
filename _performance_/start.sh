@@ -20,9 +20,4 @@
 #
 set -Eeuo pipefail
 
-source .env || \
-    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
-      exit 1 )
-
-docker-compose -f _performance_/docker-compose.yml up \
-    --scale locust-worker=${TEST_WORKERS:-5}
+docker-compose -f _performance_/docker-compose.yml up -d
