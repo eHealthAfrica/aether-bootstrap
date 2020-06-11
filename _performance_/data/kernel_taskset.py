@@ -28,9 +28,6 @@ from settings import (
     TEST_USER,
     TEST_PASSWORD,
     TEST_REALM,
-
-    AVRO_SCHEMA,
-    SUBMISSION_PAYLOAD,
 )
 
 
@@ -73,17 +70,33 @@ class KernelTaskSet(TaskSet):
         )
 
         csrftoken = response.cookies.get('csrftoken')
-        project_id = uuid.uuid4()
+
+        project_id = str(uuid.uuid4())
+        avro_schema = {
+            'name': f'simple-{project_id}',
+            'type': 'record',
+            'fields': [
+                {
+                    'name': 'id',
+                    'type': 'string',
+                },
+                {
+                    'name': 'name',
+                    'type': 'string',
+                }
+            ],
+        }
+
         self.client.request(
             method='PATCH',
             url=f'{KERNEL_URL}/projects/{project_id}/avro-schemas',
             name='/projects/avro-schemas',
             json={
-                'name': str(project_id),
+                'name': project_id,
                 'avro_schemas': [
                     {
-                        'id': str(project_id),
-                        'definition': AVRO_SCHEMA,
+                        'id': project_id,
+                        'definition': avro_schema,
                     },
                 ],
             },
@@ -100,7 +113,13 @@ class KernelTaskSet(TaskSet):
         data = response.json()
         if data['count'] == 0:
             return
+
         mappingset_id = data['results'][0]['id']
+        submission_id = str(uuid.uuid4())
+        submission_payload = {
+            'id': submission_id,
+            'name': f'Name {submission_id}',
+        }
 
         # get CSRFToken
         response = self.client.get(
@@ -114,8 +133,9 @@ class KernelTaskSet(TaskSet):
             url=f'{KERNEL_URL}/submissions.json',
             name='/submissions',
             json={
-                'payload': SUBMISSION_PAYLOAD,
+                'id': submission_id,
                 'mappingset': mappingset_id,
+                'payload': submission_payload,
             },
             headers={'X-CSRFToken': csrftoken},
         )

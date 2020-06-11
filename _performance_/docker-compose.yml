@@ -16,7 +16,7 @@ services:
     image: locustio/locust
     environment: &locust_env
       BASE_HOST: ${BASE_PROTOCOL}://${BASE_DOMAIN}
-      TEST_NUMBER_OF_USERS: ${TEST_NUMBER_OF_USERS:-100}
+      TEST_NUMBER_OF_USERS: ${TEST_NUMBER_OF_USERS:-20}
       TEST_USER: ${KEYCLOAK_INITIAL_USER_USERNAME}
       TEST_PASSWORD: ${KEYCLOAK_INITIAL_USER_PASSWORD}
       TEST_REALM: ${TEST_REALM:-_test_}

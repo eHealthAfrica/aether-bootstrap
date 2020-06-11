@@ -321,7 +321,7 @@ CKAN_DB_PASSWORD=$(gen_random_string)
 # ==================================================================
 TEST_REALM=_test_
 TEST_WORKERS=5
-TEST_NUMBER_OF_USERS=100
+TEST_NUMBER_OF_USERS=20
 # ------------------------------------------------------------------
 EOF
 }

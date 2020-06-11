@@ -16,25 +16,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import json
 import os
 
 BASE_HOST = os.environ['BASE_HOST']
-NUMBER_OF_USERS = int(os.environ.get('TEST_NUMBER_OF_USERS', 100))
+NUMBER_OF_USERS = int(os.environ.get('TEST_NUMBER_OF_USERS', 20))
 
 TEST_USER = os.environ['TEST_USER']
 TEST_PASSWORD = os.environ['TEST_PASSWORD']
 TEST_REALM = os.environ['TEST_REALM']
 
 KERNEL_URL = f'{BASE_HOST}/{TEST_REALM}/kernel'
-
-here = os.path.dirname(os.path.realpath(__file__))
-_PATH_DIR = os.path.join(here, 'files/')
-_XFORM_AVRO_FILE = _PATH_DIR + 'demo-xform.avsc'
-_JSON_DATA_FILE = _PATH_DIR + 'demo-data.json'
-
-with open(_XFORM_AVRO_FILE, 'r') as fp:
-    AVRO_SCHEMA = json.load(fp)
-
-with open(_JSON_DATA_FILE, 'r') as fp:
-    SUBMISSION_PAYLOAD = json.load(fp)

@@ -21,4 +21,4 @@ Execute the following command:
 ./_performance_/start.sh
 ```
 
-and open the browser at http://localhost:8089 to run the tests.
+and open the browser at http://localhost:8089 to run the performance tests.
