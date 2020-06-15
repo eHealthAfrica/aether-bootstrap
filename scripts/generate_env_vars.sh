@@ -106,6 +106,12 @@ fi
 function gen_env_file {
     admin_password="${SERVICES_DEFAULT_ADMIN_PASSWORD:-adminadmin}"
 
+    IFS=';' read -a tenants <<< "$INITIAL_TENANTS"
+    for tenant in "${tenants[@]}"; do
+        DEFAULT_REALM=$tenant
+        break
+    done
+
     cat << EOF
 #
 # USE THIS ONLY LOCALLY
@@ -155,7 +161,7 @@ KEYCLOAK_KONG_CLIENT=${KEYCLOAK_KONG_CLIENT:-kong}
 REALM_COOKIE=aether-realm
 
 MULTITENANCY=true
-DEFAULT_REALM=aether
+DEFAULT_REALM=${DEFAULT_REALM:-aether}
 PUBLIC_REALM=-
 DEFAULT_LOGIN_THEME=${KEYCLOAK_LOGIN_THEME:-ehealth}
 # ------------------------------------------------------------------
@@ -307,6 +313,15 @@ CKAN_SYSADMIN_NAME=admin
 CKAN_SYSADMIN_PASSWORD=adminadmin
 CKAN_SYSADMIN_EMAIL=info@ehealthafrica.org
 CKAN_DB_PASSWORD=$(gen_random_string)
+# ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# PERFORMANCE TESTS
+# ==================================================================
+TEST_REALM=_test_
+TEST_WORKERS=5
+TEST_NUMBER_OF_USERS=20
 # ------------------------------------------------------------------
 EOF
 }
