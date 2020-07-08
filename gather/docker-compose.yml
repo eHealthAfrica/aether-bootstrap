@@ -80,11 +80,11 @@ services:
 
       # Uncomment the following to activate auto consumer subscription
 
-      # ES_KIBANA_USERNAME: 'admin'
-      # ES_KIBANA_PASSWORD: 'admin'
+      ES_KIBANA_USERNAME: 'admin'
+      ES_KIBANA_PASSWORD: 'admin'
 
-      # ES_ELASTICSEARCH_USERNAME: 'admin'
-      # ES_ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+      ES_ELASTICSEARCH_USERNAME: 'admin'
+      ES_ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
 
       # CKAN_CKAN_USERNAME: ${CKAN_SYSADMIN_NAME}
       # CKAN_CKAN_PASSWORD: ${CKAN_SYSADMIN_PASSWORD}
@@ -163,6 +163,7 @@ services:
 
       UWSGI_BUFFER_SIZE: 32768
       CUSTOM_UWSGI_SERVE_STATIC: 'true'
+      UWSGI_STRICT: 'false'
 
       CONSUMERS_CONFIG_FILE: '/code/conf/consumers.json'
       AUTO_CONFIG_CONSUMERS: 'true'
