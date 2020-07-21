@@ -25,7 +25,6 @@ MAX_RETRIES=20
 
 DC_AUTH="docker-compose -f auth/docker-compose.yml"
 GWM_RUN="$DC_AUTH run --rm gateway-manager"
-KERNEL_EVAL="docker-compose -f aether/docker-compose.yml run --rm kernel eval"
 
 
 function echo_message {
