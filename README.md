@@ -29,6 +29,8 @@ After that execute this command:
 ./scripts/init.sh
 ```
 
+If `CKAN` is enabled, you will be prompted for an email address and password to setup an admin account on `CKAN`.
+
 You will also need to add an entry to your `/etc/hosts` or `C:\Windows\System32\Drivers\etc\hosts` file.
 It should look something like this:
 
