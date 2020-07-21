@@ -61,7 +61,6 @@ function parse_options {
 
 function create_docker_assets {
     echo_message "Generating docker network and volumes..."
-
     {
         docker network create aether_bootstrap_net \
             --attachable \
