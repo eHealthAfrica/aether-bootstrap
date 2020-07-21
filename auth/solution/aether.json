@@ -3,7 +3,6 @@
   "services": [
     "gateway",
     "kernel-ui",
-    "kernel",
-    "gateway"
+    "kernel"
   ]
 }

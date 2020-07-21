@@ -51,13 +51,19 @@ services:
     #   - 5601:5601
 
 
+  redis-es:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    networks:
+      - aether
+
+
   elasticsearch-consumer:
     image: ehealthafrica/aether-elasticsearch-consumer:2.0.3
     environment:
-
       # redis
-      REDIS_DB: 1
-      REDIS_HOST: redis
+      REDIS_DB: 0
+      REDIS_HOST: redis-es
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
@@ -79,7 +85,9 @@ services:
       CONSUMER_NAME: 'CONS'
       ES_CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
       ES_CONSUMER_KAFKA_CONFIG_PATH: /code/conf/consumer/kafka.json
+
       EXPOSE_PORT: 9099
+
       # STACKDRIVER_LOGGING: 0
       LOG_LEVEL: "DEBUG"
 

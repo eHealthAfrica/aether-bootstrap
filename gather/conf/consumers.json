@@ -1,44 +1,44 @@
 [
-    {
-      "name": "es",
-      "url": "http://elasticsearch-consumer:9099/",
-      "resources": {
-        "elasticsearch": {
-          "id": "elasticsearch-id-1",
-          "name": "ES Instance",
-          "url": "http://elasticsearch:9200"
-        },
-        "kibana": {
-          "id": "kibana-id-1",
-          "name": "Kibana Instance",
-          "url": "http://kibana:5601/kibana-app"
-        }
+  {
+    "name": "es",
+    "url": "http://elasticsearch-consumer:9099/",
+    "resources": {
+      "elasticsearch": {
+        "id": "elasticsearch-id-1",
+        "name": "ES Instance",
+        "url": "http://elasticsearch:9200"
       },
-      "subscription": {
-        "id": "subscription-id-1",
-        "name": "Subscription",
-        "topic_pattern": "*",
-        "topic_options": {
-            "masking_annotation": "@aether_masking",
-            "masking_levels": ["public", "private"],
-            "masking_emit_level": "public",
-            "filter_required": false
-        },
-        "es_options": {
-            "alias_name": "gather",
-            "auto_timestamp": true,
-            "geo_point_creation": true,
-            "geo_point_name": "geopoint"
-        },
-        "kibana_options": {
-            "auto_vizualization": "schema"
-        },
-        "visualizations": []
-      },
-      "job": {
-        "id": "job-id-1",
-        "name": "ES Consumer Job",
-        "subscription": []
+      "kibana": {
+        "id": "kibana-id-1",
+        "name": "Kibana Instance",
+        "url": "http://kibana:5601/kibana-app"
       }
+    },
+    "subscription": {
+      "id": "subscription-id-1",
+      "name": "Subscription",
+      "topic_pattern": "*",
+      "topic_options": {
+        "masking_annotation": "@aether_masking",
+        "masking_levels": ["public", "private"],
+        "masking_emit_level": "public",
+        "filter_required": false
+      },
+      "es_options": {
+        "alias_name": "gather",
+        "auto_timestamp": true,
+        "geo_point_creation": true,
+        "geo_point_name": "geopoint"
+      },
+      "kibana_options": {
+        "auto_visualization": "schema"
+      },
+      "visualizations": []
+    },
+    "job": {
+      "id": "job-id-1",
+      "name": "ES Consumer Job",
+      "subscription": []
     }
-  ]
+  }
+]

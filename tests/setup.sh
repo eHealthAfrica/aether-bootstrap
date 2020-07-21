@@ -72,7 +72,7 @@ $DC_KERNEL manage create_user \
     -p=$TEST_KERNEL_CLIENT_PASSWORD \
     -r=$TEST_KERNEL_CLIENT_REALM
 
-$DC_TEST up -d zookeeper-test kafka-test producer-test kernel-test
+$DC_TEST up -d zookeeper-test kafka-test exm-test producer-test kernel-test
 sleep 10
 
 echo "Containers started, waiting for Kernel & Producer to be available..."
