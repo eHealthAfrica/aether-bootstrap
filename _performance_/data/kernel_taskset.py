@@ -28,6 +28,11 @@ from settings import (
     TEST_USER,
     TEST_PASSWORD,
     TEST_REALM,
+
+    HEALTH_CHECK_PRIORITY,
+    VIEW_PROJECTS_PRIORITY,
+    CREATE_PROJECT_PRIORITY,
+    CREATE_SUBMISSION_PRIORITY,
 )
 
 
@@ -47,26 +52,26 @@ class KernelTaskSet(TaskSet):
         # create initial project
         self.create_avro_schemas()
 
-    @task(1)
-    def health_page(self):
+    @task(HEALTH_CHECK_PRIORITY)
+    def task_health_check(self):
         self.client.get(
             url=f'{KERNEL_URL}/health',
             name='/health',
         )
 
-    @task(5)
-    def view_projects(self):
+    @task(VIEW_PROJECTS_PRIORITY)
+    def task_view_projects(self):
         self.client.get(
             url=f'{KERNEL_URL}/projects',
             name='/projects',
         )
 
-    @task(2)
-    def create_avro_schemas(self):
+    @task(CREATE_PROJECT_PRIORITY)
+    def task_create_avro_schemas(self):
         # get CSRFToken
         response = self.client.get(
             url=f'{KERNEL_URL}/projects?format=api&page_size=1',
-            name='/projects',
+            name='/projects/get-csrf-token',
         )
 
         csrftoken = response.cookies.get('csrftoken')
@@ -103,8 +108,8 @@ class KernelTaskSet(TaskSet):
             headers={'X-CSRFToken': csrftoken},
         )
 
-    @task(15)
-    def create_submission(self):
+    @task(CREATE_SUBMISSION_PRIORITY)
+    def task_create_submission(self):
         # get mappingset
         response = self.client.get(
             url=f'{KERNEL_URL}/mappingsets.json',
@@ -124,7 +129,7 @@ class KernelTaskSet(TaskSet):
         # get CSRFToken
         response = self.client.get(
             url=f'{KERNEL_URL}/mappingsets?format=api&page_size=1',
-            name='/mappingsets',
+            name='/mappingsets/get-csrf-token',
         )
         csrftoken = response.cookies.get('csrftoken')
 
