@@ -32,6 +32,5 @@ source .env
 
 start_add_tenant_dependencies true
 
-$GWM_RUN add_service elasticsearch "$1" $KEYCLOAK_KONG_CLIENT
-$GWM_RUN add_service kibana        "$1" $KEYCLOAK_KONG_CLIENT
-$GWM_RUN add_elasticsearch_tenant  "$1" 7
+$GWM_RUN add_solution elasticsearch "$1" $KEYCLOAK_KONG_CLIENT
+$GWM_RUN add_elasticsearch_tenant   "$1" 7

@@ -153,7 +153,14 @@ services:
       UWSGI_BUFFER_SIZE: 32768
       CUSTOM_UWSGI_SERVE_STATIC: 'true'
 
+      AUTO_CONFIG_CONSUMERS: 'true'
+      CONSUMERS_CONFIG_FILE: '/code/conf/consumers.json'
+      ES_CONSUMER_URL: 'http://elasticsearch-consumer:9099'
+      TENANCY_HEADER: 'X-Oauth-realm'
+
       WEB_SERVER_PORT: 8105
+    volumes:
+      - ./conf/consumers.json:/code/conf/consumers.json
     command: start
     networks:
       - aether

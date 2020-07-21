@@ -1,0 +1,8 @@
+{
+  "name": "elasticsearch",
+  "services": [
+    "elasticsearch",
+    "es-consumer",
+    "kibana"
+  ]
+}
