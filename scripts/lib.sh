@@ -21,6 +21,7 @@
 set -Eeuo pipefail
 
 LINE=`printf -v row "%${COLUMNS:-$(tput cols)}s"; echo ${row// /=}`
+MAX_RETRIES=20
 
 DC_AUTH="docker-compose -f auth/docker-compose.yml"
 GWM_RUN="$DC_AUTH run --rm gateway-manager"
@@ -59,7 +60,7 @@ function parse_options {
 
 
 function create_docker_assets {
-    echo_message "Generating docker network and database volume..."
+    echo_message "Generating docker network and volumes..."
     {
         docker network create aether_bootstrap_net \
             --attachable \
@@ -130,7 +131,7 @@ function _wait_for {
         >&2 echo "Waiting for $container... $retries"
 
         ((retries++))
-        if [[ $retries -gt 30 ]]; then
+        if [[ $retries -gt $MAX_RETRIES ]]; then
             echo_error "It was not possible to start $container"
             $on_error
             exit 1

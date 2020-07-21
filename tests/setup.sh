@@ -37,7 +37,7 @@ function _wait_for {
         >&2 echo "Waiting for $container... $retries"
 
         ((retries++))
-        if [[ $retries -gt 30 ]]; then
+        if [[ $retries -gt 10 ]]; then
             echo "It was not possible to start $container"
             $DC_TEST logs "${container}-test"
             exit 1
@@ -59,6 +59,7 @@ function start_kernel_test {
 start_db_test
 
 $DC_KERNEL setup
+
 $DC_KERNEL manage create_user \
     -u=$TEST_KERNEL_CLIENT_USERNAME \
     -p=$TEST_KERNEL_CLIENT_PASSWORD \

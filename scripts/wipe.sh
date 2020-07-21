@@ -28,7 +28,7 @@ done
 VOLUMES=( aether_database_data aether_minio_data aether_ckan_data )
 for volume in "${VOLUMES[@]}"; do
     {
-        docker network rm -f $volume 2>/dev/null
+        docker volume rm -f $volume 2>/dev/null
     } || true
 done
 
