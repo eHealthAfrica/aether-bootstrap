@@ -24,6 +24,7 @@ source .env
 
 DC_TEST="docker-compose -f tests/docker-compose.yml"
 DC_KERNEL="$DC_TEST run --rm kernel-test"
+MAX_RETRIES=20
 
 function _wait_for {
     local container=$1
@@ -37,7 +38,7 @@ function _wait_for {
         >&2 echo "Waiting for $container... $retries"
 
         ((retries++))
-        if [[ $retries -gt 10 ]]; then
+        if [[ $retries -gt $MAX_RETRIES ]]; then
             echo "It was not possible to start $container"
             $DC_TEST logs "${container}-test"
             exit 1

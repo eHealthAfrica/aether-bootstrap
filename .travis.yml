@@ -17,10 +17,13 @@ script:
   - ./scripts/travis/tests.sh $TEST_MODE
 
 after_script:
-  - ./scripts/travis/teardown.sh
+  - ./scripts/travis/teardown.sh $TEST_MODE
 
 after_failure:
-  - ./scripts/travis/failure.sh
+  - ./scripts/travis/failure.sh $TEST_MODE
+
+addons:
+  hosts: travis.test.server
 
 jobs:
   fast_finish: true
