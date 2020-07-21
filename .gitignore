@@ -71,3 +71,4 @@ temp
 .env
 .env.*
 options.txt
+creds.txt

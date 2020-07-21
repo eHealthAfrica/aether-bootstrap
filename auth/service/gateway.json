@@ -1,0 +1,20 @@
+{
+  "name": "gateway",
+  "host": "http://gateway-manager:8007",
+  "paths": [
+    "/{public_realm}$",
+    "/{public_realm}/$",
+    "/{name}"
+  ],
+  "oidc_endpoints": [
+    {
+      "name": "protected",
+      "paths": [
+        "/{realm}$",
+        "/{realm}/$",
+        "/{realm}/oauth2/",
+        "/{name}/"
+      ]
+    }
+  ]
+}

@@ -24,6 +24,7 @@ source .env
 
 DC_TEST="docker-compose -f tests/docker-compose.yml"
 DC_KERNEL="$DC_TEST run --rm kernel-test"
+MAX_RETRIES=20
 
 function _wait_for {
     local container=$1
@@ -37,9 +38,10 @@ function _wait_for {
         >&2 echo "Waiting for $container... $retries"
 
         ((retries++))
-        if [[ $retries -gt 30 ]]; then
+        if [[ $retries -gt $MAX_RETRIES ]]; then
             echo "It was not possible to start $container"
             $DC_TEST logs "${container}-test"
+            $is_ready
             exit 1
         fi
 
@@ -56,16 +58,22 @@ function start_kernel_test {
     _wait_for "kernel" "$DC_KERNEL eval wget -q --spider http://kernel-test:9000/health"
 }
 
+function start_producer_test {
+    _wait_for "producer" "$DC_KERNEL eval wget -q --spider http://producer-test:9005/healthcheck"
+}
+
 start_db_test
 
 $DC_KERNEL setup
+
 $DC_KERNEL manage create_user \
     -u=$TEST_KERNEL_CLIENT_USERNAME \
     -p=$TEST_KERNEL_CLIENT_PASSWORD \
     -r=$TEST_KERNEL_CLIENT_REALM
 
-$DC_TEST up -d zookeeper-test kafka-test producer-test
+$DC_TEST up -d zookeeper-test kafka-test producer-test kernel-test
 sleep 10
 
-echo "Containers started, waiting for Kernel to be available..."
+echo "Containers started, waiting for Kernel & Producer to be available..."
 start_kernel_test
+start_producer_test

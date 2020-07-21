@@ -20,6 +20,20 @@
 #
 set -Eeuo pipefail
 
-for dc_file in $(find docker-compose*.yml */docker-compose*.yml 2> /dev/null); do
-    docker-compose -f $dc_file logs -t --tail="all"
-done
+case "$1" in
+
+    setup )
+        for dc_file in $(find docker-compose.yml */docker-compose.yml 2> /dev/null); do
+            docker-compose -f $dc_file logs -t --tail="all"
+        done
+    ;;
+
+    integration )
+        dc_file="tests/docker-compose.yml"
+        CONTAINERS=( db kafka zookeeper kernel producer )
+        for container in "${CONTAINERS[@]}"; do
+            docker-compose -f $dc_file logs -t --tail="all" "${container}-test"
+        done
+    ;;
+
+esac
