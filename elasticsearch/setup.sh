@@ -23,13 +23,10 @@ set -Eeuo pipefail
 source scripts/lib.sh || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
-source .env
 
-DCE="docker-compose -f elasticsearch/docker-compose.yml"
+start_es_container
 
-$DCE up -d elasticsearch
-_wait_for "elasticsearch" "$GWM_RUN elasticsearch_ready" "$DCE logs elasticsearch"
 # use mounted configs to initialize security
-$DCE exec elasticsearch sh securityadmin_demo.sh
+docker-compose -f elasticsearch/docker-compose.yml exec elasticsearch sh securityadmin_demo.sh
 # sometimes the "own_index" does not exists
 $GWM_RUN setup_elasticsearch || true

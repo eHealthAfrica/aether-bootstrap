@@ -20,4 +20,27 @@
 #
 set -Eeuo pipefail
 
-docker-compose -f rest-proxy/docker-compose.yml up -d
+source scripts/lib.sh || \
+    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
+      exit 1 )
+source .env
+
+docker-compose -f _performance_/docker-compose.yml pull
+
+./scripts/start.sh
+
+TEST_REALM=${TEST_REALM:-_test_}
+
+# create tenant for performance tests
+./scripts/add_tenant.sh "${TEST_REALM}"
+
+# create test users
+NUMBER_OF_USERS=${TEST_NUMBER_OF_USERS:-20}
+for ((i=1;i<=$NUMBER_OF_USERS;i++)); do
+    USER_NAME="${KEYCLOAK_INITIAL_USER_USERNAME}-${i}"
+
+    $GWM_RUN add_user \
+        $TEST_REALM \
+        $USER_NAME \
+        $KEYCLOAK_INITIAL_USER_PASSWORD
+done

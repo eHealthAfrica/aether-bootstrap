@@ -100,6 +100,26 @@ function start_auth_container {
 }
 
 
+function start_es_container {
+    local DCE="docker-compose -f elasticsearch/docker-compose.yml"
+
+    $DCE up -d elasticsearch
+    _wait_for "elasticsearch" "$GWM_RUN elasticsearch_ready" "$DCE logs elasticsearch"
+}
+
+
+# Usage:    start_add_tenant_dependencies <es-enabled?>
+function start_add_tenant_dependencies {
+    start_db
+    start_auth_container kong
+    start_auth_container keycloak
+
+    if [ "${1:-false}" = true ]; then
+        start_es_container
+    fi
+}
+
+
 # Usage:    _wait_for <container-name> <is-ready-check> <on-error-action>
 function _wait_for {
     local container=$1

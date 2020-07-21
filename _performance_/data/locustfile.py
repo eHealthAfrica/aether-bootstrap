@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-#
 # Copyright (C) 2020 by eHealth Africa : http://www.eHealthAfrica.org
 #
 # See the NOTICE file distributed with this work for additional information
@@ -17,22 +15,17 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
-set -Eeuo pipefail
 
-if [ -z "${1:-}" ]; then
-    echo -e "\033[91mPlease, indicate tenant!\033[0m"
-    exit 1
-fi
+from locust import HttpUser, between
 
-source scripts/lib.sh || \
-    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
-      exit 1 )
-source .env
+from kernel_taskset import KernelTaskSet
+from settings import BASE_HOST
 
-echo_warning "You services must be running!"
-echo_warning "REST PROXY IS NOT MULTI-TENANT!!!"
-echo_warning "ONLY ONE REALM SHOULD BE GRANTED ACCESS"
-echo_message "Adding rest-proxy service tenant $1..."
 
-$GWM_RUN add_service rest-proxy $1 $KEYCLOAK_KONG_CLIENT
+class KernelUser(HttpUser):
+
+    host = BASE_HOST
+    tasks = [KernelTaskSet]
+
+    # wating time (in seconds) between two consecutive tasks
+    wait_time = between(0.1, 1)

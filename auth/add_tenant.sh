@@ -30,6 +30,8 @@ source scripts/lib.sh || \
       exit 1 )
 source .env
 
+start_add_tenant_dependencies
+
 REALM="$1"
 THEME=${2:-$DEFAULT_LOGIN_THEME}
 DESC=${3:-Tenant:  $REALM}

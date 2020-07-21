@@ -30,6 +30,8 @@ source scripts/lib.sh || \
       exit 1 )
 source options.txt
 
+start_add_tenant_dependencies
+
 if [ "$AETHER_CONNECT_MODE" = "LOCAL" ]; then
     $GWM_RUN add_kafka_tenant "$1"
 elif [ "$AETHER_CONNECT_MODE" = "CONFLUENT" ]; then

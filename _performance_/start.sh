@@ -20,16 +20,6 @@
 #
 set -Eeuo pipefail
 
-if [ -z "${1:-}" ]; then
-    echo -e "\033[91mPlease, indicate tenant/realm!\033[0m"
-    exit 1
-fi
-
-source scripts/lib.sh || \
-    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
-      exit 1 )
-source .env
-
-start_add_tenant_dependencies
-
-$GWM_RUN add_solution gather "$1" $KEYCLOAK_KONG_CLIENT
+docker-compose \
+    -f _performance_/docker-compose.yml up -d \
+    --scale locust-worker=${TEST_WORKERS:-5}
