@@ -41,6 +41,7 @@ function _wait_for {
         if [[ $retries -gt $MAX_RETRIES ]]; then
             echo "It was not possible to start $container"
             $DC_TEST logs "${container}-test"
+            $is_ready
             exit 1
         fi
 
@@ -53,10 +54,6 @@ function start_db_test {
     _wait_for "db" "$DC_KERNEL eval pg_isready -q"
 }
 
-function start_kernel_test {
-    _wait_for "kernel" "$DC_KERNEL eval wget -q --spider http://kernel-test:9000/health"
-}
-
 start_db_test
 
 $DC_KERNEL setup
@@ -66,8 +63,5 @@ $DC_KERNEL manage create_user \
     -p=$TEST_KERNEL_CLIENT_PASSWORD \
     -r=$TEST_KERNEL_CLIENT_REALM
 
-$DC_TEST up -d zookeeper-test kafka-test producer-test
+$DC_TEST up -d zookeeper-test kafka-test producer-test kernel-test
 sleep 10
-
-echo "Containers started, waiting for Kernel to be available..."
-start_kernel_test
