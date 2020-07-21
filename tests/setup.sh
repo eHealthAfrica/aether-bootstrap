@@ -54,6 +54,14 @@ function start_db_test {
     _wait_for "db" "$DC_KERNEL eval pg_isready -q"
 }
 
+function start_kernel_test {
+    _wait_for "kernel" "$DC_KERNEL eval wget -q --spider http://kernel-test:9000/health"
+}
+
+function start_producer_test {
+    _wait_for "producer" "$DC_KERNEL eval wget -q --spider http://producer-test:9005/healthcheck"
+}
+
 start_db_test
 
 $DC_KERNEL setup
@@ -65,3 +73,7 @@ $DC_KERNEL manage create_user \
 
 $DC_TEST up -d zookeeper-test kafka-test producer-test kernel-test
 sleep 10
+
+echo "Containers started, waiting for Kernel & Producer to be available..."
+start_kernel_test
+start_producer_test
