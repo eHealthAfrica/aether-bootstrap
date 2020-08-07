@@ -33,19 +33,19 @@ WIPE_ON_INIT=true
 INITIAL_TENANTS="travis;"
 
 ## Keycloak Settings
-KEYCLOAK_GLOBAL_ADMIN=admin-travis
-KEYCLOAK_GLOBAL_PASSWORD=travis-password
+KEYCLOAK_GLOBAL_ADMIN=kc-admin-travis
 
-KEYCLOAK_AETHER_CLIENT=aether-travis
-KEYCLOAK_KONG_CLIENT=kong-travis
+KEYCLOAK_PUBLIC_CLIENT=public-travis
+KEYCLOAK_OIDC_CLIENT=oidc-travis
 
 KEYCLOAK_LOGIN_THEME=ehealth
 
-# Initial user credentials
-KEYCLOAK_INITIAL_USER_USERNAME=user-travis
-KEYCLOAK_INITIAL_USER_PASSWORD=travis-password
+# Initial users credentials
+INITIAL_SU_USERNAME=sys-admin-travis
+INITIAL_ADMIN_USERNAME=admin-travis
+INITIAL_USER_USERNAME=user-travis
 
-# Password for user "admin"
+SERVICES_DEFAULT_USER_PASSWORD=travis-password
 SERVICES_DEFAULT_ADMIN_PASSWORD=travis-password
 
 # Enable services

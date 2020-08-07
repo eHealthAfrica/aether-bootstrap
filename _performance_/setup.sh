@@ -37,10 +37,10 @@ TEST_REALM=${TEST_REALM:-_test_}
 # create test users
 NUMBER_OF_USERS=${TEST_NUMBER_OF_USERS:-20}
 for ((i=1;i<=$NUMBER_OF_USERS;i++)); do
-    USER_NAME="${KEYCLOAK_INITIAL_USER_USERNAME}-${i}"
+    USER_NAME="${INITIAL_USER_USERNAME}-${i}"
 
     $GWM_RUN add_user \
         $TEST_REALM \
         $USER_NAME \
-        $KEYCLOAK_INITIAL_USER_PASSWORD
+        $INITIAL_USER_PASSWORD
 done

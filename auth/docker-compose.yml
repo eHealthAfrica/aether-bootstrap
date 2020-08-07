@@ -115,7 +115,6 @@ services:
       - ./app:/code/app
       - ./service:/code/service
       - ./solution:/code/solution
-      - ./keycloak/realm/realm_template.json:/code/templates/realm_template.json
     command: start_app
     networks:
       - aether

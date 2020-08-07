@@ -43,16 +43,33 @@ $GWM_RUN add_realm \
 
 $GWM_RUN add_public_client \
     $REALM \
-    $KEYCLOAK_AETHER_CLIENT
+    $KEYCLOAK_PUBLIC_CLIENT
 
 $GWM_RUN add_oidc_client \
     $REALM \
-    $KEYCLOAK_KONG_CLIENT
+    $KEYCLOAK_OIDC_CLIENT
+
+$GWM_RUN add_admin \
+    $REALM \
+    $INITIAL_SU_USERNAME \
+    $INITIAL_SU_PASSWORD
 
 $GWM_RUN add_user \
     $REALM \
-    $KEYCLOAK_INITIAL_USER_USERNAME \
-    $KEYCLOAK_INITIAL_USER_PASSWORD \
-    true \
-    $KEYCLOAK_INITIAL_USER_USERNAME@$REALM.aether.org \
-    true
+    $INITIAL_ADMIN_USERNAME \
+    $INITIAL_ADMIN_PASSWORD
+
+$GWM_RUN add_user_group \
+    $REALM \
+    $INITIAL_ADMIN_USERNAME \
+    "admin"
+
+$GWM_RUN add_user \
+    $REALM \
+    $INITIAL_USER_USERNAME \
+    $INITIAL_USER_PASSWORD
+
+$GWM_RUN add_user_group \
+    $REALM \
+    $INITIAL_USER_USERNAME \
+    "user"
