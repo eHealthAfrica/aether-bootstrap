@@ -5,16 +5,10 @@
     {
       "name": "protected",
       "paths": [
-        "/{realm}/{name}"
+        "/{realm}/{name}$",
+        "/{realm}/{name}/"
       ],
-      "strip_path": "true",
-      "oidc_override": {
-        "config.user_keys": [
-          "preferred_username",
-          "email",
-          "groups"
-        ]
-      }
+      "strip_path": "true"
     }
   ]
 }
