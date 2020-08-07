@@ -33,10 +33,10 @@ WIPE_ON_INIT=true
 INITIAL_TENANTS="travis;"
 
 ## Keycloak Settings
-KEYCLOAK_GLOBAL_ADMIN=admin-travis
+KEYCLOAK_GLOBAL_ADMIN=kc-admin-travis
 
-KEYCLOAK_PUBLIC_CLIENT=aether-travis
-KEYCLOAK_OIDC_CLIENT=kong-travis
+KEYCLOAK_PUBLIC_CLIENT=public-travis
+KEYCLOAK_OIDC_CLIENT=oidc-travis
 
 KEYCLOAK_LOGIN_THEME=ehealth
 
