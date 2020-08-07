@@ -15,22 +15,26 @@ INITIAL_TENANTS="dev;prod;test;"
 # Services Options
 ##
 
-## Keycloak Settings
-KEYCLOAK_GLOBAL_ADMIN=admin
-KEYCLOAK_GLOBAL_PASSWORD=password
-KEYCLOAK_INITIAL_USER_USERNAME=user
-KEYCLOAK_INITIAL_USER_PASSWORD=password
-KEYCLOAK_AETHER_CLIENT=aether
-KEYCLOAK_KONG_CLIENT=kong
-KEYCLOAK_LOGIN_THEME=aether
-
 ## Routing Settings
 BASE_PROTOCOL=http
 
 # Host from which all services will be served
 LOCAL_HOST=aether.local
 
-## Services Settings
+## Keycloak Settings
+KEYCLOAK_GLOBAL_ADMIN=admin
+KEYCLOAK_PUBLIC_CLIENT=aether
+KEYCLOAK_OIDC_CLIENT=kong
+KEYCLOAK_LOGIN_THEME=aether
+
+## Credentials
+
+INITIAL_SU_USERNAME=sys-admin
+INITIAL_ADMIN_USERNAME=admin
+INITIAL_USER_USERNAME=user
+
+# Password for user "user"
+SERVICES_DEFAULT_USER_PASSWORD=password
 # Password for user "admin"
 SERVICES_DEFAULT_ADMIN_PASSWORD=adminadmin
 
@@ -39,25 +43,25 @@ SERVICES_DEFAULT_ADMIN_PASSWORD=adminadmin
 # Enable Services
 ##
 
-# ODK & Gather3
+## ODK & Gather3
 ENABLE_GATHER=true
 
-# ElasticSearch
+## ElasticSearch
 ENABLE_ELASTICSEARCH=true
 
-# CKAN
+## CKAN
 ENABLE_CKAN=true
 
-# Kafka
+## Kafka
 ENABLE_CONNECT=true
 # LOCAL or CONFLUENT
 AETHER_CONNECT_MODE=LOCAL
 
-# Confluent Cloud
+## Confluent Cloud
 # Set `AETHER_CONNECT_MODE=CONFLUENT` and the following...
 # CC_URL=               # CCloud cluster access url
-# CC_SU_USER=           # API Keyname for Service account with full RW on cluster
+# CC_SU_USER=           # API Key name for Service account with full RW on cluster
 # CC_SU_PASSWORD=       # API Secret for Service account with full RW on cluster
-# CC_API_USER=          # Web based user (adminstrative)
+# CC_API_USER=          # Web based user (administrative)
 # CC_API_PASSWORD=      # password for admin user
 # CC_CLUSTER_NAME=      # name of cluster in CCloud

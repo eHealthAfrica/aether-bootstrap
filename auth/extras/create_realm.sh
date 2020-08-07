@@ -50,11 +50,11 @@ connect_to_keycloak
 echo_message "Creating realm [$REALM] [$DESC]..."
 create_kc_realm $REALM $DES
 
-echo_message "Creating public client [$KEYCLOAK_AETHER_CLIENT] in realm [$REALM]..."
-create_kc_public_client $REALM $KEYCLOAK_AETHER_CLIENT
+echo_message "Creating public client [$KEYCLOAK_PUBLIC_CLIENT] in realm [$REALM]..."
+create_kc_public_client $REALM $KEYCLOAK_PUBLIC_CLIENT
 
-echo_message "Creating non-public client [$KEYCLOAK_KONG_CLIENT] in realm [$REALM]..."
-create_kc_non_public_client $REALM $KEYCLOAK_KONG_CLIENT
+echo_message "Creating non-public client [$KEYCLOAK_OIDC_CLIENT] in realm [$REALM]..."
+create_kc_non_public_client $REALM $KEYCLOAK_OIDC_CLIENT
 
 if [ ! -z "${USER}" ]; then
     echo_message "Creating user [$USER] in realm [$REALM]..."

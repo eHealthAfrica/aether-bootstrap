@@ -19,8 +19,8 @@ services:
       - ./resources:/code/resources
     environment:
       KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/dev/kernel
-      KERNEL_USER: ${KEYCLOAK_INITIAL_USER_USERNAME}
-      KERNEL_PASSWORD: ${KEYCLOAK_INITIAL_USER_PASSWORD}
+      KERNEL_USER: ${INITIAL_USER_USERNAME}
+      KERNEL_PASSWORD: ${INITIAL_USER_PASSWORD}
 
       REALM: dev
       KEYCLOAK_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/auth

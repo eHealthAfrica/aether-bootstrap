@@ -32,4 +32,4 @@ source .env
 
 start_add_tenant_dependencies
 
-$GWM_RUN add_solution aether "$1" $KEYCLOAK_KONG_CLIENT
+$GWM_RUN add_solution aether "$1" $KEYCLOAK_OIDC_CLIENT

@@ -48,8 +48,8 @@ Once the console output has stopped, you should be able to access the **Aether U
 
 Use these credentials to log in:
 
-- *Username*: **user** (`KEYCLOAK_INITIAL_USER_USERNAME`)
-- *Password*: **password** (`KEYCLOAK_INITIAL_USER_PASSWORD`)
+- *Username*: **user** (`INITIAL_USER_USERNAME`)
+- *Password*: **password** (`INITIAL_USER_PASSWORD`)
 
 
 # Add tenants
