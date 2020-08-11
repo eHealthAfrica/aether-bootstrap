@@ -83,5 +83,5 @@ services:
       - zeebe
     networks:
       - aether
-     extra_hosts:
+    extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
