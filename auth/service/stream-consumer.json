@@ -1,0 +1,14 @@
+{
+  "name": "stream-consumer",
+  "host": "http://stream-consumer:9013",
+  "oidc_endpoints": [
+    {
+      "name": "protected",
+      "paths": [
+        "/{realm}/{name}$",
+        "/{realm}/{name}/"
+      ],
+      "strip_path": "true"
+    }
+  ]
+}

@@ -20,30 +20,17 @@
 #
 set -Eeuo pipefail
 
-source options.txt || \
+if [ -z "${1:-}" ]; then
+    echo -e "\033[91mPlease, indicate tenant/realm!\033[0m"
+    exit 1
+fi
+
+source scripts/lib.sh || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
+source .env
 
-_base_/start.sh
-auth/start.sh
-aether/start.sh
+start_add_tenant_dependencies false
 
-if [ "$ENABLE_CONNECT" = true ]; then
-    connect/start.sh
-fi
-
-if [ "$ENABLE_GATHER" = true ]; then
-    gather/start.sh
-fi
-
-if [ "$ENABLE_ELASTICSEARCH" = true ]; then
-    elasticsearch/start.sh
-fi
-
-if [ "$ENABLE_CKAN" = true ]; then
-    ckan/start.sh
-fi
-
-if [ "$ENABLE_ZEEBE" = true ]; then
-    zeebe/start.sh
-fi
+$GWM_RUN add_service zb_monitor "$1" $KEYCLOAK_OIDC_CLIENT
+$GWM_RUN add_service stream-consumer "$1" $KEYCLOAK_OIDC_CLIENT

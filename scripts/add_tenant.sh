@@ -45,3 +45,7 @@ fi
 if [ "$ENABLE_ELASTICSEARCH" = true ]; then
     elasticsearch/add_tenant.sh "$1"
 fi
+
+if [ "$ENABLE_ZEEBE" = true && "$ZEEBE_TENANT" =  "$1"] ; then
+    zeebe/add_tenant.sh "$1"
+fi

@@ -20,30 +20,4 @@
 #
 set -Eeuo pipefail
 
-source options.txt || \
-    ( echo -e "\033[91mRun this script from root folder\033[0m" && \
-      exit 1 )
-
-_base_/start.sh
-auth/start.sh
-aether/start.sh
-
-if [ "$ENABLE_CONNECT" = true ]; then
-    connect/start.sh
-fi
-
-if [ "$ENABLE_GATHER" = true ]; then
-    gather/start.sh
-fi
-
-if [ "$ENABLE_ELASTICSEARCH" = true ]; then
-    elasticsearch/start.sh
-fi
-
-if [ "$ENABLE_CKAN" = true ]; then
-    ckan/start.sh
-fi
-
-if [ "$ENABLE_ZEEBE" = true ]; then
-    zeebe/start.sh
-fi
+docker-compose -f zeebe/docker-compose.yml up -d

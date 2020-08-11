@@ -1,0 +1,21 @@
+{
+  "name": "zb_monitor",
+  "host": "http://zeebe_monitor:8082",
+  "oidc_endpoints": [
+    {
+      "name": "protected",
+      "paths": [
+        "/{realm}/{name}$",
+        "/{realm}/{name}/"
+      ],
+      "strip_path": "false",
+      "oidc_override": {
+        "config.user_keys": [
+          "preferred_username",
+          "email",
+          "groups"
+        ]
+      }
+    }
+  ]
+}

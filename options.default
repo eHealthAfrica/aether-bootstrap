@@ -52,6 +52,11 @@ ENABLE_ELASTICSEARCH=true
 ## CKAN
 ENABLE_CKAN=true
 
+## ZEEBE
+ENABLE_ZEEBE=true
+# zeebe can only be enabled on one realm
+ZEEBE_REALM=dev
+
 ## Kafka
 ENABLE_CONNECT=true
 # LOCAL or CONFLUENT
