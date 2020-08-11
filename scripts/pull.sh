@@ -47,3 +47,7 @@ fi
 if [ "$ENABLE_CKAN" = true ]; then
     docker-compose -f ckan/docker-compose.yml pull
 fi
+
+if [ "$ENABLE_ZEEBE" = true ]; then
+    docker-compose -f zeebe/docker-compose.yml pull
+fi
