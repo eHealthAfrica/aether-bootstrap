@@ -38,8 +38,8 @@ DESC=${3:-Tenant:  $REALM}
 
 $GWM_RUN add_realm \
     $REALM \
-    "$DESC" \
-    $THEME
+    description="$DESC" \
+    login_theme=$THEME
 
 $GWM_RUN add_public_client \
     $REALM \
