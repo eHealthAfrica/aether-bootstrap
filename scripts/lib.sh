@@ -134,6 +134,7 @@ function _wait_for {
         if [[ $retries -gt $MAX_RETRIES ]]; then
             echo_error "It was not possible to start $container"
             $on_error
+            $is_ready
             exit 1
         fi
 

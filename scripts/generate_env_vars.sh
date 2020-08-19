@@ -136,7 +136,7 @@ function gen_env_file {
 # ------------------------------------------------------------------
 # Releases
 # ==================================================================
-AETHER_VERSION=1.7.6
+AETHER_VERSION=1.7.9
 GATHER_VERSION=3.4.3
 GATEWAY_VERSION=latest
 KONG_VERSION=2.0
@@ -158,6 +158,8 @@ KEYCLOAK_PUBLIC_CLIENT=${KEYCLOAK_PUBLIC_CLIENT:-aether}
 KEYCLOAK_OIDC_CLIENT=${KEYCLOAK_OIDC_CLIENT:-kong}
 
 DEFAULT_LOGIN_THEME=${KEYCLOAK_LOGIN_THEME:-ehealth}
+AETHER_LOGIN_THEME=${AETHER_LOGIN_THEME:-aether}
+GATHER_LOGIN_THEME=${GATHER_LOGIN_THEME:-aether}
 
 INITIAL_SU_USERNAME=${INITIAL_SU_USERNAME:-sys-admin}
 INITIAL_SU_PASSWORD=${admin_password}

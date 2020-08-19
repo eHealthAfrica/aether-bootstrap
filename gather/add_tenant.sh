@@ -32,4 +32,11 @@ source .env
 
 start_add_tenant_dependencies
 
-$GWM_RUN add_solution gather "$1" $KEYCLOAK_OIDC_CLIENT
+# Create specific client for gather solution with "aether" as login theme
+GATHER_OIDC_CLIENT="${KEYCLOAK_OIDC_CLIENT}-gather"
+$GWM_RUN add_oidc_client \
+    $1 \
+    "$GATHER_OIDC_CLIENT" \
+    login_theme="${GATHER_LOGIN_THEME:-aether}"
+
+$GWM_RUN add_solution gather "$1" $GATHER_OIDC_CLIENT

@@ -32,4 +32,11 @@ source .env
 
 start_add_tenant_dependencies
 
-$GWM_RUN add_solution aether "$1" $KEYCLOAK_OIDC_CLIENT
+# Create specific client for aether solution with "aether" as login theme
+AETHER_OIDC_CLIENT="${KEYCLOAK_OIDC_CLIENT}-aether"
+$GWM_RUN add_oidc_client \
+    $1 \
+    "$AETHER_OIDC_CLIENT" \
+    login_theme="${AETHER_LOGIN_THEME:-aether}"
+
+$GWM_RUN add_solution aether "$1" "$AETHER_OIDC_CLIENT"
