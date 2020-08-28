@@ -136,11 +136,11 @@ function gen_env_file {
 # ------------------------------------------------------------------
 # Releases
 # ==================================================================
-AETHER_VERSION=1.7.9
+AETHER_VERSION=1.7.10
 GATHER_VERSION=3.4.3
 GATEWAY_VERSION=latest
 KONG_VERSION=2.0
-KEYCLOAK_VERSION=9.0.3
+KEYCLOAK_VERSION=11.0.1
 CONFLUENTINC_VERSION=5.5.1
 AMAZON_ES_VERSION=1.9.0
 # ------------------------------------------------------------------
