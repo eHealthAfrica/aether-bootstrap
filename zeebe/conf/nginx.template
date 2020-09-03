@@ -89,7 +89,7 @@ http {
     location /auth {
       internal;
       proxy_method                GET;
-      proxy_pass                  http://kong/dev/zb/auth/user;
+      proxy_pass                  http://kong/${ZEEBE_REALM}/zb/auth/user;
       proxy_set_header            Authorization $http_authorization;
       proxy_set_header            Host $host;
       proxy_http_version          1.1;

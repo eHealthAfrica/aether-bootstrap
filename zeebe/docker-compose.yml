@@ -8,10 +8,12 @@ networks:
 services:
 
   stream-consumer:
-    image: ehealthafrica/aether-stream-consumer:0.3.0
+    # image: ehealthafrica/aether-stream-consumer:0.3.0
+    image: aether-stream-consumer:latest
     environment:
       # consumer settings
       CONSUMER_NAME: 'STREAM'
+      TENANCY_HEADER: x-oauth-realm
 
       # redis
       REDIS_PASSWORD: ${REDIS_PASSWORD}
@@ -43,22 +45,20 @@ services:
       - aether
 
   zeebe_ingress:
-    container_name: zeebe_ingress
     image: nginx:latest
     environment:
       ZEEBE_REALM: ${ZEEBE_REALM}
     volumes:
-      - ./conf/nginx.template:/etc/nginx/templates/nginx.template
-      # - ./conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      # - ./conf/nginx.template:/etc/nginx/templates/nginx.template
+      - ./conf/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "26500:26500"    # authenticated zb port
-      # - "26507:26507"  # public zeebe port
+      - "26507:26507"  # public zeebe port
       - "9600:9600"      # HC / metrics 
     networks:
       - aether
 
   zeebe:
-    container_name: zeebe_broker
     image: camunda/zeebe:0.24.1
     environment:
       - ZEEBE_LOG_LEVEL=debug
@@ -69,7 +69,6 @@ services:
       - aether
 
   zeebe_monitor:
-    container_name: zeebe-simple-monitor
     image: ehealthafrica/zeebe-simple-monitor:0.19.1
     environment:
       zeebe.client.broker.contactPoint: zeebe:26500
