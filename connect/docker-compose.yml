@@ -156,8 +156,12 @@ services:
 
       SERVER_PORT: 5005
       LOG_LEVEL: ERROR
+
+      PRODUCER_SETTINGS_FILE: /settings.json
     command: start
     restart: on-failure
+    volumes:
+      - ./settings.json:/settings.json
     networks:
       - aether
     extra_hosts:

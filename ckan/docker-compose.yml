@@ -107,5 +107,5 @@ services:
     command: start
     networks:
       - aether
-    # ports:
-    #   - 9009:9009
+    ports:
+      - 9009:9009

@@ -137,7 +137,7 @@ function gen_env_file {
 # Releases
 # ==================================================================
 AETHER_VERSION=1.7.10
-GATHER_VERSION=3.4.3
+GATHER_VERSION=3.4.4
 GATEWAY_VERSION=latest
 KONG_VERSION=2.0
 KEYCLOAK_VERSION=11.0.1
