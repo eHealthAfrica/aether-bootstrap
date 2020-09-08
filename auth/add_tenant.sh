@@ -73,3 +73,8 @@ $GWM_RUN add_user_group \
     $REALM \
     $INITIAL_USER_USERNAME \
     "user"
+
+$GWM_RUN add_service \
+    "gateway" \
+    $REALM \
+    $KEYCLOAK_OIDC_CLIENT

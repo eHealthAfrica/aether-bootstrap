@@ -2,9 +2,8 @@
   "name": "gateway",
   "host": "http://gateway-manager:8007",
   "paths": [
-    "/{public_realm}$",
-    "/{public_realm}/$",
-    "/{name}"
+    "/{public_realm}/{name}/health$",
+    "/{public_realm}/{name}/static"
   ],
   "oidc_endpoints": [
     {
@@ -12,8 +11,17 @@
       "paths": [
         "/{realm}$",
         "/{realm}/$",
-        "/{realm}/oauth2/",
-        "/{name}/"
+        "/{realm}/{name}/",
+        "/{realm}/oauth2/"
+      ]
+    }
+  ],
+  "public_endpoints": [
+    {
+      "name": "public",
+      "paths": [
+        "/{realm}/{name}/health$",
+        "/{realm}/{name}/static"
       ]
     }
   ]

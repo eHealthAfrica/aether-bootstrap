@@ -115,6 +115,7 @@ services:
       - ./app:/code/app
       - ./service:/code/service
       - ./solution:/code/solution
+      - ./data/services.json:/code/data/services.json
     command: start_app
     networks:
       - aether

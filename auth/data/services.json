@@ -1,0 +1,35 @@
+{
+  "gather": {
+    "key": "gather",
+    "name": "<b>gather</b>",
+    "icon": "${host}/${public_realm}/gather/static/gather/images/gather-icon.png",
+    "link": "gather",
+    "description": "With Gather you can create and manage surveys and surveyors, monitor the progress of data collection, and explore, mask and download your data as it comes in."
+  },
+  "kibana": {
+    "key": "kibana",
+    "name": "Kibana",
+    "icon": "${host}/${public_realm}/gateway/static/images/kibana-white.png",
+    "link": "kibana/kibana-app",
+    "description": "Send your data to Kibana and create various types of charts, tables and maps for visualizing, analyzing, and exploring the data."
+  },
+  "kernel-ui": {
+    "key": "aether",
+    "name": "<b>ae</b>ther",
+    "icon": "${host}/${public_realm}/kernel-ui/static/aether/images/aether-white.png",
+    "link": "kernel-ui",
+    "description": "Aether enables you to extract, mask and publish data to other platforms by creating a pipeline to map your existing data structure to your desired output."
+  },
+  "kernel": {
+    "key": "kernel",
+    "name": "<i style=\"color:#50aef3\">&lt;</i> Kernel <i style=\"color:#50aef3\">&gt;</i>",
+    "link": "kernel",
+    "description": "The Aether Kernel provides common functionality, such as logging and authentication."
+  },
+  "odk": {
+    "key": "odk",
+    "name": "<i style=\"color:#d25b69\">&lt;</i> ODK <i style=\"color:#d25b69\">&gt;</i>",
+    "link": "odk",
+    "description": "Aether Core modules provide generally useful components for data input and application communication. The ODK module can be used to, for example, for serving <i>XForms</i> to <i>ODK Collect</i>."
+  }
+}
