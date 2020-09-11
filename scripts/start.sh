@@ -27,6 +27,7 @@ source options.txt || \
 _base_/start.sh
 auth/start.sh
 aether/start.sh
+rest-proxy/start.sh
 
 if [ "$ENABLE_CONNECT" = true ]; then
     connect/start.sh
