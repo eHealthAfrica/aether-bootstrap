@@ -37,3 +37,5 @@ if [ "$AETHER_CONNECT_MODE" = "LOCAL" ]; then
 elif [ "$AETHER_CONNECT_MODE" = "CONFLUENT" ]; then
     $GWM_RUN add_ccloud_tenant "$1" || true
 fi
+
+$GWM_RUN add_service "producer" "$1" $KEYCLOAK_OIDC_CLIENT
