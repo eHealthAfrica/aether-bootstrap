@@ -31,7 +31,7 @@
         "geo_point_name": "geopoint"
       },
       "kibana_options": {
-        "auto_vizualization": "schema"
+        "auto_visualization": "schema"
       },
       "visualizations": []
     },
