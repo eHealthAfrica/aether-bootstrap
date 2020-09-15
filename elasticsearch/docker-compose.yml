@@ -59,7 +59,7 @@ services:
 
 
   elasticsearch-consumer:
-    image: ehealthafrica/aether-elasticsearch-consumer:2.1.2
+    image: ehealthafrica/aether-elasticsearch-consumer:2.2.3
     environment:
       # redis
       REDIS_DB: 0
@@ -81,16 +81,13 @@ services:
       SASL.PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
 
       # consumer settings
-      TENANCY_HEADER: x-oauth-realm
-      CONSUMER_NAME: 'CONS'
-      ES_CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
-      ES_CONSUMER_KAFKA_CONFIG_PATH: /code/conf/consumer/kafka.json
+      CONSUMER_NAME: ES-CONSUMER
+      CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
+      CONSUMER_KAFKA_CONFIG_PATH: /code/conf/consumer/kafka.json
 
       EXPOSE_PORT: 9099
-
-      # STACKDRIVER_LOGGING: 0
-      LOG_LEVEL: "DEBUG"
-
+      LOG_LEVEL: DEBUG
+      TENANCY_HEADER: x-oauth-realm
     volumes:
       - ./conf/consumer.json:/code/conf/consumer/consumer.json
       - ./conf/kafka.json:/code/conf/consumer/kafka.json

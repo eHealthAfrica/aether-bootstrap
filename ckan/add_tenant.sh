@@ -28,15 +28,8 @@ fi
 source scripts/lib.sh || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
-source options.txt
 source .env
 
 start_add_tenant_dependencies
 
-if [ "$AETHER_CONNECT_MODE" = "LOCAL" ]; then
-    $GWM_RUN add_kafka_tenant "$1"
-elif [ "$AETHER_CONNECT_MODE" = "CONFLUENT" ]; then
-    $GWM_RUN add_ccloud_tenant "$1" || true
-fi
-
-$GWM_RUN add_solution connect "$1" $KEYCLOAK_OIDC_CLIENT
+$GWM_RUN add_solution ckan "$1" $KEYCLOAK_OIDC_CLIENT

@@ -79,16 +79,8 @@ services:
       - aether
 
   ckan-consumer:
-    image: ehealthafrica/aether-ckan-consumer:1.0.1
+    image: ehealthafrica/aether-ckan-consumer:1.0.2
     environment:
-      TENANCY_HEADER: x-oauth-realm
-      CKAN_CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
-      CKAN_CONSUMER_KAFKA_CONFIG_PATH: /code/conf/consumer/kafka.json
-      LOG_LEVEL: DEBUG
-      EXPOSE_PORT: 9009
-
-      CONSUMER_NAME: CKAN-CONSUMER
-
       # redis
       REDIS_DB: 0
       REDIS_HOST: redis-ckan
@@ -101,6 +93,15 @@ services:
       SASL.MECHANISM: PLAIN
       SASL.USERNAME: ${KAFKA_CONSUMER_USER}
       SASL.PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
+
+      # consumer settings
+      CONSUMER_NAME: CKAN-CONSUMER
+      CONSUMER_CONFIG_PATH: /code/conf/consumer/consumer.json
+      CONSUMER_KAFKA_CONFIG_PATH: /code/conf/consumer/kafka.json
+
+      EXPOSE_PORT: 9009
+      LOG_LEVEL: DEBUG
+      TENANCY_HEADER: x-oauth-realm
     volumes:
       - ./conf/consumer.json:/code/conf/consumer/consumer.json
       - ./conf/kafka.json:/code/conf/consumer/kafka.json

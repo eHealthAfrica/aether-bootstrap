@@ -1,0 +1,14 @@
+{
+  "name": "ckan-consumer",
+  "host": "http://ckan-consumer:9099",
+  "oidc_endpoints": [
+    {
+      "name": "protected",
+      "paths": [
+        "/{realm}/{name}$",
+        "/{realm}/{name}/"
+      ],
+      "strip_path": "true"
+    }
+  ]
+}

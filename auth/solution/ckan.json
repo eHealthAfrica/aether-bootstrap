@@ -1,0 +1,6 @@
+{
+  "name": "ckan",
+  "services": [
+    "ckan-consumer"
+  ]
+}
