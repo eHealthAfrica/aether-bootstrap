@@ -45,3 +45,7 @@ fi
 if [ "$ENABLE_ELASTICSEARCH" = true ]; then
     elasticsearch/add_tenant.sh "$1"
 fi
+
+if [ "$ENABLE_CKAN" = true ]; then
+    ckan/add_tenant.sh "$1"
+fi

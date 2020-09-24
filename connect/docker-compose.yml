@@ -130,10 +130,7 @@ services:
 
       # Access via RESTful API
       AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
-      # private access (behind kong)
-      AETHER_KERNEL_URL: http://kernel:8000
-      # public access (through kong)
-      # AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/${PUBLIC_REALM}/kernel
+      AETHER_KERNEL_URL: ${BASE_PROTOCOL}://${BASE_DOMAIN}/${PUBLIC_REALM}/kernel
 
       # Access via DB
       POSTGRES_DBNAME: aether

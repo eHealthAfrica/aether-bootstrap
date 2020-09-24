@@ -1,0 +1,11 @@
+{
+  "name": "producer",
+  "host": "http://producer:5005",
+  "oidc_endpoints": [
+    {
+      "name": "protected",
+      "paths": ["/{realm}/{name}$", "/{realm}/{name}/"],
+      "strip_path": "true"
+    }
+  ]
+}
