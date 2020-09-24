@@ -45,10 +45,10 @@ services:
       PGPORT: 5432
       PGUSER: postgres
 
-      TESTING: 'true'
-      DJANGO_SECRET_KEY: ${TEST_KERNEL_DJANGO_SECRET_KEY}
+      ENABLE_CONNECTION_POOL: 'true'
+      DB_POOL_INTERNAL: 'true'
 
-      MULTITENANCY: "true"
+      MULTITENANCY: 'true'
       DEFAULT_REALM: ${TEST_KERNEL_CLIENT_REALM}
       REALM_COOKIE: ${REALM_COOKIE}
 
