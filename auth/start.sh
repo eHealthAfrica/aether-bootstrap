@@ -27,3 +27,4 @@ source scripts/lib.sh || \
 start_auth_container kong
 start_auth_container keycloak
 start_auth_container gateway-manager
+docker-compose -f auth/docker-compose.yml up -d konga

@@ -33,7 +33,7 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 8001:8001  # open this port to access to kong admin
+      # - 8001:8001  # open this port to access to kong admin
     command: ['kong', 'start', '--v']
     networks:
       aether:
@@ -121,3 +121,28 @@ services:
       - aether
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
+
+
+  #---------------------------------
+  # Konga
+  # https://github.com/pantsel/konga
+  # Accessible in http://localhost:1337
+  #---------------------------------
+
+  konga:
+    image: pantsel/konga:latest
+    environment:
+      DB_ADAPTER: postgres
+      DB_HOST: db
+      DB_PORT: '5432'
+      DB_DATABASE: konga
+      DB_USER: konga
+      DB_PASSWORD: ${KONGA_PG_PASSWORD}
+      NODE_ENV: production
+      KONGA_HOOK_TIMEOUT: 120000
+    depends_on:
+      - kong
+    ports:
+      - 1337:1337
+    networks:
+      - aether
