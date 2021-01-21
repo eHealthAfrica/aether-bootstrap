@@ -18,7 +18,7 @@ scripts/pull.sh
 # stops running containers
 scripts/stop.sh
 # starts the services indicated in `options.txt` file
-scritps.start.sh
+scripts/start.sh
 ```
 
 To add new tenants execute:

@@ -10,7 +10,7 @@ services:
   # ---------------------------------
 
   db-test:
-    image: postgres:10-alpine
+    image: postgres:${POSTGRES_VERSION:-13-alpine}
     environment:
       PGUSER: postgres
       POSTGRES_HOST_AUTH_METHOD: trust
@@ -39,7 +39,7 @@ services:
       ADMIN_PASSWORD: ${TEST_KERNEL_ADMIN_PASSWORD}
       ADMIN_TOKEN: ${TEST_KERNEL_ADMIN_TOKEN}
 
-      DB_NAME: aether-kernel-test
+      DB_NAME: aether-kernel-test-${TEST_PRODUCER_KERNEL_ACCESS_TYPE:-api}
       PGHOST: db-test
       PGPASSWORD: ${TEST_KERNEL_DB_PASSWORD}
       PGPORT: 5432
@@ -110,7 +110,7 @@ services:
       REALM_COOKIE: ${REALM_COOKIE}
 
       # Access via DB
-      POSTGRES_DBNAME: aether-kernel-test
+      POSTGRES_DBNAME: aether-kernel-test-db
       POSTGRES_HOST: db-test
       POSTGRES_PASSWORD: ${TEST_KERNEL_DB_PASSWORD}
       POSTGRES_PORT: 5432

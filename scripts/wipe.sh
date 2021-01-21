@@ -40,4 +40,4 @@ for network in "${NETWORKS[@]}"; do
 done
 
 rm -f .env
-rm -Rf ./connect/*.conf
+rm -rf ./connect/*.conf

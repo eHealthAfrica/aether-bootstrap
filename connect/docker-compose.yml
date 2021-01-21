@@ -89,7 +89,7 @@ services:
   # ---------------------------------
 
   kafka-viewer:
-    image: ehealthafrica/aether-kafka-viewer
+    image: ehealthafrica/aether-kafka-viewer:${KAFKA_VIEWER_VERSION:-latest}
     environment:
       - PYTHONUNBUFFERED=1
       - KAFKA_CONFIG=/code/conf/consumer/kafka.json
@@ -106,7 +106,7 @@ services:
   # Kafka Command Line Tool
   # ---------------------------------
   kafkacat:
-    image: ehealthafrica/kafkacat:1.5.0
+    image: ehealthafrica/kafkacat:${KAFKACAT_VERSION:-1.5.0}
     environment:
       - KAFKACAT_CONFIG=/kafkacat.conf
     volumes:

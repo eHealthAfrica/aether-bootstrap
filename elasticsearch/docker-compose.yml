@@ -59,7 +59,7 @@ services:
 
 
   elasticsearch-consumer:
-    image: ehealthafrica/aether-elasticsearch-consumer:2.2.3
+    image: ehealthafrica/aether-elasticsearch-consumer:${ES_CONSUMER_VERSION:-2.2.6}
     environment:
       # redis
       REDIS_DB: 0
