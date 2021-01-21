@@ -20,7 +20,12 @@
 #
 set -Eeuo pipefail
 
-# just check that the scripts work
+# ------------------------------------------------------------------------------
+#
+# This script is intended to be used exclusively in travis.
+# It just checks that the different scripts work, and WIPES everything on exit.
+#
+# ------------------------------------------------------------------------------
 
 function travis_options {
     cat << EOF
