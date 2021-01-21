@@ -20,7 +20,12 @@
 #
 set -Eeuo pipefail
 
-# just check that the scripts work
+# ------------------------------------------------------------------------------
+#
+# This script is intended to be used exclusively in travis.
+# It just checks that the different scripts work, and WIPES everything on exit.
+#
+# ------------------------------------------------------------------------------
 
 function travis_options {
     cat << EOF
@@ -60,10 +65,38 @@ AETHER_CONNECT_MODE=LOCAL
 EOF
 }
 
+function _on_exit {
+    ./scripts/wipe.sh > /dev/null
+}
+
+function _on_err {
+    case "$TEST_MODE" in
+        setup )
+            for dc_file in $(find docker-compose.yml */docker-compose.yml 2> /dev/null); do
+                docker-compose -f $dc_file logs -t --tail="all"
+            done
+        ;;
+
+        integration )
+            dc_file="tests/docker-compose.yml"
+            CONTAINERS=( db kernel producer )
+            for container in "${CONTAINERS[@]}"; do
+                docker-compose -f $dc_file logs -t --tail="all" "${container}-test"
+            done
+        ;;
+    esac
+
+    exit 1
+}
+
 travis_options > options.txt
+TEST_MODE=$1
 
-case "$1" in
+trap '_on_exit' EXIT
+trap '_on_err' ERR
 
+
+case "$TEST_MODE" in
     setup )
         ./scripts/init.sh
         ./scripts/start.sh
@@ -74,5 +107,4 @@ case "$1" in
         ./tests/init.sh
         ./tests/run.sh
     ;;
-
 esac

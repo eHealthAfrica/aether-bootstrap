@@ -29,7 +29,7 @@ CERT_FOLDER="./.certs"
 CERT_NAME="${CERT_FOLDER}/${BASE_DOMAIN}"
 
 mkdir -p ${CERT_FOLDER}
-rm -Rf ${CERT_NAME}*
+rm -rf ${CERT_NAME}*
 
 echo_message "Generating self-signed certificate for ${BASE_DOMAIN}..."
 openssl genrsa -out ${CERT_NAME}.key 4096

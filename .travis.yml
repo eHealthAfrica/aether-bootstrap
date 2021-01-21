@@ -1,35 +1,20 @@
 os: linux
 dist: bionic
-language: python
-python:
-  - '3.7'
+language: shell
 services:
   - docker
 
-install: true
-
-# build only the master branch
 branches:
   only:
     - master
-
-script:
-  - ./scripts/travis/tests.sh $TEST_MODE
-
-after_script:
-  - ./scripts/travis/teardown.sh $TEST_MODE
-
-after_failure:
-  - ./scripts/travis/failure.sh $TEST_MODE
 
 addons:
   hosts: travis.test.server
 
 jobs:
-  fast_finish: true
   include:
     - name: "Set up"
-      env: 'TEST_MODE=setup'
+      script: ./scripts/travis.sh setup
 
     - name: "Integration tests"
-      env: 'TEST_MODE=integration'
+      script: ./scripts/travis.sh integration
