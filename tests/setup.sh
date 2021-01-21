@@ -62,6 +62,7 @@ function start_producer_test {
     _wait_for "producer" "$DC_KERNEL eval wget -q --spider http://producer-test:9005/healthcheck"
 }
 
+$DC_TEST up -d kafka-test zookeeper-test
 start_db_test
 
 $DC_KERNEL setup
@@ -71,7 +72,7 @@ $DC_KERNEL manage create_user \
     -p=$TEST_KERNEL_CLIENT_PASSWORD \
     -r=$TEST_KERNEL_CLIENT_REALM
 
-$DC_TEST up -d zookeeper-test kafka-test producer-test kernel-test
+$DC_TEST up -d kernel-test producer-test
 sleep 10
 
 echo "Containers started, waiting for Kernel & Producer to be available..."
