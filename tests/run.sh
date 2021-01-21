@@ -71,7 +71,7 @@ function kernel_setup {
         -r=$TEST_KERNEL_CLIENT_REALM
 }
 
-$DC_TEST up -d db-test kafka-test zookeeper-test
+$DC_TEST up -d db-test redis-test kafka-test zookeeper-test
 start_db_test
 
 # check producer access to kernel via RESTful API / database
@@ -84,12 +84,13 @@ for _type in "${_types[@]}"; do
 
     export TEST_PRODUCER_KERNEL_ACCESS_TYPE=${_type}
     kernel_setup
+    $DC_TEST up -d exm-test
     start_kernel_test
     start_producer_test
 
     $DC_TEST run --rm integration-test test
 
-    $DC_TEST kill kernel-test producer-test
+    $DC_TEST kill exm-test kernel-test producer-test
 done
 
 ./tests/wipe.sh

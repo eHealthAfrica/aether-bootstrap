@@ -31,6 +31,7 @@ AET_VOLUMES=( \
     aether_database_data \
     aether_es_data \
     aether_minio_data \
+    aether_redis_kernel_data \
 )
 AET_NETWORK=aether_bootstrap_net
 

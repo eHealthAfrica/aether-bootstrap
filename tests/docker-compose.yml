@@ -3,6 +3,9 @@ version: '3.7'
 networks:
   test:
 
+volumes:
+  redis-data-test:
+
 services:
 
   # ---------------------------------
@@ -17,6 +20,44 @@ services:
     networks:
       - test
 
+  redis-test:
+    image: redis:alpine
+    volumes:
+      - redis-data-test:/var/lib/redis/data
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --notify-keyspace-events KEA
+      --appendonly yes
+      --auto-aof-rewrite-percentage 100
+      --auto-aof-rewrite-min-size 64mb
+    networks:
+      - test
+
+  # ---------------------------------
+  # Aether Entity Extractor Test
+  # ---------------------------------
+
+  exm-test:
+    image: ehealthafrica/aether-exm:${AETHER_VERSION:-alpha}
+    environment:
+      DEFAULT_REALM: ${TEST_KERNEL_CLIENT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
+
+      AETHER_KERNEL_TOKEN: ${TEST_KERNEL_ADMIN_TOKEN}
+      AETHER_KERNEL_URL: http://kernel-test:9000
+
+      REDIS_DB: 0
+      REDIS_HOST: redis-test
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+
+      LOG_LEVEL: DEBUG
+    command: start
+    depends_on:
+      - redis-test
+    networks:
+      - test
 
   # ---------------------------------
   # Aether kernel
@@ -52,9 +93,15 @@ services:
       DEFAULT_REALM: ${TEST_KERNEL_CLIENT_REALM}
       REALM_COOKIE: ${REALM_COOKIE}
 
+      REDIS_DB: 0
+      REDIS_HOST: redis-test
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+
       WEB_SERVER_PORT: 9000
     depends_on:
       - db-test
+      - redis-test
     command: start
     networks:
       - test
