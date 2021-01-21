@@ -5,6 +5,10 @@ networks:
     external:
       name: aether_bootstrap_net
 
+volumes:
+  redis-data-odk:
+  redis-data-gather:
+
 services:
 
   # ---------------------------------
@@ -13,6 +17,8 @@ services:
 
   redis-odk:
     image: redis:alpine
+    volumes:
+      - redis-data-odk:/var/lib/redis/data
     command: redis-server --requirepass ${REDIS_PASSWORD}
     networks:
       - aether
@@ -98,6 +104,8 @@ services:
 
   redis-gather:
     image: redis:alpine
+    volumes:
+      - redis-data-gather:/var/lib/redis/data
     command: redis-server --requirepass ${REDIS_PASSWORD}
     networks:
       - aether

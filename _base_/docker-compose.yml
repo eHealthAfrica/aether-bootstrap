@@ -6,10 +6,10 @@ networks:
       name: aether_bootstrap_net
 
 volumes:
-  database_data:
+  database-data:
     external:
       name: aether_database_data
-  minio_data:
+  minio-data:
     external:
       name: aether_minio_data
 
@@ -30,14 +30,14 @@ services:
       timeout: 3s
       retries: 30
     volumes:
-      - database_data:/var/lib/postgresql/data
+      - database-data:/var/lib/postgresql/data
     networks:
       - aether
 
   minio:
     image: minio/minio:latest
     volumes:
-      - minio_data:/data
+      - minio-data:/data
     environment:
       MINIO_ACCESS_KEY: ${MINIO_STORAGE_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_STORAGE_SECRET_KEY}
