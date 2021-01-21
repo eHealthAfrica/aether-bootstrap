@@ -71,13 +71,13 @@ function _on_exit {
 
 function _on_err {
     case "$TEST_MODE" in
-        setup )
+        s | setup )
             for dc_file in $(find docker-compose.yml */docker-compose.yml 2> /dev/null); do
                 docker-compose -f $dc_file logs -t --tail="all"
             done
         ;;
 
-        integration )
+        i | integration )
             dc_file="tests/docker-compose.yml"
             CONTAINERS=( db kernel producer )
             for container in "${CONTAINERS[@]}"; do
@@ -97,13 +97,13 @@ trap '_on_err' ERR
 
 
 case "$TEST_MODE" in
-    setup )
+    s | setup )
         ./scripts/init.sh
         ./scripts/start.sh
         ./scripts/stop.sh
     ;;
 
-    integration )
+    i | integration )
         ./tests/init.sh
         ./tests/run.sh
     ;;

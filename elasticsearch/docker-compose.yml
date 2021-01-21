@@ -7,6 +7,7 @@ networks:
 
 volumes:
   elasticsearch-data:
+  redis-data-es:
 
 services:
 
@@ -53,6 +54,8 @@ services:
 
   redis-es:
     image: redis:alpine
+    volumes:
+      - redis-data-es:/var/lib/redis/data
     command: redis-server --requirepass ${REDIS_PASSWORD}
     networks:
       - aether

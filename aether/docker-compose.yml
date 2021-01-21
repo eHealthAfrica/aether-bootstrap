@@ -5,6 +5,10 @@ networks:
     external:
       name: aether_bootstrap_net
 
+volumes:
+  redis-data-kernel:
+  redis-data-ui:
+
 services:
 
   # ---------------------------------
@@ -13,6 +17,8 @@ services:
 
   redis-kernel:
     image: redis:alpine
+    volumes:
+      - redis-data-kernel:/var/lib/redis/data
     command: >
       redis-server
       --requirepass ${REDIS_PASSWORD}
@@ -110,6 +116,8 @@ services:
 
   redis-kernel-ui:
     image: redis:alpine
+    volumes:
+      - redis-data-ui:/var/lib/redis/data
     command: redis-server --requirepass ${REDIS_PASSWORD}
     networks:
       - aether

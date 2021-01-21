@@ -21,4 +21,4 @@
 set -Eeuo pipefail
 
 docker-compose -f elasticsearch/docker-compose.yml kill
-docker-compose -f elasticsearch/docker-compose.yml down
+docker-compose -f elasticsearch/docker-compose.yml down -v

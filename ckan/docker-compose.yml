@@ -6,9 +6,10 @@ networks:
       name: aether_bootstrap_net
 
 volumes:
-  database_data:
+  database-data-ckan:
     external:
       name: aether_ckan_data
+  redis-data-ckan:
 
 services:
   # WARNING: last update was 2 years ago!!! (Today: 2020-05-05)
@@ -21,7 +22,7 @@ services:
       POSTGRES_PASSWORD: ${CKAN_DB_PASSWORD}
       POSTGRES_DB: ckan
     volumes:
-      - database_data:/var/lib/postgresql/data
+      - database-data-ckan:/var/lib/postgresql/data
     networks:
       - aether
 
@@ -41,6 +42,8 @@ services:
 
   redis-ckan:
     image: redis:alpine
+    volumes:
+      - redis-data-ckan:/var/lib/redis/data
     command: redis-server --requirepass ${REDIS_PASSWORD}
     networks:
       - aether

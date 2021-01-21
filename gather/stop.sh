@@ -21,4 +21,4 @@
 set -Eeuo pipefail
 
 docker-compose -f gather/docker-compose.yml kill
-docker-compose -f gather/docker-compose.yml down
+docker-compose -f gather/docker-compose.yml down -v
