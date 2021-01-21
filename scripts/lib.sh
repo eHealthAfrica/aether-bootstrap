@@ -26,6 +26,13 @@ MAX_RETRIES=20
 DC_AUTH="docker-compose -f auth/docker-compose.yml"
 GWM_RUN="$DC_AUTH run --rm gateway-manager"
 
+AET_VOLUMES=( \
+    aether_ckan_data \
+    aether_database_data \
+    aether_es_data \
+    aether_minio_data \
+)
+AET_NETWORK=aether_bootstrap_net
 
 function echo_message {
     if [ -z "$1" ]; then
@@ -62,14 +69,13 @@ function parse_options {
 function create_docker_assets {
     echo_message "Generating docker network and volumes..."
     {
-        docker network create aether_bootstrap_net \
+        docker network create $AET_NETWORK \
             --attachable \
             --subnet=${NETWORK_SUBNET}
     } || true
-    echo_success "aether_bootstrap_net network is ready"
+    echo_success "$AET_NETWORK network is ready"
 
-    VOLUMES=( aether_database_data aether_minio_data aether_ckan_data )
-    for volume in "${VOLUMES[@]}"; do
+    for volume in "${AET_VOLUMES[@]}"; do
         docker volume create $volume || true
         echo_success "$volume volume is ready"
     done

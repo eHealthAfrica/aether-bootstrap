@@ -7,6 +7,8 @@ networks:
 
 volumes:
   elasticsearch-data:
+    external:
+      name: aether_es_data
   redis-data-es:
 
 services:

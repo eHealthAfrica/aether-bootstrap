@@ -20,24 +20,20 @@
 #
 set -Eeuo pipefail
 
+source scripts/lib.sh
+
 for dc_file in $(find docker-compose.yml */docker-compose.yml 2> /dev/null); do
     docker-compose -f $dc_file kill    2>/dev/null
     docker-compose -f $dc_file down -v 2>/dev/null
 done
 
-VOLUMES=( aether_database_data aether_minio_data aether_ckan_data )
-for volume in "${VOLUMES[@]}"; do
+for volume in "${AET_VOLUMES[@]}"; do
     {
         docker volume rm -f $volume 2>/dev/null
     } || true
 done
 
-NETWORKS=( aether_bootstrap_net )
-for network in "${NETWORKS[@]}"; do
-    {
-        docker network rm $network 2>/dev/null
-    } || true
-done
+docker network rm $AET_NETWORK 2>/dev/null || true
 
 rm -f .env
 rm -rf ./connect/*.conf
