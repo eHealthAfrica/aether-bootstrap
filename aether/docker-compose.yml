@@ -7,6 +7,8 @@ networks:
 
 volumes:
   redis-data-kernel:
+    external:
+        name: aether_redis_kernel_data
   redis-data-ui:
 
 services:
@@ -108,6 +110,31 @@ services:
       - aether
     extra_hosts:
       - ${BASE_DOMAIN}:${KONG_IP}
+
+
+# ---------------------------------
+  # Aether Entity Extractor
+  # ---------------------------------
+
+  exm:
+    image: ehealthafrica/aether-exm:${AETHER_VERSION:-alpha}
+    environment:
+      DEFAULT_REALM: ${DEFAULT_REALM}
+      REALM_COOKIE: ${REALM_COOKIE}
+
+      AETHER_KERNEL_TOKEN: ${KERNEL_ADMIN_TOKEN}
+      AETHER_KERNEL_URL: http://kernel:8000
+
+      REDIS_DB: 0
+      REDIS_HOST: redis-kernel
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: 6379
+
+      LOG_LEVEL: ERROR
+    command: start
+    restart: on-failure
+    networks:
+      - aether
 
 
   # ---------------------------------
