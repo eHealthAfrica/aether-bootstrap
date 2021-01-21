@@ -20,6 +20,60 @@
 #
 set -Eeuo pipefail
 
+source .env
+
+DC_TEST="docker-compose -f tests/docker-compose.yml"
+DC_KERNEL="$DC_TEST run --rm kernel-test"
+MAX_RETRIES=20
+
+function _wait_for {
+    local container=$1
+    local is_ready=$2
+
+    echo "Starting $container server..."
+    $DC_TEST up -d "${container}-test"
+
+    local retries=1
+    until $is_ready > /dev/null; do
+        >&2 echo "Waiting for $container... $retries"
+
+        ((retries++))
+        if [[ $retries -gt $MAX_RETRIES ]]; then
+            echo "It was not possible to start $container"
+            $DC_TEST logs "${container}-test"
+            $is_ready
+            exit 1
+        fi
+
+        sleep 2
+    done
+    echo "$container is ready!"
+}
+
+function start_db_test {
+    _wait_for "db" "$DC_KERNEL eval pg_isready -q"
+}
+
+function start_kernel_test {
+    _wait_for "kernel" "$DC_KERNEL eval wget -q --spider http://kernel-test:9000/health"
+}
+
+function start_producer_test {
+    _wait_for "producer" "$DC_KERNEL eval wget -q --spider http://producer-test:9005/healthcheck"
+}
+
+function kernel_setup {
+    $DC_KERNEL setup
+
+    $DC_KERNEL manage create_user \
+        -u=$TEST_KERNEL_CLIENT_USERNAME \
+        -p=$TEST_KERNEL_CLIENT_PASSWORD \
+        -r=$TEST_KERNEL_CLIENT_REALM
+}
+
+$DC_TEST up -d db-test kafka-test zookeeper-test
+start_db_test
+
 # check producer access to kernel via RESTful API / database
 _types=( api db )
 
@@ -29,9 +83,13 @@ for _type in "${_types[@]}"; do
     echo "====================================================================="
 
     export TEST_PRODUCER_KERNEL_ACCESS_TYPE=${_type}
-    ./tests/setup.sh
+    kernel_setup
+    start_kernel_test
+    start_producer_test
 
-    docker-compose -f tests/docker-compose.yml run --rm integration-test test
+    $DC_TEST run --rm integration-test test
 
-    ./tests/wipe.sh
+    $DC_TEST kill kernel-test producer-test
 done
+
+./tests/wipe.sh

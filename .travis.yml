@@ -1,8 +1,7 @@
 os: linux
 dist: bionic
-language: python
-python:
-  - '3.7'
+
+language: shell
 services:
   - docker
 
@@ -15,12 +14,6 @@ branches:
 
 script:
   - ./scripts/travis/tests.sh $TEST_MODE
-
-after_script:
-  - ./scripts/travis/teardown.sh $TEST_MODE
-
-after_failure:
-  - ./scripts/travis/failure.sh $TEST_MODE
 
 addons:
   hosts: travis.test.server

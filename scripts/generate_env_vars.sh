@@ -153,6 +153,8 @@ ES_CONSUMER_VERSION=2.2.6
 CKAN_VERSION=2.8.4
 CKAN_SOLR_VERSION=8.4.0
 CKAN_CONSUMER_VERSION=1.0.2
+
+POSTGRES_VERSION=13-alpine
 # ------------------------------------------------------------------
 
 
