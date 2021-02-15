@@ -28,10 +28,6 @@ KEYCLOAK_OIDC_CLIENT=kong
 
 # default login theme for all services
 KEYCLOAK_LOGIN_THEME=ehealth
-# login theme for aether solution
-AETHER_LOGIN_THEME=aether
-# login theme for gather solution
-GATHER_LOGIN_THEME=aether
 
 ## Credentials
 

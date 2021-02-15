@@ -24,6 +24,7 @@ source scripts/lib.sh || \
     ( echo -e "\033[91mRun this script from root folder\033[0m" && \
       exit 1 )
 
+docker-compose -f auth/docker-compose.yml up -d keycloak-eha-themes
 start_auth_container kong
 start_auth_container keycloak
 start_auth_container gateway-manager

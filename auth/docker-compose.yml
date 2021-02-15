@@ -5,6 +5,9 @@ networks:
     external:
       name: aether_bootstrap_net
 
+volumes:
+  theme_ehealth:
+
 services:
 
   # ---------------------------------
@@ -27,9 +30,12 @@ services:
       KONG_PROXY_LISTEN: 0.0.0.0:80, ssl 0.0.0.0:443
 
       KONG_PLUGINS: bundled,kong-oidc-auth
-    # uncomment to mount logs outside of docker volume
-    # volumes:
-    #   - ../temp/logs/kong:/usr/local/kong/logs/
+
+      KONG_LOG_LEVEL: error
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
     ports:
       - 80:80
       - 443:443
@@ -45,13 +51,17 @@ services:
   # Gateway Authentication
   # ---------------------------------
 
+  keycloak-eha-themes:
+    image: ehealthafrica/keycloak-themes:${KEYCLOAK_THEMES_VERSION:-latest}
+    volumes:
+      - theme_ehealth:/var/tmp/ehealth:rw
+    command: ["sh", "-c", "cp -R ./themes/ehealth-theme/* /var/tmp/ehealth"]
+
   keycloak:
     image: jboss/keycloak:${KEYCLOAK_VERSION:-latest}
     volumes:
-      # custom aether theme
-      - ./keycloak/aether-theme:/opt/jboss/keycloak/themes/aether
       # custom ehealth theme
-      - ./keycloak/ehealth-theme:/opt/jboss/keycloak/themes/ehealth
+      - theme_ehealth:/opt/jboss/keycloak/themes/ehealth:ro
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: db
@@ -68,9 +78,8 @@ services:
 
       KEYCLOAK_LOGLEVEL: ERROR
       ROOT_LOGLEVEL: ERROR
-    # this is private to the cluster, only open for debugging
-    # ports:
-    #   - 8080:8080
+    links:
+      - keycloak-eha-themes
     networks:
       - aether
     extra_hosts:
