@@ -43,9 +43,7 @@ KEYCLOAK_GLOBAL_ADMIN=kc-admin-travis
 KEYCLOAK_PUBLIC_CLIENT=public-travis
 KEYCLOAK_OIDC_CLIENT=oidc-travis
 
-KEYCLOAK_LOGIN_THEME=ehealth
-AETHER_LOGIN_THEME=ehealth
-GATHER_LOGIN_THEME=ehealth
+KEYCLOAK_LOGIN_THEME=keycloak
 
 # Initial users credentials
 INITIAL_SU_USERNAME=sys-admin-travis
