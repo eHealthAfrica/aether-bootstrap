@@ -74,8 +74,8 @@ function kernel_setup {
 $DC_TEST up -d db-test redis-test kafka-test zookeeper-test
 start_db_test
 
-# check producer access to kernel via RESTful API / database
-_types=( api db )
+# check producer access to kernel via RESTful API (api) / database (db)
+_types=( api )
 
 for _type in "${_types[@]}"; do
     echo "====================================================================="
