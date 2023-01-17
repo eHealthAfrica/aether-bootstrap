@@ -13,7 +13,7 @@ services:
   # ---------------------------------
 
   db-test:
-    image: postgres:${POSTGRES_VERSION:-13-alpine}
+    image: postgres:${POSTGRES_VERSION:-15-alpine}
     environment:
       PGUSER: postgres
       POSTGRES_HOST_AUTH_METHOD: trust

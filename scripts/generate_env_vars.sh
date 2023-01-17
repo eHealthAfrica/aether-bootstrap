@@ -136,26 +136,26 @@ function gen_env_file {
 # ------------------------------------------------------------------
 # Releases
 # ==================================================================
-AETHER_VERSION=2.0.10
-GATHER_VERSION=3.4.7
+AETHER_VERSION=2.2.10
+GATHER_VERSION=3.6.6
 
 GATEWAY_VERSION=0.0.4
 KONG_VERSION=2.0
-KEYCLOAK_VERSION=12.0.1
+KEYCLOAK_VERSION=12.0.4
 KEYCLOAK_THEMES_VERSION=0.0.4
 
-CONFLUENTINC_VERSION=6.1.1
+CONFLUENTINC_VERSION=6.2.8
 KAFKA_VIEWER_VERSION=latest
-KAFKACAT_VERSION=1.6.0
+KAFKACAT_VERSION=1.7.1
 
 AMAZON_ES_VERSION=1.13.2
-ES_CONSUMER_VERSION=2.2.6
+ES_CONSUMER_VERSION=2.3.0
 
 CKAN_VERSION=2.8.4
 CKAN_SOLR_VERSION=8.4.0
 CKAN_CONSUMER_VERSION=1.0.2
 
-POSTGRES_VERSION=13-alpine
+POSTGRES_VERSION=15-alpine
 # ------------------------------------------------------------------
 
 

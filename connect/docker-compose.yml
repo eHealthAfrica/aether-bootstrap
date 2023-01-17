@@ -106,7 +106,7 @@ services:
   # Kafka Command Line Tool
   # ---------------------------------
   kafkacat:
-    image: edenhill/kafkacat:${KAFKACAT_VERSION:-1.6.0}
+    image: edenhill/kcat:${KAFKACAT_VERSION:-1.7.1}
     environment:
       - KAFKACAT_CONFIG=/kafkacat.conf
     volumes:
