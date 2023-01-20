@@ -27,7 +27,7 @@ source scripts/lib.sh || \
 _base_/start.sh
 
 # setup container (model migration, admin user, static content...)
-DCG="docker-compose -f gather/docker-compose.yml"
+DCG="docker compose --env-file .env -f gather/docker-compose.yml"
 GATHER_CONTAINERS=( odk gather )
 for container in "${GATHER_CONTAINERS[@]}"; do
     $DCG up -d redis-$container

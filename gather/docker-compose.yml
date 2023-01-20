@@ -1,9 +1,7 @@
-version: '3.7'
-
 networks:
   aether:
-    external:
-      name: aether_bootstrap_net
+    name: aether_bootstrap_net
+    external: true
 
 volumes:
   redis-data-odk:

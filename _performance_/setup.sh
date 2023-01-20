@@ -25,7 +25,7 @@ source scripts/lib.sh || \
       exit 1 )
 source .env
 
-docker-compose -f _performance_/docker-compose.yml pull
+docker compose --env-file .env -f _performance_/docker-compose.yml pull
 
 ./scripts/start.sh
 

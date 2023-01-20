@@ -20,5 +20,5 @@
 #
 set -Eeuo pipefail
 
-docker-compose -f _performance_/docker-compose.yml kill
-docker-compose -f _performance_/docker-compose.yml down -v
+docker compose --env-file .env -f _performance_/docker-compose.yml kill
+docker compose --env-file .env -f _performance_/docker-compose.yml down -v

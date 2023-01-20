@@ -20,5 +20,5 @@
 #
 set -Eeuo pipefail
 
-docker-compose -f aether/docker-compose.yml kill
-docker-compose -f aether/docker-compose.yml down -v
+docker compose --env-file .env -f aether/docker-compose.yml kill
+docker compose --env-file .env -f aether/docker-compose.yml down -v

@@ -20,5 +20,5 @@
 #
 set -Eeuo pipefail
 
-docker-compose -f assets/docker-compose.yml build --force-rm assets
-docker-compose -f assets/docker-compose.yml run --rm assets generate ${@:1}
+docker compose --env-file .env -f assets/docker-compose.yml build --force-rm assets
+docker compose --env-file .env -f assets/docker-compose.yml run --rm assets generate ${@:1}

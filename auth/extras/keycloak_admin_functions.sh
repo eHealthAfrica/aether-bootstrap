@@ -25,7 +25,7 @@ set -Eeuo pipefail
 # ------------------------------------------------------------------------------
 
 function connect_to_keycloak {
-    KC_ID=$(docker-compose -f auth/docker-compose.yml ps -q keycloak)
+    KC_ID=$(docker compose --env-file .env -f auth/docker-compose.yml ps -q keycloak)
     export KCADM="docker container exec -i ${KC_ID} ./keycloak/bin/kcadm.sh"
 
     $KCADM \

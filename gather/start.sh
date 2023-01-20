@@ -20,4 +20,4 @@
 #
 set -Eeuo pipefail
 
-docker-compose -f gather/docker-compose.yml up -d
+docker compose --env-file .env -f gather/docker-compose.yml up -d

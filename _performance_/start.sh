@@ -20,6 +20,6 @@
 #
 set -Eeuo pipefail
 
-docker-compose \
+docker compose \
     -f _performance_/docker-compose.yml up -d \
     --scale locust-worker=${TEST_WORKERS:-5}

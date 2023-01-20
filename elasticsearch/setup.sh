@@ -27,6 +27,6 @@ source scripts/lib.sh || \
 start_es_container
 
 # use mounted configs to initialize security
-docker-compose -f elasticsearch/docker-compose.yml exec elasticsearch sh securityadmin_demo.sh
+docker compose --env-file .env -f elasticsearch/docker-compose.yml exec elasticsearch sh securityadmin_demo.sh
 # sometimes the "own_index" does not exists
 $GWM_RUN setup_elasticsearch || true

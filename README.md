@@ -2,7 +2,7 @@
 
 > A bootstrap for creating Aether-based solutions
 
-This repo contains a series of docker-compose files and shell scripts that will pull Docker images of the latest version of [Aether](https://github.com/eHealthAfrica/aether) from Docker Hub and start them up.
+This repo contains a series of docker compose files and shell scripts that will pull Docker images of the latest version of [Aether](https://github.com/eHealthAfrica/aether) from Docker Hub and start them up.
 
 For more information on Aether, take a look at the [microsite](https://aether.ehealthafrica.org).
 

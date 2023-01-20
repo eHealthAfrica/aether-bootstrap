@@ -22,7 +22,7 @@ set -Eeuo pipefail
 
 source .env
 
-DC_TEST="docker-compose -f tests/docker-compose.yml"
+DC_TEST="docker compose --env-file .env -f tests/docker-compose.yml"
 DC_KERNEL="$DC_TEST run --rm kernel-test"
 MAX_RETRIES=20
 

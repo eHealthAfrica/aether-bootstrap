@@ -125,12 +125,12 @@ function gen_env_file {
 #
 # Verify correct substitution with:
 #
-#   docker-compose -f {module}/docker-compose.yml config
+#   docker compose --env-file .env -f {module}/docker-compose.yml config
 #
 # If variables are newly added or enabled,
 # please restart the images to pull in changes:
 #
-#   docker-compose -f {module}/docker-compose.yml restart {container-name}
+#   docker compose --env-file .env -f {module}/docker-compose.yml restart {container-name}
 #
 
 # ------------------------------------------------------------------

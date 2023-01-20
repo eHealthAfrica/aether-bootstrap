@@ -38,7 +38,8 @@ The expected format for each app file is:
 ## To add an app in Kong
 
 ```bash
-docker-compose \
+docker compose \
+    --env-file .env \
     -f auth/docker-compose.yml \
     run --rm \
     gateway-manager \
@@ -48,7 +49,8 @@ docker-compose \
 ## To remove an app in Kong
 
 ```bash
-docker-compose \
+docker compose \
+    --env-file .env \
     -f auth/docker-compose.yml \
     run --rm \
     gateway-manager \
