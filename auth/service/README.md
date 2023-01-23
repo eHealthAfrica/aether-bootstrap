@@ -105,7 +105,8 @@ The expected format for each service file is:
 ## To add a service to an existing realm in Kong
 
 ```bash
-docker-compose \
+docker compose \
+    --env-file .env \
     -f auth/docker-compose.yml \
     run --rm \
     gateway-manager \
@@ -115,7 +116,8 @@ docker-compose \
 ## To remove a service from an existing realm in Kong
 
 ```bash
-docker-compose \
+docker compose \
+    --env-file .env \
     -f auth/docker-compose.yml \
     run --rm \
     gateway-manager \
@@ -125,7 +127,8 @@ docker-compose \
 ## To remove a service from ALL existing realms in Kong
 
 ```bash
-docker-compose \
+docker compose \
+    --env-file .env \
     -f auth/docker-compose.yml \
     run --rm \
     gateway-manager \

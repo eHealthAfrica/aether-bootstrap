@@ -28,7 +28,7 @@ source options.txt
 
 connect/make_credentials.sh
 
-DCC="docker-compose -f connect/docker-compose.yml"
+DCC="docker compose --env-file .env -f connect/docker-compose.yml"
 
 if [ "$AETHER_CONNECT_MODE" = "LOCAL" ]; then
     echo_message "Starting Kafka & Zookeper containers..."

@@ -1,17 +1,15 @@
-version: '3.7'
-
 networks:
   aether:
-    external:
-      name: aether_bootstrap_net
+    name: aether_bootstrap_net
+    external: true
 
 volumes:
   database-data:
-    external:
-      name: aether_database_data
+    name: aether_database_data
+    external: true
   minio-data:
-    external:
-      name: aether_minio_data
+    name: aether_minio_data
+    external: true
 
 services:
 

@@ -1,14 +1,12 @@
-version: '3.7'
-
 networks:
   aether:
-    external:
-      name: aether_bootstrap_net
+    name: aether_bootstrap_net
+    external: true
 
 volumes:
   redis-data-kernel:
-    external:
-        name: aether_redis_kernel_data
+    name: aether_redis_kernel_data
+    external: true
   redis-data-ui:
 
 services:

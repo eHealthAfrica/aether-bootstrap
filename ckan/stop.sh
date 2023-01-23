@@ -20,5 +20,5 @@
 #
 set -Eeuo pipefail
 
-docker-compose -f ckan/docker-compose.yml kill
-docker-compose -f ckan/docker-compose.yml down -v
+docker compose --env-file .env -f ckan/docker-compose.yml kill
+docker compose --env-file .env -f ckan/docker-compose.yml down -v

@@ -20,7 +20,8 @@ The expected format for each solution file is:
 ## To add a solution to an existing realm in Kong
 
 ```bash
-docker-compose \
+docker compose \
+    --env-file .env \
     -f auth/docker-compose.yml \
     run --rm \
     gateway-manager \
@@ -30,7 +31,8 @@ docker-compose \
 ## To remove a solution from an existing realm in Kong
 
 ```bash
-docker-compose \
+docker compose \
+    --env-file .env \
     -f auth/docker-compose.yml \
     run --rm \
     gateway-manager \
@@ -40,7 +42,8 @@ docker-compose \
 ## To remove a solution from ALL existing realms in Kong
 
 ```bash
-docker-compose \
+docker compose \
+    --env-file .env \
     -f auth/docker-compose.yml \
     run --rm \
     gateway-manager \

@@ -20,5 +20,5 @@
 #
 set -Eeuo pipefail
 
-docker-compose -f auth/docker-compose.yml kill
-docker-compose -f auth/docker-compose.yml down -v
+docker compose --env-file .env -f auth/docker-compose.yml kill
+docker compose --env-file .env -f auth/docker-compose.yml down -v

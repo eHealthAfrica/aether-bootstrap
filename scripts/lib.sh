@@ -23,7 +23,7 @@ set -Eeuo pipefail
 LINE=`printf -v row "%${COLUMNS:-$(tput cols)}s"; echo ${row// /=}`
 MAX_RETRIES=20
 
-DC_AUTH="docker-compose -f auth/docker-compose.yml"
+DC_AUTH="docker compose --env-file .env -f auth/docker-compose.yml"
 GWM_RUN="$DC_AUTH run --rm gateway-manager"
 
 AET_VOLUMES=( \
@@ -84,11 +84,11 @@ function create_docker_assets {
 
 
 function start_db {
-    docker-compose -f _base_/docker-compose.yml up -d db
+    docker compose --env-file .env -f _base_/docker-compose.yml up -d db
 
-    local DB_ID=$(docker-compose -f _base_/docker-compose.yml ps -q db)
+    local DB_ID=$(docker compose --env-file .env -f _base_/docker-compose.yml ps -q db)
     local is_ready="docker container exec -i $DB_ID pg_isready -q"
-    local on_error="docker-compose -f _base_/docker-compose.yml logs db"
+    local on_error="docker compose --env-file .env -f _base_/docker-compose.yml logs db"
 
     _wait_for "database" "$is_ready" "$on_error"
 }
@@ -106,7 +106,7 @@ function start_auth_container {
 
 
 function start_es_container {
-    local DCE="docker-compose -f elasticsearch/docker-compose.yml"
+    local DCE="docker compose --env-file .env -f elasticsearch/docker-compose.yml"
 
     $DCE up -d elasticsearch
     _wait_for "elasticsearch" "$GWM_RUN elasticsearch_ready" "$DCE logs elasticsearch"
@@ -157,7 +157,7 @@ function rebuild_database {
     local DB_USER=$2
     local DB_PWD=$3
 
-    local DB_ID=$(docker-compose -f _base_/docker-compose.yml ps -q db)
+    local DB_ID=$(docker compose --env-file .env -f _base_/docker-compose.yml ps -q db)
     local PSQL="docker container exec -i $DB_ID psql"
 
     echo_message "Recreating $1 database..."

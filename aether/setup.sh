@@ -28,7 +28,7 @@ source .env
 _base_/start.sh
 
 # setup container (model migration, admin user, static content...)
-DCA="docker-compose -f aether/docker-compose.yml"
+DCA="docker compose --env-file .env -f aether/docker-compose.yml"
 AETHER_CONTAINERS=( kernel kernel-ui )
 for container in "${AETHER_CONTAINERS[@]}"; do
     $DCA up -d redis-$container

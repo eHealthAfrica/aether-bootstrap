@@ -25,4 +25,4 @@ source scripts/lib.sh || \
       exit 1 )
 
 start_db
-docker-compose -f _base_/docker-compose.yml up -d minio
+docker compose --env-file .env -f _base_/docker-compose.yml up -d minio

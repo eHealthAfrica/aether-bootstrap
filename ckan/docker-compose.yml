@@ -1,14 +1,12 @@
-version: '3.7'
-
 networks:
   aether:
-    external:
-      name: aether_bootstrap_net
+    name: aether_bootstrap_net
+    external: true
 
 volumes:
   database-data-ckan:
-    external:
-      name: aether_ckan_data
+    name: aether_ckan_data
+    external: true
   redis-data-ckan:
 
 services:

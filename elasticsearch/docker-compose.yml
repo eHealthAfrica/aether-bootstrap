@@ -1,14 +1,12 @@
-version: '3.7'
-
 networks:
   aether:
-    external:
-      name: aether_bootstrap_net
+    name: aether_bootstrap_net
+    external: true
 
 volumes:
   elasticsearch-data:
-    external:
-      name: aether_es_data
+    name: aether_es_data
+    external: true
   redis-data-es:
 
 services:

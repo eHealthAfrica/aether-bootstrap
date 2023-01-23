@@ -25,7 +25,7 @@ source options.txt || \
       exit 1 )
 
 if [ "$AETHER_CONNECT_MODE" = "LOCAL" ]; then
-    docker-compose -f connect/docker-compose.yml up -d kafka zookeeper
+    docker compose --env-file .env -f connect/docker-compose.yml up -d kafka zookeeper
 fi
-docker-compose -f connect/docker-compose.yml up -d producer
-# docker-compose -f connect/docker-compose.yml run --rm kafka-viewer
+docker compose --env-file .env -f connect/docker-compose.yml up -d producer
+# docker compose --env-file .env -f connect/docker-compose.yml run --rm kafka-viewer

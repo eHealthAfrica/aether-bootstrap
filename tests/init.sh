@@ -21,4 +21,4 @@
 set -Eeuo pipefail
 
 ./scripts/generate_env_vars.sh
-docker-compose -f tests/docker-compose.yml pull
+docker compose --env-file .env -f tests/docker-compose.yml pull
