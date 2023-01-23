@@ -22,7 +22,7 @@ set -Eeuo pipefail
 
 # ------------------------------------------------------------------------------
 #
-# This script is intended to be used exclusively in travis.
+# This script is intended to be used exclusively in Github actions.
 # It just checks that the different scripts work, and WIPES everything on exit.
 #
 # ------------------------------------------------------------------------------
@@ -31,27 +31,27 @@ function travis_options {
     cat << EOF
 # Travis test options
 BASE_PROTOCOL=http
-LOCAL_HOST=travis.test.server
+LOCAL_HOST=aether.test.server
 
 PULL_IMAGES=true
 WIPE_ON_INIT=true
-INITIAL_TENANTS="travis;"
+INITIAL_TENANTS="github;"
 
 ## Keycloak Settings
-KEYCLOAK_GLOBAL_ADMIN=kc-admin-travis
+KEYCLOAK_GLOBAL_ADMIN=kc-admin-github
 
-KEYCLOAK_PUBLIC_CLIENT=public-travis
-KEYCLOAK_OIDC_CLIENT=oidc-travis
+KEYCLOAK_PUBLIC_CLIENT=public-github
+KEYCLOAK_OIDC_CLIENT=oidc-github
 
 KEYCLOAK_LOGIN_THEME=keycloak
 
 # Initial users credentials
-INITIAL_SU_USERNAME=sys-admin-travis
-INITIAL_ADMIN_USERNAME=admin-travis
-INITIAL_USER_USERNAME=user-travis
+INITIAL_SU_USERNAME=sys-admin-github
+INITIAL_ADMIN_USERNAME=admin-github
+INITIAL_USER_USERNAME=user-github
 
-SERVICES_DEFAULT_USER_PASSWORD=travis-password
-SERVICES_DEFAULT_ADMIN_PASSWORD=travis-password
+SERVICES_DEFAULT_USER_PASSWORD=github-password
+SERVICES_DEFAULT_ADMIN_PASSWORD=github-password
 
 # Enable services
 ENABLE_CONNECT=true

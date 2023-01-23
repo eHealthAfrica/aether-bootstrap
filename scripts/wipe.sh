@@ -23,8 +23,8 @@ set -Eeuo pipefail
 source scripts/lib.sh
 
 for dc_file in $(find docker-compose.yml */docker-compose.yml 2> /dev/null); do
-    docker compose --env-file .env -f $dc_file kill    2>/dev/null
-    docker compose --env-file .env -f $dc_file down -v 2>/dev/null
+    docker compose -f $dc_file kill    2>/dev/null
+    docker compose -f $dc_file down -v 2>/dev/null
 done
 
 for volume in "${AET_VOLUMES[@]}"; do
