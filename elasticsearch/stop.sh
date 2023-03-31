@@ -20,5 +20,5 @@
 #
 set -Eeuo pipefail
 
-docker compose --env-file .env -f elasticsearch/docker-compose.yml kill
-docker compose --env-file .env -f elasticsearch/docker-compose.yml down -v
+docker compose --env-file .env -f elasticsearch/docker-compose.yml kill        2>/dev/null
+docker compose --env-file .env -f elasticsearch/docker-compose.yml rm -s -v -f 2>/dev/null
