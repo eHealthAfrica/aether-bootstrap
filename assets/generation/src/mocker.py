@@ -194,11 +194,11 @@ class DataMocker(object):
                 raise ValueError("Couldn't find id function")
 
             _id = fn[0]()
-        deffered_generation = MockFn(self.fullfill_reference, [_id])
-        self._queue.put(deffered_generation)
+        deferred_generation = MockFn(self.fullfil_reference, [_id])
+        self._queue.put(deferred_generation)
         return _id
 
-    def fullfill_reference(self, _id):
+    def fullfil_reference(self, _id):
         # the method called from the queue to create an instance
         new_record = self.get(set_id=_id)
         self.parent.register(self.name, new_record)
