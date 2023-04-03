@@ -28,6 +28,7 @@ GWM_RUN="$DC_AUTH run --rm gateway-manager"
 
 AET_VOLUMES=( \
     aether_ckan_data \
+    aether_ckan_solr_data \
     aether_database_data \
     aether_es_data \
     aether_minio_data \
