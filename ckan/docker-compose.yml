@@ -1,3 +1,5 @@
+# https://github.com/ckan/ckan-docker/blob/master/docker-compose.yml
+
 networks:
   aether:
     name: aether_bootstrap_net
@@ -7,34 +9,33 @@ volumes:
   database-data-ckan:
     name: aether_ckan_data
     external: true
+  solr-data-ckan:
+    name: aether_ckan_solr_data
+    external: true
   redis-data-ckan:
 
 services:
-  # WARNING: last update was 2 years ago!!! (Today: 2020-05-05)
-  # https://hub.docker.com/r/ckan/postgresql
   db-ckan:
-    image: ckan/postgresql:latest
+    # image: postgis/postgis:${CKAN_DB_VERSION:-15-3.3-alpine}
+    build:
+      context: ./db
+      args:
+        VERSION: ${CKAN_DB_VERSION:-15-3.3-alpine}
     environment:
-      DS_RO_PASS: ${CKAN_DATASTORE_READONLY_PASSWORD}
+      PGUSER: ckan
+      PGPASSWORD: ${CKAN_DB_PASSWORD}
+      POSTGRES_DB: ckan
       POSTGRES_USER: ckan
       POSTGRES_PASSWORD: ${CKAN_DB_PASSWORD}
-      POSTGRES_DB: ckan
+      DS_RO_PASS: ${CKAN_DATASTORE_READONLY_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/db
     volumes:
       - database-data-ckan:/var/lib/postgresql/data
-    networks:
-      - aether
-
-  solr-ckan:
-    image: ehealthafrica/ckan-solr:${CKAN_SOLR_VERSION:-8.4.0}
-    volumes:
-      - ./solr/schema.xml:/opt/solr/server/solr/ckan/conf/schema.xml
-      - ./solr/solrconfig.xml:/opt/solr/server/solr/ckan/conf/solrconfig.xml
-    networks:
-      - aether
-
-  # WARNING: uses python 2 and last update was 5 years ago!!! (Today: 2020-05-05)
-  datapusher:
-    image: clementmouchet/datapusher
+    healthcheck:
+      test: pg_isready
+      interval: 2s
+      timeout: 3s
+      retries: 30
     networks:
       - aether
 
@@ -42,36 +43,72 @@ services:
     image: redis:alpine
     volumes:
       - redis-data-ckan:/var/lib/redis/data
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    healthcheck:
+      test: redis-cli ping
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    networks:
+      - aether
+
+  solr-ckan:
+    # https://hub.docker.com/r/ckan/ckan-solr/tags
+    image: ckan/ckan-solr:${CKAN_SOLR_VERSION:-2.9-solr8-spatial}
+    volumes:
+      - solr-data-ckan:/var/solr
+    healthcheck:
+      test: wget -qO /dev/null "http://localhost:8983/solr/"
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    networks:
+      - aether
+
+  datapusher:
+    # https://hub.docker.com/r/ckan/ckan-base-datapusher/tags
+    image: ckan/ckan-base-datapusher:${DATAPUSHER_VERSION:-0.0.20}
+    healthcheck:
+      test: wget -qO /dev/null "http://localhost:8800"
+      interval: 2s
+      timeout: 3s
+      retries: 30
     networks:
       - aether
 
   ckan:
-    image: ehealthafrica/ckan:${CKAN_VERSION:-2.8.4}
+    # https://hub.docker.com/r/ckan/ckan-base/tags
+    image: ckan/ckan-base:${CKAN_VERSION:-2.9.7}
     environment:
-      # Defaults work with linked containers, change to use own Postgres, SolR, Redis or Datapusher
-      CKAN_INI: /etc/ckan/production.ini
       CKAN_MAX_UPLOAD_SIZE_MB: 20000
       CKAN_PORT: 5000
       CKAN_SITE_URL: http://localhost:5000
 
       CKAN_DATAPUSHER_URL: http://datapusher:8800
+      CKAN__DATAPUSHER__CALLBACK_URL_BASE: http://ckan:5000
       CKAN_DATASTORE_READ_URL: postgresql://datastore_ro:${CKAN_DATASTORE_READONLY_PASSWORD}@db-ckan/datastore
       CKAN_DATASTORE_WRITE_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@db-ckan/datastore
-      CKAN_REDIS_URL: redis://user:{REDIS_PASSWORD}@redis-ckan:6379/0
+      CKAN_REDIS_URL: redis://redis-ckan:6379/1
       CKAN_SOLR_URL: http://solr-ckan:8983/solr/ckan
       CKAN_SQLALCHEMY_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@db-ckan/ckan
+
+      POSTGRES_PASSWORD: ${CKAN_DB_PASSWORD}
+      DS_RO_PASS: ${CKAN_DATASTORE_READONLY_PASSWORD}
 
       CKAN_SYSADMIN_NAME: ${CKAN_SYSADMIN_NAME}
       CKAN_SYSADMIN_PASSWORD: ${CKAN_SYSADMIN_PASSWORD}
       CKAN_SYSADMIN_EMAIL: ${CKAN_SYSADMIN_EMAIL}
-    volumes:
-      - ./ckan:/etc/ckan
+
+      TZ: UTC
     depends_on:
       - db-ckan
       - solr-ckan
       - redis-ckan
       - datapusher
+    healthcheck:
+      test: wget -qO /dev/null "http://localhost:5000"
+      interval: 2s
+      timeout: 3s
+      retries: 30
     ports:
       - 5000:5000
     networks:
@@ -84,7 +121,6 @@ services:
       REDIS_DB: 0
       REDIS_HOST: redis-ckan
       REDIS_PORT: 6379
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
 
        # kafka
       KAFKA_URL: ${KAFKA_URL}
@@ -107,5 +143,3 @@ services:
     command: start
     networks:
       - aether
-    # ports:
-    #   - 9009:9009
