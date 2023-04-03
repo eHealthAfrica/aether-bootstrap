@@ -29,8 +29,6 @@ After that execute this command:
 ./scripts/init.sh
 ```
 
-If `CKAN` is enabled, you will be prompted for an email address and password to setup an admin account on `CKAN`.
-
 You will also need to add an entry to your `/etc/hosts` or `C:\Windows\System32\Drivers\etc\hosts` file.
 It should look something like this:
 
@@ -44,13 +42,12 @@ Now you just need to tell Docker to start aether up:
 ./scripts/start.sh
 ```
 
-Once the console output has stopped, you should be able to access the **Aether UI** in your browser at http://aether.local/dev/kernel-ui/ (`http://{LOCAL_HOST}/{realm}/kernel-ui`).
+Once the console output has stopped, you should be able to access the **Aether UI** in your browser at <http://aether.local/dev/kernel-ui/> (`http://{LOCAL_HOST}/{realm}/kernel-ui`).
 
 Use these credentials to log in:
 
 - *Username*: **user** (`INITIAL_USER_USERNAME`)
 - *Password*: **password** (`INITIAL_USER_PASSWORD`)
-
 
 # Add tenants
 

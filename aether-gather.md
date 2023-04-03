@@ -69,7 +69,6 @@ Correspondence table:
 | ODK       | Project               | xForm        | XForm (identity instructions) |
 | Gather    | Survey                | ---          | ---                           |
 
-
 ## How to communicate with Aether via REST API
 
 The way to authenticate in Aether and Gather using Kong as Gateway service is to include the `X-Oauth-Token` value in all the requests.
@@ -93,7 +92,6 @@ then:
 - Aether Kernel: `http://aether.local/ehealth/kernel`
 - Aether ODK: `http://aether.local/ehealth/odk`
 
-
 ### List of items
 
 The REST API implements a page number pagination.
@@ -114,6 +112,7 @@ The REST API implements a page number pagination.
 The default `page_size` is `10`.
 
 To reduce the size of the response there are also available two parameters:
+
 - `field`, comma-separate list of field names to include in the response.
 - `omit`, comma-separate list of field names to omit in the response.
 

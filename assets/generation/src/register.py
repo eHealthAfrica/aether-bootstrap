@@ -114,7 +114,7 @@ def register():
     project = register_project()
     project_id = project.id
     if not project_id:
-        LOGGER.error('project could not be registerd, does it already exist?')
+        LOGGER.error('project could not be registered, does it already exist?')
         sys.exit(0)
 
     schema_info = schema()

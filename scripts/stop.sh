@@ -21,6 +21,6 @@
 set -Eeuo pipefail
 
 for dc_file in $(find docker-compose.yml */docker-compose.yml 2> /dev/null); do
-    docker compose --env-file .env -f $dc_file kill
-    docker compose --env-file .env -f $dc_file down -v
+    docker compose --env-file .env -f $dc_file kill        2>/dev/null
+    docker compose --env-file .env -f $dc_file rm -s -v -f 2>/dev/null
 done

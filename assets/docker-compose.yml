@@ -28,6 +28,8 @@ services:
 
       PROJECT_NAME: DefaultDemo
       MAPPING_NAME: default_mapping
+
+      PYTHONPYCACHEPREFIX: "/var/tmp/cache/cpython/"
     networks:
       - aether
     extra_hosts:

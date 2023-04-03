@@ -1,4 +1,4 @@
-FROM python:3.7-slim-stretch
+FROM python:3.10-slim
 
 COPY ./pip /code/pip
 WORKDIR /code

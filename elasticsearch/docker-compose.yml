@@ -57,6 +57,11 @@ services:
     volumes:
       - redis-data-es:/var/lib/redis/data
     command: redis-server --requirepass ${REDIS_PASSWORD}
+    healthcheck:
+      test: redis-cli ping
+      interval: 2s
+      timeout: 3s
+      retries: 30
     networks:
       - aether
 

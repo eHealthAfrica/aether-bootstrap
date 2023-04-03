@@ -27,31 +27,31 @@ set -Eeuo pipefail
 #
 # ------------------------------------------------------------------------------
 
-function travis_options {
+function test_options {
     cat << EOF
-# Travis test options
+# Test options
 BASE_PROTOCOL=http
 LOCAL_HOST=aether.test.server
 
 PULL_IMAGES=true
 WIPE_ON_INIT=true
-INITIAL_TENANTS="github;"
+INITIAL_TENANTS="testing;"
 
 ## Keycloak Settings
-KEYCLOAK_GLOBAL_ADMIN=kc-admin-github
+KEYCLOAK_GLOBAL_ADMIN=kc-admin-testing
 
-KEYCLOAK_PUBLIC_CLIENT=public-github
-KEYCLOAK_OIDC_CLIENT=oidc-github
+KEYCLOAK_PUBLIC_CLIENT=public-testing
+KEYCLOAK_OIDC_CLIENT=oidc-testing
 
 KEYCLOAK_LOGIN_THEME=keycloak
 
 # Initial users credentials
-INITIAL_SU_USERNAME=sys-admin-github
-INITIAL_ADMIN_USERNAME=admin-github
-INITIAL_USER_USERNAME=user-github
+INITIAL_SU_USERNAME=sys-admin-testing
+INITIAL_ADMIN_USERNAME=admin-testing
+INITIAL_USER_USERNAME=user-testing
 
-SERVICES_DEFAULT_USER_PASSWORD=github-password
-SERVICES_DEFAULT_ADMIN_PASSWORD=github-password
+SERVICES_DEFAULT_USER_PASSWORD=testing-password
+SERVICES_DEFAULT_ADMIN_PASSWORD=testing-password
 
 # Enable services
 ENABLE_CONNECT=true
@@ -87,7 +87,7 @@ function _on_err {
     exit 1
 }
 
-travis_options > options.txt
+test_options > options.txt
 TEST_MODE=$1
 
 trap '_on_exit' EXIT
@@ -97,8 +97,6 @@ trap '_on_err' ERR
 case "$TEST_MODE" in
     s | setup )
         ./scripts/init.sh
-        ./scripts/start.sh
-        ./scripts/stop.sh
     ;;
 
     i | integration )
