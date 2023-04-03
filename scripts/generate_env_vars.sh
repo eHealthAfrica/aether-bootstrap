@@ -179,7 +179,7 @@ INITIAL_SU_USERNAME=${INITIAL_SU_USERNAME:-sys-admin}
 INITIAL_SU_PASSWORD=${admin_password}
 
 INITIAL_ADMIN_USERNAME=${INITIAL_ADMIN_USERNAME:-admin}
-INITIAL_ADMIN_PASSWORD=${user_password}
+INITIAL_ADMIN_PASSWORD=${admin_password}
 
 INITIAL_USER_USERNAME=${INITIAL_USER_USERNAME:-user}
 INITIAL_USER_PASSWORD=${user_password}
@@ -335,7 +335,7 @@ GATHER_DB_PASSWORD=$(gen_random_string)
 # ==================================================================
 CKAN_DATASTORE_READONLY_PASSWORD=$(gen_random_string)
 CKAN_SYSADMIN_NAME=admin
-CKAN_SYSADMIN_PASSWORD=adminadmin
+CKAN_SYSADMIN_PASSWORD=${admin_password}
 CKAN_SYSADMIN_EMAIL=info@ehealthafrica.org
 CKAN_DB_PASSWORD=$(gen_random_string)
 # ------------------------------------------------------------------
