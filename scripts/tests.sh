@@ -35,23 +35,23 @@ LOCAL_HOST=aether.test.server
 
 PULL_IMAGES=true
 WIPE_ON_INIT=true
-INITIAL_TENANTS="github;"
+INITIAL_TENANTS="testing;"
 
 ## Keycloak Settings
-KEYCLOAK_GLOBAL_ADMIN=kc-admin-github
+KEYCLOAK_GLOBAL_ADMIN=kc-admin-testing
 
-KEYCLOAK_PUBLIC_CLIENT=public-github
-KEYCLOAK_OIDC_CLIENT=oidc-github
+KEYCLOAK_PUBLIC_CLIENT=public-testing
+KEYCLOAK_OIDC_CLIENT=oidc-testing
 
 KEYCLOAK_LOGIN_THEME=keycloak
 
 # Initial users credentials
-INITIAL_SU_USERNAME=sys-admin-github
-INITIAL_ADMIN_USERNAME=admin-github
-INITIAL_USER_USERNAME=user-github
+INITIAL_SU_USERNAME=sys-admin-testing
+INITIAL_ADMIN_USERNAME=admin-testing
+INITIAL_USER_USERNAME=user-testing
 
-SERVICES_DEFAULT_USER_PASSWORD=github-password
-SERVICES_DEFAULT_ADMIN_PASSWORD=github-password
+SERVICES_DEFAULT_USER_PASSWORD=testing-password
+SERVICES_DEFAULT_ADMIN_PASSWORD=testing-password
 
 # Enable services
 ENABLE_CONNECT=true
@@ -71,7 +71,7 @@ function _on_err {
     case "$TEST_MODE" in
         s | setup )
             for dc_file in $(find docker-compose.yml */docker-compose.yml 2> /dev/null); do
-                docker compose -f $dc_file logs -t --tail="all"
+                docker compose --env-file .env -f $dc_file logs -t --tail="all"
             done
         ;;
 
@@ -79,7 +79,7 @@ function _on_err {
             dc_file="tests/docker-compose.yml"
             CONTAINERS=( db kernel producer )
             for container in "${CONTAINERS[@]}"; do
-                docker compose -f $dc_file logs -t --tail="all" "${container}-test"
+                docker compose --env-file .env -f $dc_file logs -t --tail="all" "${container}-test"
             done
         ;;
     esac

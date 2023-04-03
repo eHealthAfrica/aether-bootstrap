@@ -20,5 +20,5 @@
 #
 set -Eeuo pipefail
 
-docker compose --env-file .env -f tests/docker-compose.yml kill     2>/dev/null
-docker compose --env-file .env -f tests/docker-compose.yml down -v  2>/dev/null
+docker compose -f tests/docker-compose.yml kill     2>/dev/null
+docker compose -f tests/docker-compose.yml down -v  2>/dev/null

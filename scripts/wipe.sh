@@ -28,10 +28,10 @@ for dc_file in $(find docker-compose.yml */docker-compose.yml 2> /dev/null); do
 done
 
 for volume in "${AET_VOLUMES[@]}"; do
-    docker volume rm -f $volume 2>/dev/null
+    docker volume rm -f $volume 2>/dev/null || true
 done
 
-docker network rm -f $AET_NETWORK 2>/dev/null
+docker network rm -f $AET_NETWORK 2>/dev/null || true
 
 rm -f .env
 rm -rf ./connect/*.conf
