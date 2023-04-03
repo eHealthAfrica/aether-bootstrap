@@ -71,7 +71,7 @@ function _on_err {
     case "$TEST_MODE" in
         s | setup )
             for dc_file in $(find docker-compose.yml */docker-compose.yml 2> /dev/null); do
-                docker compose --env-file .env -f $dc_file logs -t --tail="all"
+                docker compose -f $dc_file logs -t --tail="all"
             done
         ;;
 
@@ -79,7 +79,7 @@ function _on_err {
             dc_file="tests/docker-compose.yml"
             CONTAINERS=( db kernel producer )
             for container in "${CONTAINERS[@]}"; do
-                docker compose --env-file .env -f $dc_file logs -t --tail="all" "${container}-test"
+                docker compose -f $dc_file logs -t --tail="all" "${container}-test"
             done
         ;;
     esac
