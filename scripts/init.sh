@@ -39,12 +39,15 @@ echo_warning "This can take up to 15 minutes depending on bandwidth."
 echo_message ""
 
 if [ "$WIPE_ON_INIT" = true ]; then
+    echo_warning "Wipping previous data"
     ./scripts/wipe.sh
 else
+    echo_warning "Stopping running containers"
     # stop and remove all containers or the network cannot be recreated
     ./scripts/stop.sh 2>/dev/null
 fi
 
+echo_warning "Generating environment variables"
 ./scripts/generate_env_vars.sh
 source .env
 
@@ -52,10 +55,12 @@ docker network rm aether_bootstrap_net || true
 create_docker_assets
 
 if [ "$PULL_IMAGES" = true ]; then
+    echo_warning "Pulling images"
     ./scripts/pull.sh
 fi
 
 if [ "$WIPE_ON_INIT" = true ]; then
+    echo_warning "Initializing environment"
     # create all databases even if the services will not be enabled later
     ./auth/init.sh
     ./aether/init.sh
@@ -75,7 +80,6 @@ for tenant in "${tenants[@]}"; do
         ./scripts/add_tenant.sh "$tenant"
     fi
 done
-
 
 ./scripts/stop.sh 2>/dev/null
 

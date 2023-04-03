@@ -27,9 +27,9 @@ set -Eeuo pipefail
 #
 # ------------------------------------------------------------------------------
 
-function travis_options {
+function test_options {
     cat << EOF
-# Travis test options
+# Test options
 BASE_PROTOCOL=http
 LOCAL_HOST=aether.test.server
 
@@ -87,7 +87,7 @@ function _on_err {
     exit 1
 }
 
-travis_options > options.txt
+test_options > options.txt
 TEST_MODE=$1
 
 trap '_on_exit' EXIT
@@ -97,8 +97,6 @@ trap '_on_err' ERR
 case "$TEST_MODE" in
     s | setup )
         ./scripts/init.sh
-        ./scripts/start.sh
-        ./scripts/stop.sh
     ;;
 
     i | integration )
